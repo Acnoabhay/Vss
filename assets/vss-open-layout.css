@@ -201,3 +201,57 @@ footer{background:#edf3eb!important;border-top:1px solid var(--vss-line)!importa
  .rv{opacity:1!important;transform:none!important;transition:none!important}
  .hero-photo img,.leader-portrait{animation:none!important}
 }
+
+
+/* VSS brand-first hero and portrait-led leadership directory */
+.hero-brand{
+  position:relative!important;
+  z-index:3!important;
+  display:block!important;
+  width:auto!important;
+  height:clamp(68px,9vw,104px)!important;
+  max-width:min(180px,42vw)!important;
+  object-fit:contain!important;
+  margin:0 auto 18px!important;
+  filter:drop-shadow(0 10px 24px rgba(32,89,75,.16))!important;
+  animation:vssBrandIn .85s cubic-bezier(.22,1,.36,1) both;
+}
+.vss-head-member{
+  position:relative!important;
+  overflow:hidden!important;
+  padding-top:18px!important;
+  border-color:rgba(40,123,112,.25)!important;
+  background:linear-gradient(160deg,rgba(233,243,237,.76),rgba(255,255,255,.72))!important;
+}
+.vss-member-photo{
+  display:block!important;
+  width:100%!important;
+  height:clamp(220px,25vw,300px)!important;
+  object-fit:cover!important;
+  object-position:center 17%!important;
+  border-radius:18px!important;
+  margin:0 0 14px!important;
+  background:#eef2ed!important;
+}
+.vss-head-label{
+  display:inline-flex!important;
+  align-self:flex-start!important;
+  width:max-content!important;
+  padding:4px 10px!important;
+  border-radius:999px!important;
+  background:rgba(40,123,112,.12)!important;
+  color:#287b70!important;
+  font-size:.72rem!important;
+  font-weight:800!important;
+  letter-spacing:.1em!important;
+}
+.vss-head-member h3{font-size:1.22rem!important;margin-top:5px!important}
+@keyframes vssBrandIn{
+  from{opacity:0;transform:translateY(-12px) scale(.94)}
+  to{opacity:1;transform:translateY(0) scale(1)}
+}
+@media(max-width:620px){
+  .hero-brand{height:76px!important;margin-bottom:14px!important}
+  .vss-member-photo{height:260px!important;object-position:center 15%!important}
+}
+@media(prefers-reduced-motion:reduce){.hero-brand{animation:none!important}}
