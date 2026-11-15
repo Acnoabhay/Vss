@@ -206,3 +206,55 @@ footer{background:#e9f1e9;border-top:1px solid #d5e4d8;padding:55px 0 24px}
  .rv{opacity:1;transform:none}
 }
 :focus-visible{outline:3px solid #4d9b7d;outline-offset:3px}
+
+
+/* VSS identity update: a people-first, text-led landing page */
+.hero{position:relative;isolation:isolate;min-height:720px;padding:120px 0 64px;overflow:hidden}
+.hero-photo{position:absolute;inset:0;width:100%;height:100%;margin:0;border:0;border-radius:0;box-shadow:none;z-index:-1;overflow:hidden;background:#f7f8f2}
+.hero-photo img{width:100%;height:100%;object-fit:cover;object-position:center 45%;opacity:.15;filter:blur(1.5px) saturate(.72);transform:scale(1.035);animation:none}
+.hero-photo:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(248,250,245,.96) 0%,rgba(248,250,245,.83) 48%,rgba(248,250,245,.65) 100%),linear-gradient(180deg,rgba(248,250,245,.08),#f7f8f2 100%)}
+.hin{width:min(1120px,92%);max-width:none;position:relative;z-index:2;text-align:left}
+.hero-layout{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(260px,.75fr);align-items:center;gap:clamp(20px,5vw,72px);min-height:490px}
+.hero-copy{min-width:0;text-align:left}
+.hero-copy .logo{margin:0 0 14px;width:66px;height:66px}
+.hero-copy h1,.hero-copy .s1,.hero-copy .s2,.hero-copy .hi,.hero-copy .mot,.hero-copy .lead{text-align:left;margin-left:0;margin-right:0}
+.hero-copy .lead{max-width:650px}
+.hero-copy .pills,.hero-copy .cta,.hero-copy .chips{justify-content:flex-start}
+.hero-copy .rib{margin-top:20px}
+.vss-head{align-self:end;justify-self:center;width:min(100%,380px);text-align:center;position:relative;z-index:2}
+.vss-head-photo{position:relative;overflow:hidden;border-radius:48% 48% 18px 18px / 32% 32% 18px 18px;background:rgba(255,255,255,.72);box-shadow:0 24px 60px rgba(29,75,62,.12);border:1px solid rgba(48,112,89,.13)}
+.vss-head-photo img{display:block;width:100%;height:auto;object-fit:cover;object-position:center top}
+.vss-head-caption{padding:17px 8px 0}
+.vss-head-caption span{font-size:.72rem;font-weight:800;letter-spacing:.18em;color:#43846e}
+.vss-head-caption h2{font-size:clamp(1.45rem,3vw,2rem);color:#194f45;margin-top:4px}
+.stats{position:relative;z-index:2;margin-top:24px}
+.stat,.txt,.row,.vc,.mc,.mem,.fb,.panel,.doc,.cal,.sig,.pad,.quote,.steps li,.note,.list{
+ background:transparent!important;border:0!important;border-radius:0!important;box-shadow:none!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important
+}
+.stat{padding:15px 12px!important;border-top:1px solid rgba(39,104,83,.2)!important;text-align:left}
+.stat b{font-size:2rem}
+.txt,.panel,.doc,.cal,.sig,.pad{padding:0!important}
+.vc,.mc,.mem{padding:16px 0!important;border-bottom:1px solid rgba(39,104,83,.16)!important;transition:transform .25s ease}
+.vc:hover,.mc:hover,.mem:hover{transform:translateY(-2px);box-shadow:none!important}
+.row{padding:13px 0!important;border-bottom:1px solid rgba(39,104,83,.13)!important}
+.quote{padding:14px 0!important;border-left:3px solid #75a98d!important;text-align:left!important}
+.steps{gap:18px}
+.steps li{padding:14px 0!important;border-top:1px solid rgba(39,104,83,.2)!important}
+.orb,.num{box-shadow:none!important}
+.search{background:transparent!important;border:0!important;border-bottom:1px solid rgba(39,104,83,.24)!important;border-radius:0!important}
+.fb{padding:14px 0!important;border-bottom:1px solid rgba(39,104,83,.14)!important}
+footer{background:transparent!important}
+@media(max-width:760px){
+ .hero{min-height:auto;padding:100px 0 54px}
+ .hero-layout{grid-template-columns:1fr;gap:20px;min-height:0}
+ .hero-copy{text-align:center}
+ .hero-copy .logo{margin:0 auto 14px}
+ .hero-copy h1,.hero-copy .s1,.hero-copy .s2,.hero-copy .hi,.hero-copy .mot,.hero-copy .lead{text-align:center;margin-left:auto;margin-right:auto}
+ .hero-copy .pills,.hero-copy .cta,.hero-copy .chips{justify-content:center}
+ .hero-copy .lead{max-width:620px}
+ .vss-head{width:min(260px,68%);justify-self:center;order:2}
+ .vss-head-photo{border-radius:48% 48% 16px 16px / 30% 30% 16px 16px}
+ .stats{margin-top:36px}
+ .stat{padding:13px 8px!important}
+}
+@media(prefers-reduced-motion:reduce){.hero-photo img{animation:none}}
