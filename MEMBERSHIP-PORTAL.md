@@ -1,15 +1,11 @@
-# VSS Virtual Membership ID Portal
+# VSS Instant Member ID Portal
 
-The membership portal is available at `membership.html`. It supports:
-- Member registration and sign-in
-- Committee-reviewed applications
-- Unique membership numbers issued on approval
-- Digital ID card with QR code
-- PNG download and browser print / Save as PDF
-- Public QR/member-number verification
-- Committee admin approval, rejection, suspension and reinstatement
+Simple member experience: create account → sign in → get digital ID.
 
-## Setup
-Follow [Supabase setup instructions](supabase/SETUP.md) and run [the SQL schema](supabase/schema.sql). The project URL and browser-safe anon/publishable key must be configured in `membership.html` before the portal accepts users.
+- Name, email and password registration
+- Automatic unique VSS ID at account creation
+- Login and personal membership card
+- QR-based public verification
+- Download as PNG or print/save as PDF
 
-**Important:** This commit installs the portal code and database schema, but does not create/configure a Supabase project or activate membership processing. Those steps require the VSS project owner's Supabase account.
+Run [the Supabase schema](supabase/schema.sql), then add the Supabase Project URL and browser-safe anon/publishable key to `membership.html`. See [setup guide](supabase/SETUP.md).
