@@ -21,6 +21,7 @@ alter table public.vss_members add column if not exists membership_no text;
 alter table public.vss_members add column if not exists status text not null default 'approved';
 alter table public.vss_members add column if not exists role text not null default 'member';
 alter table public.vss_members drop constraint if exists vss_members_status_check;
+update public.vss_members set status='approved' where status not in ('approved','suspended');
 alter table public.vss_members add constraint vss_members_status_check check(status in ('approved','suspended'));
 alter table public.vss_members alter column status set default 'approved';
 
