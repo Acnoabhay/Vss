@@ -88,6 +88,21 @@ img{content-visibility:auto}
 .vss-family-gallery figcaption{padding:13px 16px;font-size:13px;font-weight:650}
 @media(max-width:640px){.vss-family-gallery .alumni-photo-grid{grid-template-columns:1fr;gap:13px}.vss-family-gallery .alumni-photo,.vss-family-gallery .alumni-photo img{min-height:220px}}
 
+
+/* Site-wide motion refinement: fluid, restrained and touch-friendly */
+html{scroll-behavior:smooth;scroll-padding-top:84px}
+body{overflow-x:hidden}
+a,button,.card,.stat,.initiative-card,.event-card,.team-card,.gallery-item{transition:transform .32s cubic-bezier(.2,.75,.25,1),box-shadow .32s,border-color .32s,background-color .32s,opacity .32s}
+.btn{transition:transform .28s cubic-bezier(.2,.75,.25,1),box-shadow .28s,background .28s}
+.btn:hover{transform:translateY(-3px);box-shadow:0 12px 28px #8f101c22}
+.btn:active{transform:scale(.98)}
+img{transition:transform .65s cubic-bezier(.2,.75,.25,1),filter .5s}
+.reveal{will-change:opacity,transform,filter}
+.reveal.visible{animation:siteReveal .8s cubic-bezier(.2,.75,.25,1) both;animation-delay:var(--reveal-delay,0ms)}
+@keyframes siteReveal{from{opacity:0;transform:translate3d(0,22px,0);filter:blur(6px)}to{opacity:1;transform:translate3d(0,0,0);filter:blur(0)}}
+@media(hover:hover){.card:hover,.initiative-card:hover,.event-card:hover,.team-card:hover{transform:translateY(-5px);box-shadow:0 18px 42px #15192314}.gallery-item:hover img,.alumni-photo:hover img{transform:scale(1.035)}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
+
 </style>
 </head>
 <body>
