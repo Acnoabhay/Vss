@@ -73,6 +73,24 @@ button:active:not(:disabled){transform:scale(.98)}
 .portal-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
 @media(max-width:760px){.portal-grid{grid-template-columns:1fr}#memberAccessPanel.portal-open{padding:17px}}
 
+
+/* VSS student dashboard */
+.student-summary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:11px;margin:2px 0}
+.student-stat{border:1px solid var(--line);background:#fafbfc;border-radius:13px;padding:14px}
+.student-stat span{display:block;font-size:10px;color:var(--muted);font-weight:800;letter-spacing:.06em;text-transform:uppercase}
+.student-stat strong{display:block;font-size:15px;color:var(--ink);margin-top:5px;overflow-wrap:anywhere}
+.portal-feed-grid{display:grid;grid-template-columns:1fr 1fr;gap:15px}
+.portal-feed{border:1px solid var(--line);border-radius:15px;background:#fff;padding:17px;min-width:0}
+.portal-feed h3{margin:0 0 12px;font-size:16px}
+.portal-feed-list{display:grid;gap:10px}
+.portal-feed-item{padding:11px;border:1px solid #edf0f2;border-radius:11px;background:#fcfcfd}
+.portal-feed-item h4{font-size:13px;margin:0 0 4px;color:var(--ink)}
+.portal-feed-item p{font-size:12px;white-space:pre-wrap;margin:5px 0;color:var(--muted)}
+.portal-feed-meta{font-size:10px;color:var(--red);font-weight:800;letter-spacing:.04em}
+.portal-feed-empty{padding:15px;text-align:center;color:var(--muted);font-size:12px;background:#fafbfc;border-radius:10px}
+.portal-feed-link{display:inline-block;margin-top:6px;color:var(--red);font-size:12px;font-weight:800;text-decoration:none}
+@media(max-width:760px){.student-summary{grid-template-columns:1fr 1fr}.portal-feed-grid{grid-template-columns:1fr}}
+
 </style></head><body>
 <header class="top"><div class="brand">VSS COMMUNITY<small>VIDYARTHI SEVA SANGATHAN · CGIT RAIPUR</small></div><a href="index.html" style="color:white;text-decoration:none;font-size:13px">← Main website</a></header>
 <main class="wrap"><div class="intro"><span class="eyebrow">Instant digital membership</span><h1>Become a VSS Member</h1><p>Enter your details carefully. Join the VSS community and be part of a student-led network built on support, service and shared growth.</p></div>
@@ -93,6 +111,15 @@ button:active:not(:disabled){transform:scale(.98)}
 <div class="actions"><button class="primary" id="accessPngBtn" type="button">Download PNG</button><button class="secondary" id="accessJpegBtn" type="button">Download JPEG</button><button class="secondary" id="accessPrintBtn" type="button">Print / Save PDF</button></div>
 <div id="memberPortalView" class="hidden">
  <div class="portal-head"><div><span class="eyebrow">VSS member dashboard</span><h2 style="margin:4px 0">Welcome, <span id="portalWelcomeName">Member</span></h2><p class="hint">Your membership details and digital ID are available here.</p></div><button class="secondary" id="portalSignOutBtn" type="button">Sign out</button></div>
+ <div class="student-summary">
+  <div class="student-stat"><span>Membership ID</span><strong id="studentSummaryId">—</strong></div>
+  <div class="student-stat"><span>Membership category</span><strong id="studentSummaryCategory">—</strong></div>
+  <div class="student-stat"><span>Latest notices</span><strong id="studentSummaryNotices">Loading…</strong></div>
+ </div>
+ <div class="portal-feed-grid">
+  <section class="portal-feed"><h3>Latest VSS notices</h3><div class="portal-feed-list" id="studentNoticeList"><div class="portal-feed-empty">Loading announcements…</div></div></section>
+  <section class="portal-feed"><h3>Upcoming events</h3><div class="portal-feed-list" id="studentEventList"><div class="portal-feed-empty">Loading events…</div></div></section>
+ </div>
  <div class="portal-grid">
   <div class="portal-card-panel"><h3>Your digital VSS ID</h3><p class="portal-note">Your current membership card. Download or print it whenever needed.</p></div>
   <div class="portal-edit-panel"><h3>Update digital ID</h3><p class="portal-note">Correct your name, branch, semester, contact number, category, or profile photo. Your VSS ID number remains unchanged.</p>
@@ -176,6 +203,9 @@ $('accessRequestForm').addEventListener('submit',async e=>{
   $('updatePhone').value=member.phone||'';
   $('updateCategory').value=member.membership_category||'Student Member';
   $('memberPortalView').classList.remove('hidden');
+  $('studentSummaryId').textContent=member.membership_no||'—';
+  $('studentSummaryCategory').textContent=member.membership_category||'—';
+  loadStudentDashboardContent();
   $('memberPortalView').querySelector('.portal-card-panel').appendChild($('accessIdCard'));
   $('memberPortalView').querySelector('.portal-card-panel').appendChild($('accessResult').querySelector('.actions'));
   $('accessResult').querySelector('.portal-grid').classList.remove('hidden');
@@ -264,6 +294,34 @@ $('updateMemberForm').addEventListener('submit',async e=>{
  }catch(err){msg.textContent=err.message||'Could not update your digital ID.';}
  finally{btn.disabled=false;btn.textContent='Save ID updates';}
 });
+
+async function loadStudentDashboardContent(){
+ const noticeBox=$('studentNoticeList'),eventBox=$('studentEventList');
+ noticeBox.innerHTML='<div class="portal-feed-empty">Loading announcements…</div>';
+ eventBox.innerHTML='<div class="portal-feed-empty">Loading events…</div>';
+ const safe=value=>String(value??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+ const formatDate=value=>value?new Intl.DateTimeFormat('en-IN',{dateStyle:'medium'}).format(new Date(value)):'Date to be announced';
+ try{
+  const {data,error}=await db.from('vss_announcements').select('id,title,body,category,is_pinned,created_at').eq('is_published',true).order('is_pinned',{ascending:false}).order('created_at',{ascending:false}).limit(6);
+  if(error)throw error;
+  const notices=data||[];
+  $('studentSummaryNotices').textContent=String(notices.length);
+  noticeBox.innerHTML=notices.length?notices.map(n=>'<article class="portal-feed-item">'+(n.is_pinned?'<div class="portal-feed-meta">PINNED NOTICE</div>':'')+'<h4>'+safe(n.title)+'</h4><div class="portal-feed-meta">'+safe(n.category||'General')+' · '+safe(formatDate(n.created_at))+'</div><p>'+safe(n.body)+'</p></article>').join(''):'<div class="portal-feed-empty">No announcements at the moment.</div>';
+ }catch(err){
+  $('studentSummaryNotices').textContent='—';
+  noticeBox.innerHTML='<div class="portal-feed-empty">Announcements are not available yet. Please check again later.</div>';
+ }
+ try{
+  const {data,error}=await db.from('vss_events').select('id,title,description,event_date,venue,registration_url').eq('is_published',true).order('event_date',{ascending:true,nullsFirst:false}).limit(12);
+  if(error)throw error;
+  const now=new Date(),upcoming=(data||[]).filter(e=>!e.event_date||new Date(e.event_date)>=now).slice(0,5);
+  eventBox.innerHTML=upcoming.length?upcoming.map(e=>{
+   let link='';try{const u=new URL(e.registration_url);if(['https:','http:'].includes(u.protocol))link='<a class="portal-feed-link" href="'+safe(u.href)+'" target="_blank" rel="noopener noreferrer">Registration details ↗</a>';}catch(_){}
+   return '<article class="portal-feed-item"><h4>'+safe(e.title)+'</h4><div class="portal-feed-meta">'+safe(formatDate(e.event_date))+'</div><p>'+(e.venue?safe(e.venue)+' · ':'')+safe(e.description||'More details will be shared soon.')+'</p>'+link+'</article>';
+  }).join(''):'<div class="portal-feed-empty">No upcoming events have been published.</div>';
+ }catch(err){eventBox.innerHTML='<div class="portal-feed-empty">Events are not available yet. Please check again later.</div>';}
+}
+
 async function downloadPortalCard(format){
  const img=$('accessCardPhoto'),originalSrc=img.src;let objectUrl='';
  try{
