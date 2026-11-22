@@ -39,7 +39,6 @@ async function loadMember(){
  $("qrCode").innerHTML="";const verifyUrl=location.origin+location.pathname+"?verify="+encodeURIComponent(data.membership_no);
  new QRCode($("qrCode"),{text:verifyUrl,width:72,height:72,colorDark:"#151515",colorLight:"#ffffff",correctLevel:QRCode.CorrectLevel.M});
 }
-async function signedPhoto(path){const {data}=await db.storage.from("vss-member-photos").createSignedUrl(path,3600);return data?.signedUrl||"";}
 $("signinForm").addEventListener("submit",async e=>{e.preventDefault();if(!db)return;msg("authMsg","Signing in…");const {error}=await db.auth.signInWithPassword({email:$("loginEmail").value,password:$("loginPassword").value});msg("authMsg",error?.message||"Signed in.");});
 $("signupForm").addEventListener("submit",async e=>{
  e.preventDefault();if(!db){msg("authMsg","Portal setup is not complete yet.");return;}
@@ -58,7 +57,7 @@ async function boot(){
  if(!db)return;
  const {data}=await db.auth.getSession();currentUser=data.session?.user||null;
  if(currentUser)await loadMember();
- db.auth.onAuthStateChange((_event,session)=>{currentUser=session?.user||null;if(currentUser)setTimeout(loadMember,0);else{$("memberPanel").classList.add("hidden");$("adminPanel").classList.add("hidden");$("authPanel").classList.remove("hidden");}});
+ db.auth.onAuthStateChange((_event,session)=>{currentUser=session?.user||null;if(currentUser)setTimeout(loadMember,0);else{$("memberPanel").classList.add("hidden");$("authPanel").classList.remove("hidden");}});
  const code=new URLSearchParams(location.search).get("verify");if(code){$("verifyNo").value=code;$("verifyForm").requestSubmit();}
 }
 boot();
