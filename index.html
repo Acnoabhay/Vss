@@ -199,6 +199,72 @@ img{
 .nav-actions.member-active .member-header-profile{display:flex}
 .nav-actions.member-active .member-header-link{display:inline-flex}
 @media(max-width:900px){.member-header-profile>button span{display:none}.member-profile-menu{right:0}}
+
+/* VSS header + floating bottom navigation redesign */
+header{
+ position:sticky;top:0;z-index:100;
+ background:color-mix(in srgb,var(--paper) 66%,transparent);
+ -webkit-backdrop-filter:blur(24px) saturate(165%);
+ backdrop-filter:blur(24px) saturate(165%);
+ border-bottom:1px solid color-mix(in srgb,var(--line) 72%,transparent);
+ box-shadow:0 8px 30px rgba(18,20,28,.055);
+ transform:translateY(0);
+ transition:transform .34s cubic-bezier(.2,.75,.25,1),background .3s ease,box-shadow .3s ease;
+ will-change:transform;
+}
+header.header-hidden{transform:translateY(-110%);box-shadow:none}
+.nav{min-height:82px;height:auto;padding:10px 0;gap:clamp(12px,2vw,26px)}
+.brand{display:flex;align-items:center;gap:13px;min-width:0;flex:none}
+.brand img{width:58px;height:58px;object-fit:contain;display:block;padding:5px;border-radius:15px;background:#fff;box-shadow:0 5px 16px rgba(20,20,30,.09)}
+.brand>span{display:flex;flex-direction:column;justify-content:center;gap:3px;line-height:1.15;min-width:0}
+.brand>span small{font-size:9px;line-height:1.2;letter-spacing:.14em;font-weight:800;color:var(--red);text-transform:uppercase}
+.brand>span strong{font-size:clamp(12px,1.25vw,15px);line-height:1.25;letter-spacing:-.025em;color:var(--ink);white-space:normal;max-width:190px}
+.links{gap:clamp(10px,1.45vw,20px);white-space:nowrap}
+.nav-actions{gap:8px;flex:none}
+.nav-actions .btn{padding:10px 15px}
+.mobile-panel{background:color-mix(in srgb,var(--paper) 86%,transparent);-webkit-backdrop-filter:blur(22px);backdrop-filter:blur(22px)}
+.vss-bottom-bar{
+ position:fixed;left:50%;bottom:max(12px,env(safe-area-inset-bottom));transform:translateX(-50%);
+ z-index:90;width:min(760px,calc(100% - 28px));display:grid;
+ grid-template-columns:repeat(6,minmax(0,1fr));gap:4px;padding:8px;
+ border:1px solid color-mix(in srgb,var(--line) 72%,transparent);border-radius:22px;
+ background:color-mix(in srgb,var(--paper) 72%,transparent);
+ -webkit-backdrop-filter:blur(25px) saturate(170%);backdrop-filter:blur(25px) saturate(170%);
+ box-shadow:0 14px 42px rgba(15,18,28,.16);
+}
+.vss-bottom-bar a,.vss-bottom-bar button{
+ min-width:0;min-height:52px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
+ border:0;border-radius:15px;background:transparent;color:var(--muted);font:inherit;text-decoration:none;cursor:pointer;
+ transition:background .2s ease,color .2s ease,transform .2s ease;
+}
+.vss-bottom-bar a span:first-child,.vss-bottom-bar button span:first-child{font-size:18px;line-height:1.1}
+.vss-bottom-bar a small,.vss-bottom-bar button small{font-size:9px;line-height:1.1;font-weight:750;white-space:nowrap}
+.vss-bottom-bar a:hover,.vss-bottom-bar button:hover,.vss-bottom-bar a.active{background:color-mix(in srgb,var(--red) 10%,var(--card));color:var(--red)}
+.vss-bottom-bar a:active,.vss-bottom-bar button:active{transform:scale(.94)}
+body{padding-bottom:100px}
+@media(max-width:900px){
+ .nav{min-height:72px}.brand img{width:52px;height:52px}
+ .links{display:none}.menu-btn{display:block}
+ .nav-actions .btn{display:none}
+ .vss-bottom-bar{width:calc(100% - 20px);bottom:max(8px,env(safe-area-inset-bottom));border-radius:19px}
+ body{padding-bottom:92px}
+}
+@media(max-width:600px){
+ .wrap{width:calc(100% - 28px)}
+ .nav{height:auto;min-height:66px;padding:7px 0;gap:8px}
+ .brand{gap:9px}
+ .brand img{width:45px;height:45px;border-radius:12px;padding:4px}
+ .brand>span small{font-size:8px;letter-spacing:.12em}
+ .brand>span strong{font-size:12px;max-width:155px}
+ .nav-actions{gap:6px}
+ .iconbtn,.menu-btn{width:36px;height:36px}
+ .vss-bottom-bar{grid-template-columns:repeat(6,minmax(0,1fr));gap:2px;padding:6px}
+ .vss-bottom-bar a,.vss-bottom-bar button{min-height:48px;border-radius:13px}
+ .vss-bottom-bar a span:first-child,.vss-bottom-bar button span:first-child{font-size:17px}
+ .vss-bottom-bar a small,.vss-bottom-bar button small{font-size:8px}
+}
+@media(prefers-reduced-motion:reduce){header{transition:none}.vss-bottom-bar a,.vss-bottom-bar button{transition:none}}
+
 </style>
 </head>
 <body>
@@ -213,6 +279,15 @@ img{
   </div>
   <nav class="mobile-panel" id="mobilePanel"><a href="#about">About VSS</a><a href="#work">What We Do</a><a href="#initiatives">Initiatives</a><a href="#team">Our Team</a><a href="#events">Events & Gallery</a><a href="login.html">Login</a><a href="membership.html">New member registration</a><a href="#contact">Contact</a></nav>
 </header>
+<nav class="vss-bottom-bar" aria-label="Quick navigation">
+ <a href="#home" data-bottom-link="home" class="active"><span>⌂</span><small>Home</small></a>
+ <a href="#about" data-bottom-link="about"><span>◎</span><small>About</small></a>
+ <a href="#events" data-bottom-link="events"><span>▣</span><small>Events</small></a>
+ <a href="#team" data-bottom-link="team"><span>♙</span><small>Team</small></a>
+ <a href="membership.html#memberAccessPanel" data-bottom-link="member"><span>✦</span><small>My VSS</small></a>
+ <button type="button" id="bottomThemeToggle" aria-label="Toggle dark mode"><span>☾</span><small>Theme</small></button>
+</nav>
+
 
 <main>
 <section class="hero" id="home"><div class="wrap hero-grid">
@@ -434,5 +509,48 @@ document.getElementById('contactForm').addEventListener('submit',e=>{
  document.querySelectorAll('.links a[href="login.html"],.mobile-panel a[href="login.html"]').forEach(a=>{a.href='membership.html#memberAccessPanel';a.textContent='My VSS Dashboard'});
  document.querySelectorAll('.mobile-panel a[href="membership.html"]').forEach(a=>{a.href='membership.html#memberAccessPanel';a.textContent='My VSS Dashboard'});
 })();
-</script></body>
+</script>
+<script>
+/* Direction-aware header: hide while moving down the page, reveal while moving back up. */
+(function(){
+ const header=document.querySelector('header');if(!header)return;
+ let previous=window.scrollY||0, ticking=false;
+ function update(){
+  const current=window.scrollY||0, delta=current-previous;
+  if(current<70){header.classList.remove('header-hidden');}
+  else if(delta>5){header.classList.add('header-hidden');}
+  else if(delta< -5){header.classList.remove('header-hidden');}
+  previous=current;ticking=false;
+ }
+ window.addEventListener('scroll',()=>{if(!ticking){window.requestAnimationFrame(update);ticking=true;}},{passive:true});
+})();
+(function(){
+ const bottom=document.getElementById('bottomThemeToggle'),top=document.getElementById('themeToggle');
+ if(bottom&&top){
+  const sync=()=>{bottom.querySelector('span').textContent=document.documentElement.dataset.theme==='dark'?'☀':'☾';};
+  sync();bottom.addEventListener('click',()=>{top.click();sync();});
+  top.addEventListener('click',sync);
+ }
+ const links=[...document.querySelectorAll('.vss-bottom-bar a[data-bottom-link]')];
+ const targets=links.map(a=>document.querySelector(a.getAttribute('href'))).filter(Boolean);
+ if('IntersectionObserver'in window&&targets.length){
+  const observer=new IntersectionObserver(entries=>entries.forEach(entry=>{
+   if(entry.isIntersecting){links.forEach(a=>a.classList.toggle('active',a.getAttribute('href')==='#'+entry.target.id));}
+  }),{rootMargin:'-25% 0px -60% 0px',threshold:0});
+  targets.forEach(el=>observer.observe(el));
+ }
+ try{
+  const member=JSON.parse(sessionStorage.getItem('vss-member-session')||'null');
+  if(member&&member.membership_no){
+   const memberLink=document.querySelector('.vss-bottom-bar [data-bottom-link="member"]');
+   if(memberLink){memberLink.querySelector('small').textContent='My VSS';memberLink.href='membership.html#memberAccessPanel';}
+  }else{
+   const memberLink=document.querySelector('.vss-bottom-bar [data-bottom-link="member"]');
+   if(memberLink){memberLink.href='membership.html';memberLink.querySelector('small').textContent='Join VSS';}
+  }
+ }catch(e){}
+})();
+</script>
+
+</body>
 </html>
