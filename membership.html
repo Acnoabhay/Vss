@@ -164,6 +164,8 @@ $('accessRequestForm').addEventListener('submit',async e=>{
   $('accessResult').classList.remove('hidden');
   $('memberAccessPanel').classList.add('portal-open');
   $('memberAccessPanel').querySelector('h2').textContent='VSS Member Portal';
+  document.querySelector('.intro h1').textContent='VSS Member Portal';
+  document.querySelector('.intro p').textContent='View your VSS digital ID, manage your membership details, and keep your profile up to date.';
   $('accessRequestForm').classList.add('hidden');
   msg.textContent='';
   document.querySelector('.layout').classList.add('portal-active');
@@ -222,6 +224,8 @@ $('portalSignOutBtn').addEventListener('click',()=>{
  $('accessResult').classList.add('hidden');
  $('memberAccessPanel').classList.remove('portal-open');
  $('memberAccessPanel').querySelector('h2').textContent='Already have a VSS ID?';
+ document.querySelector('.intro h1').textContent='Become a VSS Member';
+ document.querySelector('.intro p').textContent='Enter your details carefully. Join the VSS community and be part of a student-led network built on support, service and shared growth.';
  document.querySelector('.layout').classList.remove('portal-active');
  $('accessMsg').textContent='You have signed out of the member portal.';
  window.vssCurrentMember=null;
