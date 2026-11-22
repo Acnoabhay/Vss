@@ -78,6 +78,16 @@ img{content-visibility:auto}
  .reveal{opacity:1!important;filter:none!important;transform:none!important;will-change:auto}
 }
 
+
+/* VSS Family gallery */
+.vss-family-gallery{margin-top:24px}
+.vss-family-gallery .alumni-photo-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.vss-family-gallery .alumni-photo{min-height:250px}
+.vss-family-gallery .alumni-photo img{width:100%;height:100%;min-height:250px;object-fit:cover;display:block}
+.vss-family-gallery .alumni-photo-wide{grid-column:span 1}
+.vss-family-gallery figcaption{padding:13px 16px;font-size:13px;font-weight:650}
+@media(max-width:640px){.vss-family-gallery .alumni-photo-grid{grid-template-columns:1fr;gap:13px}.vss-family-gallery .alumni-photo,.vss-family-gallery .alumni-photo img{min-height:220px}}
+
 </style>
 </head>
 <body>
@@ -167,6 +177,23 @@ img{content-visibility:auto}
  </div>
  <p class="gallery-note">Celebrating the people, connections and memories that make our campus community special.</p>
 </div></div></section>
+
+<section class="soft" id="vss-family">
+ <div class="wrap">
+  <div class="section-head">
+   <div><span class="eyebrow">One community, many memories</span><h2>Our VSS Family</h2></div>
+   <p>People, teamwork and shared moments that make the VSS community feel like family.</p>
+  </div>
+  <div class="alumni-gallery vss-family-gallery" aria-label="VSS Family photo gallery">
+   <div class="alumni-photo-grid">
+    <figure class="alumni-photo alumni-photo-wide reveal"><img src="assets/vss-family-01.jpg" alt="VSS members together on stage at Alumni Meet 2026" loading="lazy"><figcaption>Together at Alumni Meet 2026</figcaption></figure>
+    <figure class="alumni-photo reveal"><img src="assets/vss-family-02.jpg" alt="VSS students celebrating achievements with certificates" loading="lazy"><figcaption>Celebrating student achievements</figcaption></figure>
+    <figure class="alumni-photo reveal"><img src="assets/vss-family-03.jpg" alt="VSS members sharing a moment on the Alumni Meet stage" loading="lazy"><figcaption>Memories made together</figcaption></figure>
+    <figure class="alumni-photo alumni-photo-wide reveal"><img src="assets/vss-family-04.jpg" alt="VSS members standing together during a community activity" loading="lazy"><figcaption>The VSS family</figcaption></figure>
+   </div>
+  </div>
+ </div>
+</section>
 
 <section id="team"><div class="wrap"><div class="section-head"><div><span class="eyebrow">People behind the effort</span><h2>VSS leadership & core team</h2></div><p>Meet the student leaders contributing to VSS direction, administration, organising and academic guidance.</p></div>
 <div class="grid grid-3">
