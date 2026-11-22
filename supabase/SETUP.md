@@ -14,6 +14,6 @@ Never expose a Supabase service-role/secret key in frontend code. The public pag
 
 ## Existing member card retrieval
 
-The membership page now includes an **Already have a VSS ID?** section. Members enter their VSS ID and the email address already registered with that ID, receive a one-time verification code by email, and then retrieve their existing card. It does not create or allocate a second ID.
+The membership page includes an **Already have a VSS ID?** section. Members enter only their existing VSS membership number to retrieve the card. No email address, OTP, or email verification is required. The lookup does not create or allocate a new ID.
 
-After updating the repository, run the complete updated `supabase/schema.sql` in Supabase SQL Editor so the two secure retrieval RPC functions are installed. Supabase email OTP must be enabled and the project's email delivery configured. The authenticated retrieval function returns a card only when the verified email matches the member record.
+After updating the repository, run the complete updated `supabase/schema.sql` in Supabase SQL Editor to install the `vss_get_member_card_by_number` RPC function. **Security note:** this is an intentionally public lookup. Anyone who knows or guesses a membership number can view the card details returned by the function. Do not include private contact information in the returned card data.
