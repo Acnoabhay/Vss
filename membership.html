@@ -38,9 +38,8 @@
 <p class="hint">Names may be repeated. Each mobile number and email address can be registered only once. No email verification or approval is required.</p>
 <button class="primary" id="submitBtn" style="width:100%">Generate my VSS ID</button></form><div id="formMsg" class="msg" role="status" aria-live="polite"></div></section>
 
-<section class="panel" id="memberAccessPanel"><h2>Already have a VSS ID?</h2><p class="hint">Enter your VSS membership number and the email address registered with it. We’ll send a one-time password to that email.</p>
-<form id="accessRequestForm"><div class="field"><label for="accessMembershipNo">VSS Membership ID *</label><input id="accessMembershipNo" required maxlength="8" placeholder="e.g. VSS00001" autocomplete="off"></div><div class="field"><label for="accessEmail">Registered email address *</label><input id="accessEmail" type="email" required maxlength="254" placeholder="Your registered email" autocomplete="email"></div><button class="primary" id="getExistingIdBtn" style="width:100%">Send email OTP</button></form>
-<form id="verifyOtpForm" class="hidden"><div class="field"><label for="accessOtp">6-digit email OTP *</label><input id="accessOtp" inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="[0-9]{6}" required placeholder="Enter OTP"></div><button class="primary" id="verifyOtpBtn" style="width:100%">Verify OTP & Access ID</button></form>
+<section class="panel" id="memberAccessPanel"><h2>Already have a VSS ID?</h2><p class="hint">Enter your VSS membership number and the email address registered with it to retrieve your digital ID card.</p>
+<form id="accessRequestForm"><div class="field"><label for="accessMembershipNo">VSS Membership ID *</label><input id="accessMembershipNo" required maxlength="8" placeholder="e.g. VSS00001" autocomplete="off"></div><div class="field"><label for="accessEmail">Registered email address *</label><input id="accessEmail" type="email" required maxlength="254" placeholder="Your registered email" autocomplete="email"></div><button class="primary" id="getExistingIdBtn" style="width:100%">View my VSS ID</button></form>
 <div class="msg" id="accessMsg" role="status" aria-live="polite"></div>
 <div id="accessResult" class="hidden"><div class="idcard" id="accessIdCard"><div class="cardhead"><div><strong>VSS COMMUNITY</strong><small>VIDYARTHI SEVA SANGATHAN</small></div><span class="stamp">MEMBER</span></div><div class="person"><img class="avatar" id="accessCardPhoto" alt="Member photo"><div><h3 id="accessCardName"></h3><p id="accessCardCategory"></p><p id="accessCardBranch"></p><p id="accessCardSemester"></p><div class="number" id="accessCardNo"></div></div></div><div class="cardfoot"><div>CGIT RAIPUR<br>Digital membership card</div><div id="accessQrCode" class="qr"></div></div></div>
 <div class="actions"><button class="primary" id="accessPngBtn" type="button">Download PNG</button><button class="secondary" id="accessJpegBtn" type="button">Download JPEG</button><button class="secondary" id="accessPrintBtn" type="button">Print / Save PDF</button></div></div></section>
@@ -81,53 +80,25 @@ function prepareMemberPdf(name,category,branch,semester,membershipNo,photoUrl){
 window.addEventListener('afterprint',()=>document.body.classList.remove('printing'));
 
 
-// Existing-member retrieval requires a one-time password sent to the registered email.
-const OTP_FUNCTION_URL=SUPABASE_URL+"/functions/v1/vss-member-otp";
-async function callMemberOtp(payload){
- const {data,error}=await db.functions.invoke("vss-member-otp",{body:payload});
- if(error){
-  let detail="";
-  try{
-   const context=error.context;
-   if(context&&typeof context.clone==="function"){
-    const body=await context.clone().json().catch(()=>({}));
-    detail=body.error||body.message||"";
-   }
-  }catch(_){}
-  if(error.name==="FunctionsFetchError"||/fetch/i.test(error.message||"")){
-   throw new Error("Cannot reach the VSS verification service. Please check that the vss-member-otp function is deployed and its Verify JWT setting is OFF, then try again.");
-  }
-  throw new Error(detail||error.message||"Unable to process the request. Please try again.");
- }
- return data||{};
-}
+// Existing-member retrieval: membership number + registered email match; no email OTP.
 $('accessRequestForm').addEventListener('submit',async e=>{
  e.preventDefault();const btn=$('getExistingIdBtn'),msg=$('accessMsg');
  const membershipNo=$('accessMembershipNo').value.trim().toUpperCase(),email=$('accessEmail').value.trim().toLowerCase();
- btn.disabled=true;btn.textContent='Sending OTP…';msg.textContent='Checking your details and sending a verification code…';
- $('accessResult').classList.add('hidden');$('verifyOtpForm').classList.add('hidden');
+ btn.disabled=true;btn.textContent='Finding your ID…';msg.textContent='Checking your membership details…';
+ $('accessResult').classList.add('hidden');
  try{
-  await callMemberOtp({action:'request',membership_no:membershipNo,email});
-  $('verifyOtpForm').classList.remove('hidden');msg.textContent='OTP sent to the registered email address. Check your inbox and spam folder.';
-  $('accessOtp').focus();
- }catch(err){msg.textContent=err.message||'Could not send OTP. Please try again.';}
- finally{btn.disabled=false;btn.textContent='Resend OTP';}
-});
-$('verifyOtpForm').addEventListener('submit',async e=>{
- e.preventDefault();const btn=$('verifyOtpBtn'),msg=$('accessMsg');
- btn.disabled=true;btn.textContent='Verifying…';msg.textContent='Verifying your email OTP…';
- try{
-  const result=await callMemberOtp({action:'verify',membership_no:$('accessMembershipNo').value.trim().toUpperCase(),email:$('accessEmail').value.trim().toLowerCase(),otp:$('accessOtp').value.trim()});
-  const member=result.member;
-  if(!member||!member.membership_no)throw new Error('Verification succeeded but no member card was returned.');
-  $('accessCardPhoto').crossOrigin='anonymous';$('accessCardPhoto').src=member.photo_url;
+  const {data,error}=await db.rpc('vss_get_member_card_by_number',{p_membership_no:membershipNo,p_email:email});
+  if(error)throw error;
+  const member=Array.isArray(data)?data[0]:data;
+  if(!member||!member.membership_no)throw new Error('No matching VSS ID was found. Check your membership number and registered email.');
+  $('accessCardPhoto').crossOrigin='anonymous';$('accessCardPhoto').src=member.photo_url||'';
   $('accessCardName').textContent=member.full_name;$('accessCardCategory').textContent=member.membership_category;
   $('accessCardBranch').textContent=member.branch;$('accessCardSemester').textContent=member.semester;$('accessCardNo').textContent=member.membership_no;
   $('accessQrCode').innerHTML='';new QRCode($('accessQrCode'),{text:member.membership_no,width:70,height:70,colorDark:'#17191d',colorLight:'#ffffff'});
-  $('accessResult').classList.remove('hidden');msg.textContent='Email verified. Your existing VSS ID is ready.';
+  $('accessResult').classList.remove('hidden');msg.textContent='Your VSS ID card is ready.';
   $('accessResult').scrollIntoView({behavior:'smooth',block:'nearest'});
- }catch(err){msg.textContent=err.message||'OTP verification failed. Please try again.';}
- finally{btn.disabled=false;btn.textContent='Verify OTP & Access ID';}
+ }catch(err){msg.textContent=err.message||'Could not retrieve your VSS ID. Please try again.';}
+ finally{btn.disabled=false;btn.textContent='View my VSS ID';}
 });
 async function downloadAccessCard(format){
  const img=$('accessCardPhoto'),originalSrc=img.src;let objectUrl='';
