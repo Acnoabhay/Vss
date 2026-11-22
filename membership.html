@@ -91,8 +91,86 @@ button:active:not(:disabled){transform:scale(.98)}
 .portal-feed-link{display:inline-block;margin-top:6px;color:var(--red);font-size:12px;font-weight:800;text-decoration:none}
 @media(max-width:760px){.student-summary{grid-template-columns:1fr 1fr}.portal-feed-grid{grid-template-columns:1fr}}
 
+
+/* VSS unified member experience */
+:root{--red:#a71928;--ink:#142338;--muted:#68788c;--paper:#f3f6fa;--line:#e5eaf0}
+body{background:radial-gradient(ellipse at 90% 4%,#f0e6e8 0,transparent 28%),#f3f6fa;color:var(--ink)}
+.top{background:linear-gradient(110deg,#101d2d,#203a55);padding-block:19px;box-shadow:0 8px 30px #10203320}
+.brand{letter-spacing:.1em}.brand small{letter-spacing:.18em}
+.wrap{max-width:1180px;margin:35px auto}
+.panel{border-radius:22px;border-color:#e6ebf1;box-shadow:0 16px 45px #17253608}
+.layout.portal-active{max-width:100%;margin:0;gap:0}
+.layout.portal-active .form-panel{display:none!important}
+#memberAccessPanel.portal-open{max-width:100%;padding:0;background:transparent;border:0;box-shadow:none;overflow:visible}
+#memberAccessPanel.portal-open>h2,#memberAccessPanel.portal-open>.hint:first-of-type{display:none}
+#memberAccessPanel.portal-open #accessMsg{display:none}
+#memberAccessPanel.portal-open #accessResult{display:block}
+#memberPortalView{gap:22px;margin-top:0}
+.portal-head{background:linear-gradient(120deg,#112238,#1c3d5c);color:white;padding:28px 30px;border-radius:24px;box-shadow:0 18px 40px #11223822;position:relative;overflow:hidden}
+.portal-head:after{content:"VSS";position:absolute;right:24px;bottom:-45px;font-size:145px;font-weight:950;letter-spacing:-.1em;color:#ffffff0b;pointer-events:none}
+.portal-head .eyebrow{color:#e3c27e}
+.portal-head h2{font-size:clamp(25px,4vw,36px);letter-spacing:-.05em}
+.portal-head p{color:#cbd6e2}
+.portal-head button{position:relative;z-index:1}
+.member-nav{display:flex;gap:8px;flex-wrap:wrap;padding:12px 14px;background:#fff;border:1px solid var(--line);border-radius:15px;position:sticky;top:8px;z-index:20;box-shadow:0 8px 24px #1423380a}
+.member-nav a{font-size:12px;font-weight:750;text-decoration:none;color:#42536a;padding:9px 12px;border-radius:9px}
+.member-nav a:hover{background:#f1f4f8;color:var(--red)}
+.member-hero{display:flex;justify-content:space-between;align-items:center;gap:24px;padding:28px 30px;border-radius:22px;background:linear-gradient(110deg,#fff,#f7f9fc);border:1px solid var(--line)}
+.member-hero h2{font-size:clamp(23px,3vw,31px);letter-spacing:-.045em;margin:7px 0}
+.member-hero p{max-width:650px;margin:0}
+.hero-mark{width:108px;height:108px;border-radius:50%;display:grid;place-content:center;text-align:center;background:linear-gradient(145deg,#9d1725,#d34a52);color:#fff;font-size:26px;font-weight:950;box-shadow:0 12px 28px #a7192830;flex:none}
+.hero-mark span{font-size:8px;letter-spacing:.2em}
+.student-summary{grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.student-stat{padding:18px 20px;background:#fff;border:1px solid var(--line);border-radius:16px}
+.student-stat strong{font-size:18px}
+.portal-feed-grid{gap:16px}
+.portal-feed,.member-guide-panel,.info-card{border:1px solid var(--line);border-radius:18px;background:#fff;box-shadow:0 12px 32px #14233807}
+.portal-feed{padding:20px}
+.portal-feed h3{font-size:17px}
+.portal-feed-item{background:#fbfcfe;border-color:#edf1f5;border-radius:13px;padding:14px}
+.portal-grid{grid-template-columns:minmax(0,1fr) minmax(300px,.8fr);gap:18px}
+.portal-card-panel,.portal-edit-panel{border:1px solid var(--line);border-radius:18px;padding:21px;box-shadow:0 12px 32px #14233807}
+.portal-card-panel .idcard{max-width:100%}
+.avatar{object-fit:contain!important;background:#fff}
+.member-info-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px}
+.info-card{padding:20px}
+.info-icon{width:38px;height:38px;display:grid;place-items:center;border-radius:12px;background:#f9ecee;color:var(--red);font-size:20px}
+.info-card h3{margin:12px 0 7px;font-size:16px}
+.info-card p{font-size:12px;line-height:1.7;margin:0 0 10px}
+.info-card small{font-size:10px;font-weight:800;color:var(--red)}
+.member-guide-panel{padding:22px;margin-top:0}
+.section-title{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:16px}
+.section-title h3{margin:5px 0 0;font-size:21px;letter-spacing:-.035em}
+.guide-tag{font-size:10px;font-weight:800;color:#7a5c20;background:#fbf4e5;padding:7px 10px;border-radius:30px}
+.rights-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.rights-grid>div{padding:18px;border-radius:15px;background:#f8fafc;border:1px solid #edf1f5}
+.rights-grid h4{margin:0 0 10px;font-size:14px}
+.rights-grid ul{margin:0;padding-left:18px}
+.rights-grid li{font-size:12px;color:#536276;line-height:1.7;margin:7px 0}
+.guide-disclaimer{font-size:11px;line-height:1.7;color:#69788a;margin:15px 0 0}
+.resource-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:11px}
+.resource-grid a{display:block;padding:15px;border:1px solid #e8edf3;border-radius:13px;text-decoration:none;background:#fafbfd;transition:.2s}
+.resource-grid a:hover{border-color:#d7b978;transform:translateY(-2px);background:#fff}
+.resource-grid b{display:block;font-size:13px;color:#172536}
+.resource-grid span{display:block;font-size:11px;color:#6b7b8e;line-height:1.5;margin-top:5px}
+.welcome-overlay{position:fixed;inset:0;z-index:10000;display:grid;place-items:center;padding:22px;background:rgba(9,20,34,.76);backdrop-filter:blur(10px);opacity:0;visibility:hidden;transition:opacity .35s,visibility .35s}
+.welcome-overlay.show{opacity:1;visibility:visible}
+.welcome-card{width:min(470px,100%);text-align:center;padding:34px 30px 30px;background:#fff;border:1px solid #ffffff70;border-radius:25px;box-shadow:0 30px 100px #0004;transform:translateY(18px) scale(.97);transition:transform .45s cubic-bezier(.2,.8,.2,1)}
+.welcome-overlay.show .welcome-card{transform:translateY(0) scale(1)}
+.welcome-orbit{width:82px;height:82px;border-radius:50%;display:grid;place-items:center;margin:0 auto 20px;background:linear-gradient(145deg,#9d1725,#d34a52);color:white;font-size:25px;font-weight:950;box-shadow:0 0 0 9px #a7192810,0 0 0 18px #a7192808;animation:welcomePulse 1.8s ease-in-out infinite}
+.welcome-card h2{font-size:26px;letter-spacing:-.045em;margin:9px 0}
+.welcome-card p{font-size:13px}
+.welcome-card button{margin-top:12px;min-width:200px}
+@keyframes welcomePulse{50%{box-shadow:0 0 0 13px #a7192810,0 0 0 25px #a7192808;transform:scale(1.04)}}
+@media(max-width:850px){.member-info-grid{grid-template-columns:1fr 1fr}.resource-grid{grid-template-columns:1fr 1fr}.portal-grid{grid-template-columns:1fr}}
+@media(max-width:620px){.wrap{margin:16px auto;padding:0 12px}.portal-head{padding:22px 18px}.portal-head:after{font-size:90px}.member-nav{position:relative;top:auto;gap:3px}.member-nav a{padding:8px;font-size:11px}.member-hero{padding:21px;align-items:flex-start}.hero-mark{width:72px;height:72px;font-size:20px}.student-summary{grid-template-columns:1fr 1fr}.member-info-grid,.rights-grid,.resource-grid,.portal-feed-grid{grid-template-columns:1fr}.member-guide-panel{padding:17px}.section-title h3{font-size:18px}.welcome-card{padding:28px 20px}}
+
 </style></head><body>
 <header class="top"><div class="brand">VSS COMMUNITY<small>VIDYARTHI SEVA SANGATHAN · CGIT RAIPUR</small></div><a href="index.html" style="color:white;text-decoration:none;font-size:13px">← Main website</a></header>
+
+<div id="portalWelcomeOverlay" class="welcome-overlay" aria-hidden="true">
+ <div class="welcome-card"><div class="welcome-orbit"><span>VSS</span></div><div class="eyebrow">WELCOME TO THE COMMUNITY</div><h2>Good to have you here<span id="welcomeMemberName">, Member</span>.</h2><p>Your VSS member space is ready.</p><button type="button" id="welcomeContinueBtn" class="primary">Explore my dashboard</button></div>
+</div>
 <main class="wrap"><div class="intro"><span class="eyebrow">Instant digital membership</span><h1>Become a VSS Member</h1><p>Enter your details carefully. Join the VSS community and be part of a student-led network built on support, service and shared growth.</p></div>
 <div class="layout"><section class="panel form-panel"><h2>Member details</h2><form id="registerForm">
 <div class="field"><label for="fullName">Full name *</label><input id="fullName" maxlength="100" required autocomplete="name"></div>
@@ -116,10 +194,47 @@ button:active:not(:disabled){transform:scale(.98)}
   <div class="student-stat"><span>Membership category</span><strong id="studentSummaryCategory">—</strong></div>
   <div class="student-stat"><span>Latest notices</span><strong id="studentSummaryNotices">Loading…</strong></div>
  </div>
- <div class="portal-feed-grid">
+ <div id="member-notices-section"></div><div class="portal-feed-grid">
   <section class="portal-feed"><h3>Latest VSS notices</h3><div class="portal-feed-list" id="studentNoticeList"><div class="portal-feed-empty">Loading announcements…</div></div></section>
   <section class="portal-feed"><h3>Upcoming events</h3><div class="portal-feed-list" id="studentEventList"><div class="portal-feed-empty">Loading events…</div></div></section>
  </div>
+
+ <nav class="member-nav" aria-label="Member dashboard navigation">
+  <a href="#member-home">Overview</a><a href="#member-card-section">My ID</a><a href="#member-notices-section">Notices</a><a href="#member-guides">Student guide</a><a href="#member-rights">Rights & duties</a>
+ </nav>
+ <section class="member-hero" id="member-home">
+  <div><span class="eyebrow">YOUR VSS SPACE</span><h2>One community. More opportunities.</h2><p>Stay connected with student initiatives, guidance, campus resources and the VSS community.</p></div>
+  <div class="hero-mark">VSS<span>MEMBER</span></div>
+ </section>
+ <section class="member-info-grid" id="member-guides">
+  <article class="info-card"><span class="info-icon">✦</span><h3>About VSS</h3><p>Vidyarthi Seva Sangathan is an independent, unofficial student-led community focused on student connection, peer guidance, volunteering, campus initiatives and collective growth.</p><small>By the students, for the students.</small></article>
+  <article class="info-card"><span class="info-icon">◎</span><h3>What members can do</h3><p>Join activities, share opportunities, seek peer guidance, contribute ideas, volunteer in programmes and help build a respectful campus network.</p><small>Participation is voluntary and subject to applicable institute rules.</small></article>
+  <article class="info-card"><span class="info-icon">⌂</span><h3>CGIT & CSVTU guide</h3><p>For attendance, examinations, hostel matters, discipline and official permissions, always follow the latest circulars and directions issued by your institute and affiliating university.</p><small>VSS guidance does not replace official notices.</small></article>
+ </section>
+ <section class="member-guide-panel" id="member-rights">
+  <div class="section-title"><div><span class="eyebrow">STUDENT AWARENESS</span><h3>Know your rights. Respect your responsibilities.</h3></div><span class="guide-tag">Quick reference</span></div>
+  <div class="rights-grid">
+   <div><h4>Student protections & avenues</h4><ul><li>Be treated with dignity and without unlawful discrimination or harassment.</li><li>Access applicable institutional grievance-redressal channels and receive fair consideration under the relevant rules.</li><li>Study in an environment free from ragging, intimidation and violence.</li><li>Consult official academic regulations, examination rules and published institutional policies.</li></ul></div>
+   <div><h4>Shared responsibilities</h4><ul><li>Respect fellow students, faculty, staff, campus property and differing viewpoints.</li><li>Follow current attendance, examination, hostel, safety and discipline rules issued by competent authorities.</li><li>Never participate in ragging, bullying, harassment, discrimination or violence.</li><li>Use VSS platforms responsibly; protect personal information and do not circulate unverified claims.</li></ul></div>
+  </div>
+  <p class="guide-disclaimer">This is general awareness information, not legal advice or a complete statement of rights. Constitutional Fundamental Rights apply according to the Constitution and law; Article 51A lists citizens’ Fundamental Duties. Institute-specific rules and current CSVTU ordinances take precedence for campus procedures.</p>
+ </section>
+ <section class="member-guide-panel">
+  <div class="section-title"><div><span class="eyebrow">CAMPUS ESSENTIALS</span><h3>Useful official resources</h3></div></div>
+  <div class="resource-grid">
+   <a href="https://csvtu.ac.in/ew/the-university/ordinances/" target="_blank" rel="noopener"><b>CSVTU ordinances</b><span>Admission, discipline, examinations and university rules ↗</span></a>
+   <a href="https://www.csvtu.ac.in/anti-ragging/" target="_blank" rel="noopener"><b>Anti-ragging information</b><span>University guidance and reporting contacts ↗</span></a>
+   <a href="https://csvtu.ac.in/ew/grievance-cell/" target="_blank" rel="noopener"><b>CSVTU grievance cell</b><span>Student query and institute query contacts ↗</span></a>
+   <a href="https://www.ugc.gov.in/regulations/UGC_Regulations_Student_Centric" target="_blank" rel="noopener"><b>UGC student regulations</b><span>Student grievance and related regulations ↗</span></a>
+   <a href="https://indiacode.gov.in/" target="_blank" rel="noopener"><b>India Code</b><span>Constitution and central laws ↗</span></a>
+   <a href="https://www.antiragging.in/" target="_blank" rel="noopener"><b>National anti-ragging portal</b><span>24×7 helpline: 1800-180-5522 ↗</span></a>
+  </div>
+ </section>
+ <section class="member-guide-panel" id="member-community-note">
+  <div class="section-title"><div><span class="eyebrow">IMPORTANT</span><h3>About your VSS membership</h3></div></div>
+  <p class="guide-disclaimer">VSS is an independent and unofficial community initiative. It is not an official department, student union, authority or representative body of CGIT Raipur, CSVTU or any government institution. VSS membership does not confer institutional privileges, exemptions or authority. Members remain responsible for complying with applicable laws and institute rules. For official decisions, contact the institute or university directly.</p>
+ </section>
+
  <div class="portal-grid">
   <div class="portal-card-panel"><h3>Your digital VSS ID</h3><p class="portal-note">Your current membership card. Download or print it whenever needed.</p></div>
   <div class="portal-edit-panel"><h3>Update digital ID</h3><p class="portal-note">Correct your name, branch, semester, contact number, category, or profile photo. Your VSS ID number remains unchanged.</p>
@@ -203,6 +318,7 @@ $('accessRequestForm').addEventListener('submit',async e=>{
   $('updatePhone').value=member.phone||'';
   $('updateCategory').value=member.membership_category||'Student Member';
   $('memberPortalView').classList.remove('hidden');
+  showPortalWelcome(member.full_name||'Member');
   $('studentSummaryId').textContent=member.membership_no||'—';
   $('studentSummaryCategory').textContent=member.membership_category||'—';
   loadStudentDashboardContent();
@@ -294,6 +410,17 @@ $('updateMemberForm').addEventListener('submit',async e=>{
  }catch(err){msg.textContent=err.message||'Could not update your digital ID.';}
  finally{btn.disabled=false;btn.textContent='Save ID updates';}
 });
+
+
+function showPortalWelcome(name){
+ const overlay=$('portalWelcomeOverlay');if(!overlay)return;
+ $('welcomeMemberName').textContent=name?', '+name:'';
+ overlay.classList.add('show');overlay.setAttribute('aria-hidden','false');
+ const close=()=>{overlay.classList.remove('show');overlay.setAttribute('aria-hidden','true');};
+ $('welcomeContinueBtn').onclick=close;
+ overlay.onclick=e=>{if(e.target===overlay)close();};
+ setTimeout(close,6500);
+}
 
 async function loadStudentDashboardContent(){
  const noticeBox=$('studentNoticeList'),eventBox=$('studentEventList');
