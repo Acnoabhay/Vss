@@ -112,3 +112,21 @@ as $$
 $$;
 revoke all on function public.vss_get_my_member_card(text) from public;
 grant execute on function public.vss_get_my_member_card(text) to authenticated;
+
+
+-- Public lookup by membership number only, as requested by VSS.
+-- WARNING: anyone who knows/guesses an ID number can view the card details returned here.
+create or replace function public.vss_get_member_card_by_number(p_membership_no text)
+returns table(membership_no text,full_name text,branch text,semester text,membership_category text,photo_url text)
+language sql
+stable
+security definer
+set search_path=public
+as $$
+ select m.membership_no,m.full_name,m.branch,m.semester,m.membership_category,m.photo_url
+ from public.vss_id_cards m
+ where upper(m.membership_no)=upper(trim(coalesce(p_membership_no,'')))
+ limit 1;
+$$;
+revoke all on function public.vss_get_member_card_by_number(text) from public;
+grant execute on function public.vss_get_member_card_by_number(text) to anon,authenticated;
