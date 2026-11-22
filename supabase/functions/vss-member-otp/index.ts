@@ -86,8 +86,8 @@ Deno.serve(async (req) => {
         return json({ error: "Incorrect OTP. Please try again." }, 400);
       }
       await db("vss_member_email_otps?membership_no=eq." + encodeURIComponent(membershipNo), { method: "DELETE" });
-      const members = await db("vss_id_cards?select=membership_no,full_name,branch,semester,membership_category,photo_url&membership_no=eq." + encodeURIComponent(membershipNo) + "&limit=1");
-      if (!members?.length || String(members[0].email || "").toLowerCase() === "__never__") return json({ error: "Member record not found." }, 404);
+      const members = await db("vss_id_cards?select=membership_no,full_name,branch,semester,membership_category,photo_url&email=eq." + encodeURIComponent(email) + "&membership_no=eq." + encodeURIComponent(membershipNo) + "&limit=1");
+      if (!members?.length) return json({ error: "Member record not found." }, 404);
       return json({ success: true, member: members[0] });
     }
     return json({ error: "Unsupported action." }, 400);
