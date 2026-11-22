@@ -1,3 +1,8 @@
+# Public VSS OTP endpoint validates membership ID + registered email itself.
+# Disable gateway JWT verification so browser CORS preflight can reach the function.
+[functions.vss-member-otp]
+verify_jwt = false
+
 [functions.login-by-member-id]
 verify_jwt = false
 
