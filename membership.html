@@ -14,6 +14,17 @@
 <div class="field"><label for="category">Membership category *</label><select id="category" required><option value="">Select category</option><option>Student Member</option><option>Alumni Member</option><option>Faculty Member</option><option>Volunteer</option><option>Organizing Committee</option></select></div>
 <p class="hint">Names may be repeated. Each mobile number and email address can be registered only once. No email verification or approval is required.</p>
 <button class="primary" id="submitBtn" style="width:100%">Generate my VSS ID</button></form><div id="formMsg" class="msg" role="status" aria-live="polite"></div></section>
+
+<section class="panel" id="memberAccessPanel"><h2>Already have a VSS ID?</h2><p class="hint">Retrieve your existing digital card. Your registered email must be verified; this will not create another ID.</p>
+<form id="accessRequestForm">
+<div class="field"><label for="accessMembershipNo">VSS Membership ID *</label><input id="accessMembershipNo" required maxlength="8" placeholder="e.g. VSS00001" autocomplete="off"></div>
+<div class="field"><label for="accessEmail">Registered email address *</label><input id="accessEmail" type="email" required maxlength="254" autocomplete="email"></div>
+<button class="primary" id="sendOtpBtn" style="width:100%">Send verification code</button></form>
+<form id="accessVerifyForm" class="hidden"><div class="field"><label for="accessOtp">6-digit email verification code *</label><input id="accessOtp" inputmode="numeric" autocomplete="one-time-code" minlength="6" maxlength="6" required placeholder="Enter code from your email"></div><button class="primary" id="verifyOtpBtn" style="width:100%">Verify & access my ID</button></form>
+<div class="msg" id="accessMsg" role="status" aria-live="polite"></div>
+<div id="accessResult" class="hidden"><div class="idcard" id="accessIdCard"><div class="cardhead"><div><strong>VSS COMMUNITY</strong><small>VIDYARTHI SEVA SANGATHAN</small></div><span class="stamp">MEMBER</span></div><div class="person"><img class="avatar" id="accessCardPhoto" alt="Member photo"><div><h3 id="accessCardName"></h3><p id="accessCardCategory"></p><p id="accessCardBranch"></p><p id="accessCardSemester"></p><div class="number" id="accessCardNo"></div></div></div><div class="cardfoot"><div>CGIT RAIPUR<br>Digital membership card</div><div id="accessQrCode" class="qr"></div></div></div>
+<div class="actions"><button class="primary" id="accessPngBtn" type="button">Download PNG</button><button class="secondary" id="accessJpegBtn" type="button">Download JPEG</button><button class="secondary" id="accessPrintBtn" type="button">Print / Save PDF</button><button class="secondary" id="accessSignOutBtn" type="button">Sign out</button></div></div>
+</section>
 <section class="panel hidden" id="resultPanel"><h2>Your digital VSS ID</h2><p class="hint">Registration successful. Save your ID card now.</p><div class="idcard" id="idCard"><div class="cardhead"><div><strong>VSS COMMUNITY</strong><small>VIDYARTHI SEVA SANGATHAN</small></div><span class="stamp">MEMBER</span></div><div class="person"><img class="avatar" id="cardPhoto" alt="Member photo"><div><h3 id="cardName"></h3><p id="cardCategory"></p><p id="cardBranch"></p><p id="cardSemester"></p><div class="number" id="cardNo"></div></div></div><div class="cardfoot"><div>CGIT RAIPUR<br>Digital membership card</div><div id="qrCode" class="qr"></div></div></div><div class="actions"><button class="primary" id="downloadPngBtn">Download PNG</button><button class="secondary" id="downloadJpegBtn">Download JPEG</button><button class="secondary" id="printBtn">Print / Save PDF</button></div><div class="msg" id="successMsg"></div></section></div></main><div class="footer">Vidyarthi Seva Sangathan · By the students, for the students · CGIT Raipur</div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script><script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 <script>
@@ -21,6 +32,60 @@ const SUPABASE_URL="https://aukiryqoqpotjuuqwsec.supabase.co";
 const SUPABASE_ANON_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF1a2lyeXFvcXBvdGp1dXF3c2VjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTUzNTk5MTcsImV4cCI6MjExMDkzNTkxN30.fqfDg2bU70gT3RpRp0cOYyZhusUwLuathrFI42p3v_w";
 const db=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
 const $=id=>document.getElementById(id);
+
+// Existing-member access: verify the ID/email pair, send a Supabase email OTP,
+// then retrieve only the card belonging to the authenticated email.
+let accessEmail='';
+$('accessRequestForm').addEventListener('submit',async e=>{
+ e.preventDefault();const btn=$('sendOtpBtn'),msg=$('accessMsg');
+ const membershipNo=$('accessMembershipNo').value.trim().toUpperCase();
+ accessEmail=$('accessEmail').value.trim().toLowerCase();
+ btn.disabled=true;btn.textContent='Checking details…';msg.textContent='Checking your membership details…';
+ try{
+  const {data:matched,error:checkError}=await db.rpc('vss_check_member_access',{p_membership_no:membershipNo,p_email:accessEmail});
+  if(checkError)throw checkError;
+  if(matched!==true)throw new Error('We could not match that ID with the registered email. Check both details and try again.');
+  const {error}=await db.auth.signInWithOtp({email:accessEmail,options:{shouldCreateUser:true}});
+  if(error)throw error;
+  $('accessVerifyForm').classList.remove('hidden');msg.textContent='A verification code has been sent to your registered email. Enter it below.';
+ }catch(err){msg.textContent=err.message||'Could not send verification code. Please try again.';}
+ finally{btn.disabled=false;btn.textContent='Send verification code';}
+});
+$('accessVerifyForm').addEventListener('submit',async e=>{
+ e.preventDefault();const btn=$('verifyOtpBtn'),msg=$('accessMsg');
+ btn.disabled=true;btn.textContent='Verifying…';msg.textContent='Verifying your email…';
+ try{
+  const token=$('accessOtp').value.trim();
+  const {error:verifyError}=await db.auth.verifyOtp({email:accessEmail,token,type:'email'});
+  if(verifyError)throw verifyError;
+  const {data,error}=await db.rpc('vss_get_my_member_card',{p_membership_no:$('accessMembershipNo').value.trim().toUpperCase()});
+  if(error)throw error;
+  const member=Array.isArray(data)?data[0]:data;
+  if(!member||!member.membership_no)throw new Error('No matching member card was found for this verified email.');
+  $('accessCardPhoto').crossOrigin='anonymous';$('accessCardPhoto').src=member.photo_url;
+  $('accessCardName').textContent=member.full_name;$('accessCardCategory').textContent=member.membership_category;
+  $('accessCardBranch').textContent=member.branch;$('accessCardSemester').textContent=member.semester;
+  $('accessCardNo').textContent=member.membership_no;
+  $('accessQrCode').innerHTML='';new QRCode($('accessQrCode'),{text:member.membership_no,width:70,height:70,colorDark:'#17191d',colorLight:'#ffffff'});
+  $('accessResult').classList.remove('hidden');msg.textContent='Your existing VSS ID has been retrieved. No new ID was created.';
+  $('accessResult').scrollIntoView({behavior:'smooth',block:'nearest'});
+ }catch(err){msg.textContent=err.message||'Verification failed. Please try again.';}
+ finally{btn.disabled=false;btn.textContent='Verify & access my ID';}
+});
+async function downloadAccessCard(format){
+ const img=$('accessCardPhoto'),originalSrc=img.src;let objectUrl='';
+ try{
+  if(originalSrc){const response=await fetch(originalSrc,{mode:'cors',cache:'no-store'});if(!response.ok)throw new Error('Could not load the member photo for download.');objectUrl=URL.createObjectURL(await response.blob());img.src=objectUrl;await img.decode();}
+  const canvas=await html2canvas($('accessIdCard'),{scale:2,backgroundColor:format==='jpeg'?'#a91020':null,useCORS:true,allowTaint:false,logging:false});
+  const a=document.createElement('a');a.download=$('accessCardNo').textContent+(format==='jpeg'?'.jpg':'.png');a.href=canvas.toDataURL(format==='jpeg'?'image/jpeg':'image/png',0.95);a.click();
+ }catch(err){$('accessMsg').textContent=err.message||'Could not export the ID card.';}
+ finally{if(objectUrl){img.src=originalSrc;URL.revokeObjectURL(objectUrl);}}
+}
+$('accessPngBtn').addEventListener('click',()=>downloadAccessCard('png'));
+$('accessJpegBtn').addEventListener('click',()=>downloadAccessCard('jpeg'));
+$('accessPrintBtn').addEventListener('click',()=>window.print());
+$('accessSignOutBtn').addEventListener('click',async()=>{await db.auth.signOut();$('accessResult').classList.add('hidden');$('accessVerifyForm').classList.add('hidden');$('accessOtp').value='';$('accessMsg').textContent='You have signed out.';});
+
 $('registerForm').addEventListener('submit',async e=>{
  e.preventDefault();const btn=$('submitBtn'),msg=$('formMsg');btn.disabled=true;btn.textContent='Creating your ID…';msg.textContent='Checking details and generating your unique ID…';
  const photo=$('photo').files[0];
