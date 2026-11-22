@@ -19,7 +19,7 @@ Deno.serve(async (req) => {
   try {
     const { membership_no, password } = await req.json();
     const memberNo = String(membership_no ?? "").trim().toUpperCase();
-    if (!/^VSS-CGIT-\\d{4}-\\d{4,}$/.test(memberNo) || typeof password !== "string" || password.length < 1) {
+    if (!/^VSS-CGIT-\d{4}-\d{4,}$/.test(memberNo) || typeof password !== "string" || password.length < 1) {
       return json({ error: "Invalid membership ID or password." }, 400);
     }
 
