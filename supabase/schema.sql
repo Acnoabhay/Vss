@@ -26,8 +26,8 @@ create or replace function public.vss_create_member()
 returns trigger language plpgsql security definer set search_path=public
 as $$
 begin
-  insert into public.vss_members(user_id,full_name)
-  values(new.id, coalesce(new.raw_user_meta_data->>'full_name',''));
+  insert into public.vss_members(user_id,full_name,branch,semester,phone)
+  values(new.id, coalesce(new.raw_user_meta_data->>'full_name',''), coalesce(new.raw_user_meta_data->>'branch',''), coalesce(new.raw_user_meta_data->>'semester',''), coalesce(new.raw_user_meta_data->>'phone',''));
   return new;
 end; $$;
 
