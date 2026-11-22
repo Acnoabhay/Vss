@@ -32,10 +32,22 @@ const $=id=>document.getElementById(id);
 // Existing-member retrieval requires a one-time password sent to the registered email.
 const OTP_FUNCTION_URL=SUPABASE_URL+"/functions/v1/vss-member-otp";
 async function callMemberOtp(payload){
- const response=await fetch(OTP_FUNCTION_URL,{method:"POST",headers:{"Content-Type":"application/json","apikey":SUPABASE_ANON_KEY,"Authorization":"Bearer "+SUPABASE_ANON_KEY},body:JSON.stringify(payload)});
- const result=await response.json().catch(()=>({}));
- if(!response.ok)throw new Error(result.error||"Unable to process the request. Please try again.");
- return result;
+ const {data,error}=await db.functions.invoke("vss-member-otp",{body:payload});
+ if(error){
+  let detail="";
+  try{
+   const context=error.context;
+   if(context&&typeof context.clone==="function"){
+    const body=await context.clone().json().catch(()=>({}));
+    detail=body.error||body.message||"";
+   }
+  }catch(_){}
+  if(error.name==="FunctionsFetchError"||/fetch/i.test(error.message||"")){
+   throw new Error("Cannot reach the VSS verification service. Please check that the vss-member-otp function is deployed and its Verify JWT setting is OFF, then try again.");
+  }
+  throw new Error(detail||error.message||"Unable to process the request. Please try again.");
+ }
+ return data||{};
 }
 $('accessRequestForm').addEventListener('submit',async e=>{
  e.preventDefault();const btn=$('getExistingIdBtn'),msg=$('accessMsg');
