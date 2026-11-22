@@ -118,6 +118,24 @@ grant execute on function public.vss_get_my_member_card(text) to authenticated;
 drop function if exists public.vss_get_member_card_by_number(text);
 
 
+-- Public self-service member card retrieval using the membership number
+-- and the email address registered to that same record. No OTP is used.
+create or replace function public.vss_get_member_card_by_number(p_membership_no text,p_email text)
+returns table(membership_no text,full_name text,branch text,semester text,membership_category text,photo_url text)
+language sql
+stable
+security definer
+set search_path=public
+as $
+ select m.membership_no,m.full_name,m.branch,m.semester,m.membership_category,m.photo_url
+ from public.vss_id_cards m
+ where upper(m.membership_no)=upper(trim(coalesce(p_membership_no,'')))
+   and lower(trim(m.email))=lower(trim(coalesce(p_email,'')))
+ limit 1;
+$;
+revoke all on function public.vss_get_member_card_by_number(text,text) from public;
+grant execute on function public.vss_get_member_card_by_number(text,text) to anon,authenticated;
+
 -- Private short-lived OTP store used by the vss-member-otp Edge Function.
 create table if not exists public.vss_member_email_otps (
  membership_no text primary key,
