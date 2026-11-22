@@ -130,3 +130,16 @@ as $$
 $$;
 revoke all on function public.vss_get_member_card_by_number(text) from public;
 grant execute on function public.vss_get_member_card_by_number(text) to anon,authenticated;
+
+
+-- Private short-lived OTP store used by the vss-member-otp Edge Function.
+create table if not exists public.vss_member_email_otps (
+ membership_no text primary key,
+ email text not null,
+ otp_hash text not null,
+ expires_at timestamptz not null,
+ attempts integer not null default 0,
+ last_sent_at timestamptz not null default now()
+);
+alter table public.vss_member_email_otps enable row level security;
+revoke all on public.vss_member_email_otps from public,anon,authenticated;
