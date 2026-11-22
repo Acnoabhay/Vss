@@ -75,3 +75,40 @@ create policy "VSS admin can delete members" on public.vss_id_cards for delete t
 revoke all on public.vss_id_cards from anon;
 grant select,delete on public.vss_id_cards to authenticated;
 -- Create the admin Auth user separately; the email allowlist above is enforced by RLS.
+
+
+-- Secure self-service retrieval for existing members.
+-- Step 1 only confirms that the supplied membership ID and registered email match.
+-- It does not return member data or expose the stored email address.
+create or replace function public.vss_check_member_access(p_membership_no text,p_email text)
+returns boolean
+language sql
+security definer
+set search_path=public
+as $$
+ select exists(
+  select 1 from public.vss_id_cards m
+  where upper(m.membership_no)=upper(trim(coalesce(p_membership_no,'')))
+    and lower(trim(m.email))=lower(trim(coalesce(p_email,'')))
+ );
+$$;
+revoke all on function public.vss_check_member_access(text,text) from public;
+grant execute on function public.vss_check_member_access(text,text) to anon,authenticated;
+
+-- Step 2 returns the card only after Supabase email OTP authentication,
+-- and only when the authenticated email matches the member record.
+create or replace function public.vss_get_my_member_card(p_membership_no text)
+returns table(membership_no text,full_name text,branch text,semester text,membership_category text,photo_url text)
+language sql
+stable
+security definer
+set search_path=public
+as $$
+ select m.membership_no,m.full_name,m.branch,m.semester,m.membership_category,m.photo_url
+ from public.vss_id_cards m
+ where upper(m.membership_no)=upper(trim(coalesce(p_membership_no,'')))
+   and lower(trim(m.email))=lower(coalesce(auth.jwt()->>'email',''))
+   and auth.uid() is not null;
+$$;
+revoke all on function public.vss_get_my_member_card(text) from public;
+grant execute on function public.vss_get_my_member_card(text) to authenticated;
