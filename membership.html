@@ -45,9 +45,10 @@ $("signupForm").addEventListener("submit",async e=>{
  msg("authMsg","Creating your account and issuing your VSS ID…");
  const {data,error}=await db.auth.signUp({email:$("signupEmail").value.trim(),password:$("signupPassword").value,options:{data:{full_name:$("fullName").value.trim()},emailRedirectTo:location.origin+location.pathname}});
  if(error){msg("authMsg",error.message);return;}
- if(data.user?.id){const mailResponse=await fetch(SUPABASE_URL+"/functions/v1/send-membership-email",{method:"POST",headers:{"Content-Type":"application/json","apikey":SUPABASE_ANON_KEY,"Authorization":"Bearer "+SUPABASE_ANON_KEY},body:JSON.stringify({user_id:data.user.id})});const mailResult=await mailResponse.json().catch(()=>({}));if(!mailResponse.ok)console.warn("VSS membership email:",mailResult.error||"not sent");}
- if(data.session){currentUser=data.user;msg("authMsg","Account created. Your membership ID has been emailed to you.");await loadMember();}
- else{msg("authMsg","Account created. Your membership ID has been emailed to your registered address. Please confirm your email, then sign in using your membership ID and password.");}
+ let membershipEmailSent=false;
+ if(data.user?.id){const mailResponse=await fetch(SUPABASE_URL+"/functions/v1/send-membership-email",{method:"POST",headers:{"Content-Type":"application/json","apikey":SUPABASE_ANON_KEY,"Authorization":"Bearer "+SUPABASE_ANON_KEY},body:JSON.stringify({user_id:data.user.id})});const mailResult=await mailResponse.json().catch(()=>({}));membershipEmailSent=mailResponse.ok;if(!mailResponse.ok)console.warn("VSS membership email:",mailResult.error||"not sent");}
+ if(data.session){currentUser=data.user;msg("authMsg",membershipEmailSent?"Account created. Your membership ID has been emailed to you.":"Account created, but the ID email could not be sent yet. Please contact VSS support.");await loadMember();}
+ else{msg("authMsg",membershipEmailSent?"Account created. Your membership ID has been emailed to your registered address. Please confirm your email, then sign in using your membership ID and password.":"Account created, but the ID email could not be sent yet. Please confirm your email and contact VSS support for your ID.");}
 });
 $("logoutBtn").addEventListener("click",async()=>{await db.auth.signOut();currentUser=null;currentMember=null;$("memberPanel").classList.add("hidden");$("authPanel").classList.remove("hidden");});
 $("downloadCard").addEventListener("click",async()=>{const canvas=await html2canvas($("digitalCard"),{scale:3,backgroundColor:null});const a=document.createElement("a");a.download=(currentMember.membership_no||"VSS-member-ID")+".png";a.href=canvas.toDataURL("image/png");a.click();});
