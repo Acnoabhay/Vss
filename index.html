@@ -37,6 +37,18 @@ header{background:color-mix(in srgb,var(--paper) 76%,transparent);backdrop-filte
 @media(max-width:600px){.quick-links{padding:27px 0 34px}.quick-heading{display:block}.quick-heading p{margin-top:5px}.quick-grid{gap:9px}.quick-card{min-height:100px;padding:13px;gap:9px}.quick-card strong{font-size:12px}.quick-card small{font-size:9px}.quick-icon{width:34px;height:34px;border-radius:11px}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation:none!important;transition:none!important}.reveal{opacity:1;transform:none}}
 
+
+.alumni-gallery{margin-top:30px;padding:clamp(16px,3vw,26px);border:1px solid var(--line);border-radius:24px;background:color-mix(in srgb,var(--card) 82%,transparent);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);box-shadow:0 16px 42px rgba(20,20,30,.07)}
+.gallery-heading{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:18px}.gallery-heading h3{margin:5px 0 0;font-size:clamp(19px,3vw,25px)}
+.alumni-photo-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.alumni-photo{position:relative;overflow:hidden;margin:0;border-radius:17px;background:var(--soft);border:1px solid var(--line)}
+.alumni-photo img{display:block;width:100%;height:clamp(190px,27vw,330px);object-fit:cover;transition:transform .55s cubic-bezier(.2,.7,.2,1),filter .4s ease}
+.alumni-photo-wide{grid-column:span 2}.alumni-photo-wide img{height:clamp(220px,38vw,430px);object-position:center 43%}
+.alumni-photo:hover img{transform:scale(1.035);filter:saturate(1.08)}
+.alumni-photo figcaption{padding:11px 14px;font-size:12px;font-weight:650;color:var(--text)}
+.gallery-note{margin:16px 0 0;color:var(--muted);font-size:13px}
+@media(max-width:560px){.alumni-photo-grid{gap:9px}.alumni-photo img{height:155px}.alumni-photo-wide img{height:210px}.alumni-photo figcaption{padding:9px;font-size:10px}.gallery-heading{align-items:flex-start;flex-direction:column}}
+
 </style>
 </head>
 <body>
@@ -116,7 +128,16 @@ header{background:color-mix(in srgb,var(--paper) 76%,transparent);backdrop-filte
   <div class="card initiative"><div><span class="tag">Workshop</span><h3>Gate preparation workshop</h3><p>A preparation-focused workshop to support students in understanding and preparing for the GATE examination.</p></div><span class="arrow">↗</span></div>
   <div class="card initiative"><div><span class="tag">Alumni connection</span><h3>Alumni Meet programme</h3><p>CGIT Raipur Alumni Meet 2026 brought students, alumni and faculty together for a day of reconnection, cultural moments, shared experiences and stronger campus relationships.</p></div><span class="arrow">↗</span></div>
 </div>
-<p class="notice" style="margin-top:18px">Alumni Meet 2026 photographs and highlights are being added to the VSS gallery.</p></div></section>
+<div class="alumni-gallery" aria-label="Alumni Meet 2026 photo gallery">
+ <div class="gallery-heading"><div><span class="eyebrow">A day to remember</span><h3>CGIT Raipur Alumni Meet 2026</h3></div><span class="tag">Photo highlights</span></div>
+ <div class="alumni-photo-grid">
+  <figure class="alumni-photo alumni-photo-wide"><img src="assets/alumni-meet-2026-01.jpg" alt="VSS student organising team on stage at Alumni Meet 2026" loading="lazy"><figcaption>Student organising team</figcaption></figure>
+  <figure class="alumni-photo"><img src="assets/alumni-meet-2026-02.jpg" alt="Alumni, students and guests gathered on stage at Alumni Meet 2026" loading="lazy"><figcaption>Alumni, students and guests</figcaption></figure>
+  <figure class="alumni-photo"><img src="assets/alumni-meet-2026-03.jpg" alt="Students receiving certificates during a college felicitation programme" loading="lazy"><figcaption>Felicitation & recognition</figcaption></figure>
+  <figure class="alumni-photo"><img src="assets/alumni-meet-2026-04.jpg" alt="Students posing with certificates outside the college building" loading="lazy"><figcaption>Moments of achievement</figcaption></figure>
+ </div>
+ <p class="gallery-note">Celebrating the people, connections and memories that make our campus community special.</p>
+</div></div></section>
 
 <section id="team"><div class="wrap"><div class="section-head"><div><span class="eyebrow">People behind the effort</span><h2>VSS leadership & core team</h2></div><p>Meet the student leaders contributing to VSS direction, administration, organising and academic guidance.</p></div>
 <div class="grid grid-3">
