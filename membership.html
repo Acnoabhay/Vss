@@ -165,8 +165,20 @@ body{background:radial-gradient(ellipse at 90% 4%,#f0e6e8 0,transparent 28%),#f3
 @media(max-width:850px){.member-info-grid{grid-template-columns:1fr 1fr}.resource-grid{grid-template-columns:1fr 1fr}.portal-grid{grid-template-columns:1fr}}
 @media(max-width:620px){.wrap{margin:16px auto;padding:0 12px}.portal-head{padding:22px 18px}.portal-head:after{font-size:90px}.member-nav{position:relative;top:auto;gap:3px}.member-nav a{padding:8px;font-size:11px}.member-hero{padding:21px;align-items:flex-start}.hero-mark{width:72px;height:72px;font-size:20px}.student-summary{grid-template-columns:1fr 1fr}.member-info-grid,.rights-grid,.resource-grid,.portal-feed-grid{grid-template-columns:1fr}.member-guide-panel{padding:17px}.section-title h3{font-size:18px}.welcome-card{padding:28px 20px}}
 
+
+:root{color-scheme:light}
+:root[data-theme="dark"]{color-scheme:dark;--ink:#f2f4f8;--muted:#a8b0bd;--paper:#10141c;--line:#303744}
+:root[data-theme="dark"] body{background:#10141c;color:var(--ink)}
+:root[data-theme="dark"] .panel,:root[data-theme="dark"] .portal-card-panel,:root[data-theme="dark"] .portal-edit-panel,:root[data-theme="dark"] .portal-feed,:root[data-theme="dark"] .portal-feed-item,:root[data-theme="dark"] .student-stat,:root[data-theme="dark"] .value,:root[data-theme="dark"] .info-card,:root[data-theme="dark"] .member-guide-panel{background:#1a202b!important;color:var(--ink);border-color:var(--line)}
+:root[data-theme="dark"] .field input,:root[data-theme="dark"] .field select,:root[data-theme="dark"] .portal-edit-panel input,:root[data-theme="dark"] .portal-edit-panel select{background:#111722!important;color:var(--ink)!important;border-color:#394252}
+:root[data-theme="dark"] .portal-feed-item,:root[data-theme="dark"] .portal-feed-empty{background:#202735!important;border-color:#394252;color:#c4cbd6}
+:root[data-theme="dark"] .student-stat{background:#202735!important}
+:root[data-theme="dark"] .secondary{background:#303a49!important;color:#f2f4f8!important}
+.theme-toggle{width:38px;height:38px;border-radius:50%;border:1px solid #ffffff55;background:#ffffff14;color:#fff;cursor:pointer;font-size:18px}
+.top{gap:14px}
+.member-profile-top{width:38px;height:38px;border-radius:50%;object-fit:cover;border:2px solid #d9b56f}
 </style></head><body>
-<header class="top"><div class="brand">VSS COMMUNITY<small>VIDYARTHI SEVA SANGATHAN · CGIT RAIPUR</small></div><a href="index.html" style="color:white;text-decoration:none;font-size:13px">← Main website</a></header>
+<header class="top"><div class="brand">VSS COMMUNITY<small>VIDYARTHI SEVA SANGATHAN · CGIT RAIPUR</small></div><button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">☾</button><a href="index.html" style="color:white;text-decoration:none;font-size:13px">← Main website</a></header>
 
 <div id="portalWelcomeOverlay" class="welcome-overlay" aria-hidden="true">
  <div class="welcome-card"><div class="welcome-orbit"><span>VSS</span></div><div class="eyebrow">WELCOME TO THE COMMUNITY</div><h2>Good to have you here<span id="welcomeMemberName">, Member</span>.</h2><p>Your VSS member space is ready.</p><button type="button" id="welcomeContinueBtn" class="primary">Explore my dashboard</button></div>
@@ -347,7 +359,7 @@ $('accessRequestForm').addEventListener('submit',async e=>{
   $('memberPortalView').querySelector('.portal-card-panel').appendChild($('accessIdCard'));
   $('memberPortalView').querySelector('.portal-card-panel').appendChild($('accessResult').querySelector('.actions'));
   $('accessResult').querySelector('.portal-grid').classList.remove('hidden');
-  window.vssCurrentMember={membership_no:member.membership_no,email,photo_url:member.photo_url||''};
+  window.vssCurrentMember={membership_no:member.membership_no,email,photo_url:member.photo_url||''};\n  try{sessionStorage.setItem('vss-member-session',JSON.stringify({membership_no:member.membership_no,email,full_name:member.full_name,photo_url:member.photo_url||'',membership_category:member.membership_category||'Member'}));}catch(e){}
   $('accessResult').scrollIntoView({behavior:'smooth',block:'start'});
  }catch(err){msg.textContent=err.message||'Could not retrieve your VSS ID. Please try again.';}
  finally{btn.disabled=false;btn.textContent='Login to VSS';}
@@ -396,7 +408,7 @@ $('portalSignOutBtn').addEventListener('click',()=>{
  document.querySelector('.intro p').textContent='Enter your details carefully. Join the VSS community and be part of a student-led network built on support, service and shared growth.';
  document.querySelector('.layout').classList.remove('portal-active');
  $('accessMsg').textContent='You have signed out of the member portal.';
- window.vssCurrentMember=null;
+ window.vssCurrentMember=null;try{sessionStorage.removeItem('vss-member-session');}catch(e){}
 });
 $('updateMemberForm').addEventListener('submit',async e=>{
  e.preventDefault();
@@ -519,4 +531,6 @@ function launchConfetti(){
  }
 }
 
+</script><script>
+(()=>{const root=document.documentElement,key='vss-theme';const saved=localStorage.getItem(key);if(saved)root.dataset.theme=saved;const b=document.getElementById('themeToggle');const paint=()=>b.textContent=root.dataset.theme==='dark'?'☀':'☾';paint();b.addEventListener('click',()=>{root.dataset.theme=root.dataset.theme==='dark'?'light':'dark';localStorage.setItem(key,root.dataset.theme);paint();});})();
 </script></body></html>
