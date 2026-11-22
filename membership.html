@@ -43,7 +43,7 @@ $("signinForm").addEventListener("submit",async e=>{e.preventDefault();if(!db)re
 $("signupForm").addEventListener("submit",async e=>{
  e.preventDefault();if(!db){msg("authMsg","Portal setup is not complete yet.");return;}
  msg("authMsg","Creating your account and issuing your VSS ID…");
- const {data,error}=await db.auth.signUp({email:$("signupEmail").value.trim(),password:$("signupPassword").value,options:{data:{full_name:$("fullName").value.trim()}}});
+ const {data,error}=await db.auth.signUp({email:$("signupEmail").value.trim(),password:$("signupPassword").value,options:{data:{full_name:$("fullName").value.trim()},emailRedirectTo:location.origin+location.pathname}});
  if(error){msg("authMsg",error.message);return;}
  if(data.session){currentUser=data.user;msg("authMsg","Account created! Your VSS ID is ready.");await loadMember();}
  else{msg("authMsg","Account created and your ID has been issued. Please confirm your email, then sign in to view your card.");}
