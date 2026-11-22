@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#a91020"><title>VSS · Create Member ID</title>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#a91020"><title>VSS · Become a Member</title>
 <style>
 :root{--red:#b51220;--ink:#17191d;--muted:#68707b;--paper:#f4f5f7;--line:#e5e7eb}*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font:15px/1.55 Inter,system-ui,Arial,sans-serif}.top{background:#17191d;color:#fff;padding:17px max(20px,calc((100% - 1080px)/2));display:flex;justify-content:space-between;align-items:center}.brand{font-weight:850;letter-spacing:.05em}.brand small{display:block;color:#c5c8ce;font-size:10px;font-weight:500;letter-spacing:.13em}.wrap{max-width:1050px;margin:38px auto;padding:0 20px}.eyebrow{color:var(--red);font-size:11px;font-weight:850;letter-spacing:.15em;text-transform:uppercase}h1{font-size:clamp(30px,5vw,46px);line-height:1.1;letter-spacing:-.04em;margin:8px 0}p{color:var(--muted)}.layout{display:grid;grid-template-columns:1fr .9fr;gap:22px;align-items:start}.panel{background:white;border:1px solid var(--line);border-radius:20px;padding:25px;box-shadow:0 12px 40px #1519230b}.panel h2{margin:0 0 15px;font-size:20px}.field{display:grid;gap:6px;margin:13px 0}.field label{font-size:12px;font-weight:750}.field input,.field select{width:100%;border:1px solid var(--line);border-radius:10px;padding:12px;background:#fff;font:inherit}.row{display:flex;gap:12px}.row>*{flex:1;min-width:0}button{border:0;border-radius:11px;padding:12px 17px;font:inherit;font-weight:750;cursor:pointer}.primary{background:var(--red);color:white}.secondary{background:#f0f1f3;color:#222}.primary:disabled{opacity:.55;cursor:wait}.hint,.msg{font-size:12px;color:var(--muted)}.msg{min-height:20px;margin-top:12px}.hidden{display:none!important}.idcard{max-width:510px;margin:auto;background:linear-gradient(135deg,#8f101c,#bd1d2a 64%,#e24a50);color:white;border-radius:20px;padding:23px;box-shadow:0 18px 40px #85101d30}.cardhead{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #ffffff55;padding-bottom:14px}.cardhead strong{font-size:17px;letter-spacing:.08em}.cardhead small{display:block;font-size:9px;letter-spacing:.13em;color:#ffe2e4}.stamp{font-size:10px;border:1px solid #ffffff8a;border-radius:30px;padding:5px 9px}.person{display:flex;gap:16px;align-items:center;padding:22px 0}.avatar{width:88px;height:104px;object-fit:cover;border-radius:12px;background:#ffffff30;border:1px solid #ffffff70;display:block;flex:none}.person h3{font-size:21px;margin:0 0 5px}.person p{color:#ffe3e5;margin:3px 0;font-size:12px}.number{font-size:14px;font-weight:900;letter-spacing:.1em;margin-top:10px}.cardfoot{border-top:1px solid #ffffff55;padding-top:13px;display:flex;justify-content:space-between;align-items:center;font-size:10px;color:#ffe3e5}.qr{background:white;padding:6px;border-radius:8px;width:82px;height:82px}.actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:14px}.footer{text-align:center;color:#858b95;font-size:11px;padding:35px 10px}a{color:inherit}@media(max-width:760px){.layout{grid-template-columns:1fr}.wrap{margin:22px auto}.panel{padding:18px}.top{padding:14px 18px}.row{display:block}}
 .print-document{display:none}
@@ -25,9 +25,38 @@
  .pdf-notice h2{font-size:10px;color:#991725;margin:0 0 6px}
  .pdf-foot{text-align:center;border-top:1px solid #ddd;margin-top:15px;padding-top:9px;font-size:9px;color:#555}
 }
+
+/* Smooth, welcoming membership experience */
+html{scroll-behavior:smooth;scroll-padding-top:22px}
+body{overflow-x:hidden}
+.top{position:relative;isolation:isolate;animation:topEnter .7s cubic-bezier(.2,.75,.25,1) both}
+.wrap>.intro{animation:softRise .8s .08s cubic-bezier(.2,.75,.25,1) both}
+.panel{transition:transform .35s cubic-bezier(.2,.75,.25,1),box-shadow .35s,border-color .35s;animation:softRise .8s .16s both}
+.panel:hover{transform:translateY(-3px);box-shadow:0 18px 48px #15192312;border-color:#d9c5c8}
+.field input,.field select{transition:border-color .22s,box-shadow .22s,background .22s}
+.field input:focus,.field select:focus{outline:none;border-color:var(--red);box-shadow:0 0 0 4px #b5122015}
+button,.top a{transition:transform .22s cubic-bezier(.2,.75,.25,1),box-shadow .22s,background .22s}
+button:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 8px 20px #8f101c22}
+button:active:not(:disabled){transform:scale(.98)}
+.idcard{animation:cardEnter .7s cubic-bezier(.2,.75,.25,1) both}
+.congratulations{display:grid;gap:7px;padding:19px;border:1px solid #b9e7c8;border-radius:15px;background:linear-gradient(135deg,#f0fff4,#fff);color:#14532d;box-shadow:0 10px 28px #16653412;animation:congratsIn .7s cubic-bezier(.2,.75,.25,1) both}
+.congratulations strong{font-size:20px;color:#14532d}
+.congratulations span{font-size:14px;color:#25633c}
+.congratulations b{font-size:16px;letter-spacing:.04em;color:#8f101c}
+.congratulations small{font-size:12px;color:#477456}
+.congrats-mark{font-size:32px;animation:celebratePop .7s cubic-bezier(.2,.75,.25,1) both}
+.confetti-piece{position:fixed;z-index:9999;top:-14px;width:8px;height:13px;border-radius:2px;pointer-events:none;animation:confettiFall var(--fall,2.4s) ease-in forwards;transform:translate3d(0,0,0) rotate(0)}
+@keyframes topEnter{from{opacity:0;transform:translateY(-12px)}to{opacity:1;transform:translateY(0)}}
+@keyframes softRise{from{opacity:0;transform:translateY(18px);filter:blur(5px)}to{opacity:1;transform:translateY(0);filter:blur(0)}}
+@keyframes cardEnter{from{opacity:0;transform:translateY(18px) scale(.985)}to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes congratsIn{from{opacity:0;transform:translateY(14px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes celebratePop{0%{transform:scale(.4) rotate(-18deg)}65%{transform:scale(1.2) rotate(8deg)}100%{transform:scale(1) rotate(0)}}
+@keyframes confettiFall{to{transform:translate3d(var(--drift,40px),105vh,0) rotate(var(--spin,540deg));opacity:0}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}.confetti-piece{display:none}}
+
 </style></head><body>
 <header class="top"><div class="brand">VSS COMMUNITY<small>VIDYARTHI SEVA SANGATHAN · CGIT RAIPUR</small></div><a href="index.html" style="color:white;text-decoration:none;font-size:13px">← Main website</a></header>
-<main class="wrap"><div class="intro"><span class="eyebrow">Instant digital membership</span><h1>Create your VSS Member ID</h1><p>Enter your details carefully. A unique VSS ID will be generated immediately after successful registration.</p></div>
+<main class="wrap"><div class="intro"><span class="eyebrow">Instant digital membership</span><h1>Become a VSS Member</h1><p>Enter your details carefully. Join the VSS community and be part of a student-led network built on support, service and shared growth.</p></div>
 <div class="layout"><section class="panel form-panel"><h2>Member details</h2><form id="registerForm">
 <div class="field"><label for="fullName">Full name *</label><input id="fullName" maxlength="100" required autocomplete="name"></div>
 <div class="row"><div class="field"><label for="branch">Branch / Department *</label><input id="branch" maxlength="80" required placeholder="e.g. Civil Engineering"></div><div class="field"><label for="semester">Semester / Year *</label><select id="semester" required><option value="">Select</option><option>1st Semester</option><option>2nd Semester</option><option>3rd Semester</option><option>4th Semester</option><option>5th Semester</option><option>6th Semester</option><option>7th Semester</option><option>8th Semester</option><option>Alumni</option><option>Faculty</option><option>Other</option></select></div></div>
@@ -36,7 +65,7 @@
 <div class="field"><label for="photo">Upload your photo *</label><input id="photo" type="file" accept="image/jpeg,image/png,image/webp" required><span class="hint">JPG, PNG or WEBP · Maximum 3 MB · Use a clear passport-style photo.</span></div>
 <div class="field"><label for="category">Membership category *</label><select id="category" required><option value="">Select category</option><option>Student Member</option><option>Alumni Member</option><option>Faculty Member</option><option>Volunteer</option><option>Organizing Committee</option></select></div>
 <p class="hint">Names may be repeated. Each mobile number and email address can be registered only once. No email verification or approval is required.</p>
-<button class="primary" id="submitBtn" style="width:100%">Generate my VSS ID</button></form><div id="formMsg" class="msg" role="status" aria-live="polite"></div></section>
+<button class="primary" id="submitBtn" style="width:100%">Become a VSS Member</button></form><div id="formMsg" class="msg" role="status" aria-live="polite"></div></section>
 
 <section class="panel" id="memberAccessPanel"><h2>Already have a VSS ID?</h2><p class="hint">Enter your VSS membership number and the email address registered with it to retrieve your digital ID card.</p>
 <form id="accessRequestForm"><div class="field"><label for="accessMembershipNo">VSS Membership ID *</label><input id="accessMembershipNo" required maxlength="8" placeholder="e.g. VSS00001" autocomplete="off"></div><div class="field"><label for="accessEmail">Registered email address *</label><input id="accessEmail" type="email" required maxlength="254" placeholder="Your registered email" autocomplete="email"></div><button class="primary" id="getExistingIdBtn" style="width:100%">View my VSS ID</button></form>
@@ -128,7 +157,7 @@ $('registerForm').addEventListener('submit',async e=>{
   const {data,error}=await db.rpc('vss_register_member',payload);if(error)throw error;const member=Array.isArray(data)?data[0]:data;if(!member||!member.membership_no)throw new Error('Registration did not return an ID. Please contact VSS.');
   const photoUrl=member.photo_url||payload.p_photo_url;$('cardPhoto').crossOrigin='anonymous';$('cardPhoto').src=photoUrl;$('cardName').textContent=member.full_name;$('cardCategory').textContent=member.membership_category;$('cardBranch').textContent=member.branch;$('cardSemester').textContent=member.semester;$('cardNo').textContent=member.membership_no;
   $('qrCode').innerHTML='';new QRCode($('qrCode'),{text:member.membership_no,width:70,height:70,colorDark:'#17191d',colorLight:'#ffffff'});
-  $('resultPanel').classList.remove('hidden');msg.textContent='';$('successMsg').textContent='Your member ID is '+member.membership_no+'. Keep it safe.';$('resultPanel').scrollIntoView({behavior:'smooth',block:'start'});
+  $('resultPanel').classList.remove('hidden');msg.textContent='';$('successMsg').innerHTML='<div class="congrats-mark" aria-hidden="true">🎉</div><strong>Congratulations, '+escapeHtml(member.full_name)+'!</strong><span>Welcome to the VSS family. Your registration is successful.</span><b>Your VSS Member ID: '+escapeHtml(member.membership_no)+'</b><small>Keep your membership number safe for future access to your ID card.</small>'; $('successMsg').classList.add('congratulations'); launchConfetti();$('resultPanel').scrollIntoView({behavior:'smooth',block:'start'});
   $('registerForm').reset();$('registerForm').querySelectorAll('input,select,button').forEach(el=>el.disabled=true);
  }catch(err){const m=String(err.message||err);msg.textContent=/duplicate|unique|already exists|23505/i.test(m)?'A registration already exists with this name, mobile number or email. Each detail can be used only once.':m;btn.disabled=false;btn.textContent='Generate my VSS ID';}
 });
@@ -151,4 +180,20 @@ async function downloadCard(format){
 $('downloadPngBtn').addEventListener('click',()=>downloadCard('png'));
 $('downloadJpegBtn').addEventListener('click',()=>downloadCard('jpeg'));
 $('printBtn').addEventListener('click',()=>prepareMemberPdf($('cardName').textContent,$('cardCategory').textContent,$('cardBranch').textContent,$('cardSemester').textContent,$('cardNo').textContent,$('cardPhoto').src));
+
+function escapeHtml(value){return String(value??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));}
+function launchConfetti(){
+ if(window.matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+ const colors=['#b51220','#f4c542','#2f9e62','#6c8fe8','#e98aa2'];
+ for(let i=0;i<46;i++){
+  const piece=document.createElement('i');piece.className='confetti-piece';
+  piece.style.left=(Math.random()*100)+'vw';piece.style.background=colors[i%colors.length];
+  piece.style.setProperty('--fall',(1.8+Math.random()*1.5)+'s');
+  piece.style.setProperty('--drift',((Math.random()-.5)*230)+'px');
+  piece.style.setProperty('--spin',(360+Math.random()*720)+'deg');
+  piece.style.animationDelay=(Math.random()*.35)+'s';document.body.appendChild(piece);
+  piece.addEventListener('animationend',()=>piece.remove(),{once:true});
+ }
+}
+
 </script></body></html>
