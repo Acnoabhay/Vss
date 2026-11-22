@@ -122,6 +122,44 @@ img{transition:transform .65s cubic-bezier(.2,.75,.25,1),filter .5s}
 #vss-family .alumni-photo img:not([src]),#events .alumni-photo img:not([src]){visibility:hidden}
 @media(max-width:640px){.vss-head-highlight{margin:20px 0 6px;max-width:100%}#vss-family .alumni-photo-grid{grid-template-columns:1fr}}
 
+
+/* Photo integrity: preserve every original photo without cropping */
+.alumni-photo{overflow:visible!important}
+.alumni-photo img,
+.vss-family-gallery .alumni-photo img,
+#events .alumni-photo img,
+#vss-family .alumni-photo img{
+  display:block;
+  width:100%;
+  height:auto!important;
+  min-height:0!important;
+  max-height:none!important;
+  aspect-ratio:auto!important;
+  object-fit:contain!important;
+  object-position:center!important;
+  transform:none!important;
+}
+.vss-head-highlight img{
+  width:62px;
+  height:62px;
+  object-fit:contain!important;
+  object-position:center!important;
+}
+.team-card .avatar{
+  height:auto!important;
+  min-height:0!important;
+  padding:12px;
+  overflow:visible!important;
+}
+.team-card .avatar img{
+  display:block;
+  width:100%;
+  height:auto!important;
+  max-height:360px;
+  object-fit:contain!important;
+  object-position:center!important;
+}
+
 </style>
 </head>
 <body>
