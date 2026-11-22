@@ -114,6 +114,10 @@ revoke all on function public.vss_get_my_member_card(text) from public;
 grant execute on function public.vss_get_my_member_card(text) to authenticated;
 
 
+-- Remove the earlier ID-only public lookup so email OTP is mandatory.
+drop function if exists public.vss_get_member_card_by_number(text);
+
+
 -- Public lookup by membership number only, as requested by VSS.
 -- WARNING: anyone who knows/guesses an ID number can view the card details returned here.
 create or replace function public.vss_get_member_card_by_number(p_membership_no text)
