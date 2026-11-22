@@ -54,6 +54,25 @@ button:active:not(:disabled){transform:scale(.98)}
 @keyframes confettiFall{to{transform:translate3d(var(--drift,40px),105vh,0) rotate(var(--spin,540deg));opacity:0}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}.confetti-piece{display:none}}
 
+
+/* VSS member portal */
+.layout.portal-active{grid-template-columns:1fr}
+.layout.portal-active .form-panel{display:none}
+#memberAccessPanel.portal-open{grid-column:1/-1;max-width:900px;width:100%;margin:0 auto}
+#memberAccessPanel.portal-open>h2{font-size:25px}
+#memberPortalView{display:grid;gap:20px;margin-top:18px}
+.portal-head{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.portal-head p{margin:4px 0}
+.portal-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(280px,.85fr);gap:20px;align-items:start}
+.portal-card-panel,.portal-edit-panel{border:1px solid var(--line);border-radius:16px;padding:18px;background:#fff}
+.portal-edit-panel h3,.portal-card-panel h3{margin:0 0 12px}
+.portal-edit-panel .field{margin:10px 0}
+.portal-edit-panel input,.portal-edit-panel select{width:100%;border:1px solid var(--line);border-radius:10px;padding:11px;background:#fff;font:inherit}
+.portal-edit-panel input:focus,.portal-edit-panel select:focus{outline:none;border-color:var(--red);box-shadow:0 0 0 4px #b5122015}
+.portal-note{font-size:12px;color:var(--muted);margin:8px 0}
+.portal-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+@media(max-width:760px){.portal-grid{grid-template-columns:1fr}#memberAccessPanel.portal-open{padding:17px}}
+
 </style></head><body>
 <header class="top"><div class="brand">VSS COMMUNITY<small>VIDYARTHI SEVA SANGATHAN · CGIT RAIPUR</small></div><a href="index.html" style="color:white;text-decoration:none;font-size:13px">← Main website</a></header>
 <main class="wrap"><div class="intro"><span class="eyebrow">Instant digital membership</span><h1>Become a VSS Member</h1><p>Enter your details carefully. Join the VSS community and be part of a student-led network built on support, service and shared growth.</p></div>
@@ -71,7 +90,25 @@ button:active:not(:disabled){transform:scale(.98)}
 <form id="accessRequestForm"><div class="field"><label for="accessMembershipNo">VSS Membership ID *</label><input id="accessMembershipNo" required maxlength="8" placeholder="e.g. VSS00001" autocomplete="off"></div><div class="field"><label for="accessEmail">Registered email address *</label><input id="accessEmail" type="email" required maxlength="254" placeholder="Your registered email" autocomplete="email"></div><button class="primary" id="getExistingIdBtn" style="width:100%">View my VSS ID</button></form>
 <div class="msg" id="accessMsg" role="status" aria-live="polite"></div>
 <div id="accessResult" class="hidden"><div class="idcard" id="accessIdCard"><div class="cardhead"><div><strong>VSS COMMUNITY</strong><small>VIDYARTHI SEVA SANGATHAN</small></div><span class="stamp">MEMBER</span></div><div class="person"><img class="avatar" id="accessCardPhoto" alt="Member photo"><div><h3 id="accessCardName"></h3><p id="accessCardCategory"></p><p id="accessCardBranch"></p><p id="accessCardSemester"></p><div class="number" id="accessCardNo"></div></div></div><div class="cardfoot"><div>CGIT RAIPUR<br>Digital membership card</div><div id="accessQrCode" class="qr"></div></div></div>
-<div class="actions"><button class="primary" id="accessPngBtn" type="button">Download PNG</button><button class="secondary" id="accessJpegBtn" type="button">Download JPEG</button><button class="secondary" id="accessPrintBtn" type="button">Print / Save PDF</button></div></div></section>
+<div class="actions"><button class="primary" id="accessPngBtn" type="button">Download PNG</button><button class="secondary" id="accessJpegBtn" type="button">Download JPEG</button><button class="secondary" id="accessPrintBtn" type="button">Print / Save PDF</button></div>
+<div id="memberPortalView" class="hidden">
+ <div class="portal-head"><div><span class="eyebrow">VSS member dashboard</span><h2 style="margin:4px 0">Welcome, <span id="portalWelcomeName">Member</span></h2><p class="hint">Your membership details and digital ID are available here.</p></div><button class="secondary" id="portalSignOutBtn" type="button">Sign out</button></div>
+ <div class="portal-grid">
+  <div class="portal-card-panel"><h3>Your digital VSS ID</h3><p class="portal-note">Your current membership card. Download or print it whenever needed.</p></div>
+  <div class="portal-edit-panel"><h3>Update digital ID</h3><p class="portal-note">Correct your name, branch, semester, contact number, category, or profile photo. Your VSS ID number remains unchanged.</p>
+   <form id="updateMemberForm">
+    <div class="field"><label for="updateFullName">Full name *</label><input id="updateFullName" maxlength="100" required></div>
+    <div class="field"><label for="updateBranch">Branch / Department *</label><input id="updateBranch" maxlength="80" required></div>
+    <div class="field"><label for="updateSemester">Semester / Year *</label><select id="updateSemester" required><option>1st Semester</option><option>2nd Semester</option><option>3rd Semester</option><option>4th Semester</option><option>5th Semester</option><option>6th Semester</option><option>7th Semester</option><option>8th Semester</option><option>Alumni</option><option>Faculty</option><option>Other</option></select></div>
+    <div class="field"><label for="updatePhone">Mobile number *</label><input id="updatePhone" type="tel" inputmode="numeric" minlength="10" maxlength="15" required></div>
+    <div class="field"><label for="updateCategory">Membership category *</label><select id="updateCategory" required><option>Student Member</option><option>Alumni Member</option><option>Faculty Member</option><option>Volunteer</option><option>Organizing Committee</option></select></div>
+    <div class="field"><label for="updatePhoto">Change profile photo (optional)</label><input id="updatePhoto" type="file" accept="image/jpeg,image/png,image/webp"><span class="hint">JPG, PNG or WEBP · Maximum 3 MB. Leave empty to keep your current photo.</span></div>
+    <button class="primary" id="saveMemberUpdateBtn" type="submit" style="width:100%">Save ID updates</button>
+    <div class="msg" id="updateMemberMsg" role="status" aria-live="polite"></div>
+   </form>
+  </div>
+ </div>
+</div></div></section>
 <section class="panel hidden" id="resultPanel"><h2>Your digital VSS ID</h2><p class="hint">Registration successful. Save your ID card now.</p><div class="idcard" id="idCard"><div class="cardhead"><div><strong>VSS COMMUNITY</strong><small>VIDYARTHI SEVA SANGATHAN</small></div><span class="stamp">MEMBER</span></div><div class="person"><img class="avatar" id="cardPhoto" alt="Member photo"><div><h3 id="cardName"></h3><p id="cardCategory"></p><p id="cardBranch"></p><p id="cardSemester"></p><div class="number" id="cardNo"></div></div></div><div class="cardfoot"><div>CGIT RAIPUR<br>Digital membership card</div><div id="qrCode" class="qr"></div></div></div><div class="actions"><button class="primary" id="downloadPngBtn">Download PNG</button><button class="secondary" id="downloadJpegBtn">Download JPEG</button><button class="secondary" id="printBtn">Print / Save PDF</button></div><div class="msg" id="successMsg"></div></section></div></main><div class="footer">Vidyarthi Seva Sangathan · By the students, for the students · CGIT Raipur</div>
 <div id="printDocument" class="print-document">
  <div class="pdf-head"><h1>VSS COMMUNITY</h1><p>VIDYARTHI SEVA SANGATHAN · INDEPENDENT COMMUNITY</p><p>BY THE STUDENTS, FOR THE STUDENTS</p></div>
@@ -124,8 +161,24 @@ $('accessRequestForm').addEventListener('submit',async e=>{
   $('accessCardName').textContent=member.full_name;$('accessCardCategory').textContent=member.membership_category;
   $('accessCardBranch').textContent=member.branch;$('accessCardSemester').textContent=member.semester;$('accessCardNo').textContent=member.membership_no;
   $('accessQrCode').innerHTML='';new QRCode($('accessQrCode'),{text:member.membership_no,width:70,height:70,colorDark:'#17191d',colorLight:'#ffffff'});
-  $('accessResult').classList.remove('hidden');msg.textContent='Your VSS ID card is ready.';
-  $('accessResult').scrollIntoView({behavior:'smooth',block:'nearest'});
+  $('accessResult').classList.remove('hidden');
+  $('memberAccessPanel').classList.add('portal-open');
+  $('memberAccessPanel').querySelector('h2').textContent='VSS Member Portal';
+  $('accessRequestForm').classList.add('hidden');
+  msg.textContent='';
+  document.querySelector('.layout').classList.add('portal-active');
+  $('portalWelcomeName').textContent=member.full_name||'Member';
+  $('updateFullName').value=member.full_name||'';
+  $('updateBranch').value=member.branch||'';
+  $('updateSemester').value=member.semester||'';
+  $('updatePhone').value=member.phone||'';
+  $('updateCategory').value=member.membership_category||'Student Member';
+  $('memberPortalView').classList.remove('hidden');
+  $('memberPortalView').querySelector('.portal-card-panel').appendChild($('accessIdCard'));
+  $('memberPortalView').querySelector('.portal-card-panel').appendChild($('accessResult').querySelector('.actions'));
+  $('accessResult').querySelector('.portal-grid').classList.remove('hidden');
+  window.vssCurrentMember={membership_no:member.membership_no,email,photo_url:member.photo_url||''};
+  $('accessResult').scrollIntoView({behavior:'smooth',block:'start'});
  }catch(err){msg.textContent=err.message||'Could not retrieve your VSS ID. Please try again.';}
  finally{btn.disabled=false;btn.textContent='View my VSS ID';}
 });
@@ -161,6 +214,65 @@ $('registerForm').addEventListener('submit',async e=>{
   $('registerForm').reset();$('registerForm').querySelectorAll('input,select,button').forEach(el=>el.disabled=true);
  }catch(err){const m=String(err.message||err);msg.textContent=/duplicate|unique|already exists|23505/i.test(m)?'A registration already exists with this name, mobile number or email. Each detail can be used only once.':m;btn.disabled=false;btn.textContent='Generate my VSS ID';}
 });
+
+/* Member portal actions */
+$('portalSignOutBtn').addEventListener('click',()=>{
+ $('memberPortalView').classList.add('hidden');
+ $('accessRequestForm').classList.remove('hidden');
+ $('accessResult').classList.add('hidden');
+ $('memberAccessPanel').classList.remove('portal-open');
+ $('memberAccessPanel').querySelector('h2').textContent='Already have a VSS ID?';
+ document.querySelector('.layout').classList.remove('portal-active');
+ $('accessMsg').textContent='You have signed out of the member portal.';
+ window.vssCurrentMember=null;
+});
+$('updateMemberForm').addEventListener('submit',async e=>{
+ e.preventDefault();
+ const btn=$('saveMemberUpdateBtn'),msg=$('updateMemberMsg'),member=window.vssCurrentMember;
+ if(!member){msg.textContent='Your portal session has ended. Sign in again.';return;}
+ btn.disabled=true;btn.textContent='Saving updates…';msg.textContent='Updating your membership details…';
+ try{
+  let photoUrl=member.photo_url||'';
+  const photo=$('updatePhoto').files[0];
+  if(photo){
+   if(!['image/jpeg','image/png','image/webp'].includes(photo.type)||photo.size>3*1024*1024)throw new Error('Choose a JPG, PNG or WEBP photo up to 3 MB.');
+   const ext=photo.type==='image/png'?'png':photo.type==='image/webp'?'webp':'jpg';
+   const path='members/'+crypto.randomUUID()+'.'+ext;
+   const {error:uploadError}=await db.storage.from('vss-member-photos').upload(path,photo,{contentType:photo.type,upsert:false});
+   if(uploadError)throw uploadError;
+   photoUrl=db.storage.from('vss-member-photos').getPublicUrl(path).data.publicUrl;
+  }
+  const payload={
+   p_membership_no:member.membership_no,p_email:member.email,
+   p_full_name:$('updateFullName').value.trim(),p_branch:$('updateBranch').value.trim(),
+   p_semester:$('updateSemester').value,p_phone:$('updatePhone').value.trim(),
+   p_category:$('updateCategory').value,p_photo_url:photoUrl
+  };
+  const {data,error}=await db.rpc('vss_update_member_card',payload);if(error)throw error;
+  const updated=Array.isArray(data)?data[0]:data;
+  if(!updated||!updated.membership_no)throw new Error('The update was not confirmed. Please try again.');
+  member.photo_url=updated.photo_url||photoUrl;
+  $('accessCardPhoto').src=member.photo_url;
+  $('accessCardName').textContent=updated.full_name;$('accessCardCategory').textContent=updated.membership_category;
+  $('accessCardBranch').textContent=updated.branch;$('accessCardSemester').textContent=updated.semester;
+  $('accessCardNo').textContent=updated.membership_no;$('portalWelcomeName').textContent=updated.full_name;
+  $('updatePhoto').value='';msg.textContent='Your VSS digital ID has been updated successfully.';
+ }catch(err){msg.textContent=err.message||'Could not update your digital ID.';}
+ finally{btn.disabled=false;btn.textContent='Save ID updates';}
+});
+async function downloadPortalCard(format){
+ const img=$('accessCardPhoto'),originalSrc=img.src;let objectUrl='';
+ try{
+  if(originalSrc){const response=await fetch(originalSrc,{mode:'cors',cache:'no-store'});if(!response.ok)throw new Error('Could not load member photo. Please try again.');objectUrl=URL.createObjectURL(await response.blob());img.src=objectUrl;await img.decode();}
+  const canvas=await html2canvas($('accessIdCard'),{scale:2,backgroundColor:format==='jpeg'?'#a91020':null,useCORS:true,allowTaint:false,logging:false});
+  const a=document.createElement('a');a.download=$('accessCardNo').textContent+(format==='jpeg'?'.jpg':'.png');a.href=canvas.toDataURL(format==='jpeg'?'image/jpeg':'image/png',.95);a.click();
+ }catch(err){$('updateMemberMsg').textContent=err.message||'Could not export the ID card.';}
+ finally{if(objectUrl){img.src=originalSrc;URL.revokeObjectURL(objectUrl);}}
+}
+$('accessPngBtn').addEventListener('click',()=>downloadPortalCard('png'));
+$('accessJpegBtn').addEventListener('click',()=>downloadPortalCard('jpeg'));
+$('accessPrintBtn').addEventListener('click',()=>prepareMemberPdf($('accessCardName').textContent,$('accessCardCategory').textContent,$('accessCardBranch').textContent,$('accessCardSemester').textContent,$('accessCardNo').textContent,$('accessCardPhoto').src));
+
 async function downloadCard(format){
  const img=$('cardPhoto'),originalSrc=img.src;let objectUrl='';
  try{
