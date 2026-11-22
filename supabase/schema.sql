@@ -1,75 +1,66 @@
--- VSS simple instant-issue membership system
+-- VSS public instant ID registration + private admin portal
+-- Run this complete script in Supabase SQL Editor.
 create extension if not exists pgcrypto;
-create sequence if not exists public.vss_member_seq start 1;
+drop trigger if exists vss_auth_user_created on auth.users;
 
-create table if not exists public.vss_members (
-  user_id uuid primary key references auth.users(id) on delete cascade,
-  full_name text not null default '',
-  branch text not null default '',
-  semester text not null default '',
-  phone text not null default '',
-  photo_path text,
-  membership_no text unique,
-  status text not null default 'approved',
-  role text not null default 'member' check (role in ('member','committee_admin')),
-  created_at timestamptz not null default now(),
-  updated_at timestamptz not null default now(),
-  approved_at timestamptz
+create table if not exists public.vss_id_cards (
+  id uuid primary key default gen_random_uuid(),
+  membership_no text not null unique,
+  full_name text not null,
+  father_name text not null default '',
+  branch text not null,
+  semester text not null,
+  phone text not null,
+  email text not null,
+  membership_category text not null,
+  created_at timestamptz not null default now()
 );
+create unique index if not exists vss_id_cards_name_unique
+  on public.vss_id_cards (lower(regexp_replace(trim(full_name), '\s+', ' ', 'g')));
+create unique index if not exists vss_id_cards_email_unique on public.vss_id_cards (lower(trim(email)));
+create unique index if not exists vss_id_cards_phone_unique on public.vss_id_cards (regexp_replace(phone, '\D', '', 'g'));
 
-alter table public.vss_members add column if not exists membership_no text;
-alter table public.vss_members add column if not exists status text not null default 'approved';
-alter table public.vss_members add column if not exists role text not null default 'member';
-alter table public.vss_members drop constraint if exists vss_members_status_check;
-update public.vss_members set status='approved' where status not in ('approved','suspended');
-alter table public.vss_members add constraint vss_members_status_check check(status in ('approved','suspended'));
-alter table public.vss_members alter column status set default 'approved';
+create sequence if not exists public.vss_id_number_seq as integer minvalue 0 maxvalue 99999 start 0 increment 1 no cycle;
 
-select setval('public.vss_member_seq',
-  coalesce((select max(substring(membership_no from '([0-9]+)$')::bigint) from public.vss_members where membership_no ~ '-[0-9]+$'),0)+1,
-  false);
-
-update public.vss_members
-set status='approved',
-    membership_no=coalesce(membership_no,'VSS-CGIT-2026-' || lpad(nextval('public.vss_member_seq')::text,4,'0')),
-    approved_at=coalesce(approved_at,now()),
-    updated_at=now()
-where membership_no is null or status<>'approved';
-
-alter table public.vss_members alter column membership_no set not null;
-
-create or replace function public.vss_create_member()
-returns trigger language plpgsql security definer set search_path=public
+create or replace function public.vss_register_member(
+ p_full_name text,p_father_name text,p_branch text,p_semester text,p_phone text,p_email text,p_category text
+)
+returns table(membership_no text,full_name text,branch text,semester text,membership_category text)
+language plpgsql security definer set search_path=public
 as $$
+declare v_no text; v_phone text;
 begin
-  insert into public.vss_members(user_id,full_name,membership_no,status,approved_at)
-  values(new.id,coalesce(new.raw_user_meta_data->>'full_name',''),
-    'VSS-CGIT-2026-' || lpad(nextval('public.vss_member_seq')::text,4,'0'),'approved',now());
-  return new;
+ if length(trim(coalesce(p_full_name,'')))<2 or length(trim(coalesce(p_branch,'')))<2
+ or length(trim(coalesce(p_semester,'')))=0 or length(regexp_replace(coalesce(p_phone,''),'\D','','g'))<10
+ or position('@' in coalesce(p_email,''))<2 or length(trim(coalesce(p_category,'')))=0 then
+  raise exception 'Please provide all required details in a valid format.';
+ end if;
+ v_phone:=regexp_replace(p_phone,'\D','','g');
+ if exists(select 1 from public.vss_id_cards m
+  where lower(regexp_replace(trim(m.full_name),'\s+',' ','g'))=lower(regexp_replace(trim(p_full_name),'\s+',' ','g'))
+  or lower(trim(m.email))=lower(trim(p_email))
+  or regexp_replace(m.phone,'\D','','g')=v_phone) then
+  raise exception 'A registration already exists with this name, mobile number or email.';
+ end if;
+ v_no:='VSS'||lpad(nextval('public.vss_id_number_seq')::text,5,'0');
+ return query insert into public.vss_id_cards as m
+ (membership_no,full_name,father_name,branch,semester,phone,email,membership_category)
+ values(v_no,trim(p_full_name),trim(coalesce(p_father_name,'')),trim(p_branch),trim(p_semester),trim(p_phone),lower(trim(p_email)),trim(p_category))
+ returning m.membership_no,m.full_name,m.branch,m.semester,m.membership_category;
+exception when unique_violation then
+ raise exception 'A registration already exists with this name, mobile number or email. Please check your details.';
 end; $$;
 
-drop trigger if exists vss_auth_user_created on auth.users;
-create trigger vss_auth_user_created after insert on auth.users
-for each row execute procedure public.vss_create_member();
+revoke all on function public.vss_register_member(text,text,text,text,text,text,text) from public;
+grant execute on function public.vss_register_member(text,text,text,text,text,text,text) to anon,authenticated;
 
-alter table public.vss_members enable row level security;
-drop policy if exists "members read own profile" on public.vss_members;
-create policy "members read own profile" on public.vss_members for select to authenticated
-using (user_id=auth.uid());
-
-create or replace function public.vss_verify_member(p_membership_no text)
-returns table(valid boolean, membership_no text, full_name text, role_label text, branch text, status text)
-language sql stable security definer set search_path=public
-as $$
-  select (m.status='approved'),m.membership_no,m.full_name,'VSS Member','CGIT Raipur',m.status
-  from public.vss_members m where m.membership_no=upper(trim(p_membership_no)) limit 1;
-$$;
-grant execute on function public.vss_verify_member(text) to anon, authenticated;
-
--- Server-only email send cooldown log. Edge Functions use the service-role key.
-create table if not exists public.vss_email_send_log (
-  user_id uuid primary key references auth.users(id) on delete cascade,
-  last_sent_at timestamptz not null default now()
-);
-alter table public.vss_email_send_log enable row level security;
-revoke all on public.vss_email_send_log from anon, authenticated;
+alter table public.vss_id_cards enable row level security;
+drop policy if exists "VSS admin can read members" on public.vss_id_cards;
+drop policy if exists "VSS admin can delete members" on public.vss_id_cards;
+create policy "VSS admin can read members" on public.vss_id_cards for select to authenticated
+ using(lower(coalesce(auth.jwt()->>'email',''))='info.vsscommunity@gmail.com');
+create policy "VSS admin can delete members" on public.vss_id_cards for delete to authenticated
+ using(lower(coalesce(auth.jwt()->>'email',''))='info.vsscommunity@gmail.com');
+revoke all on public.vss_id_cards from anon;
+grant select,delete on public.vss_id_cards to authenticated;
+-- Create the admin Auth user separately; the email allowlist above is enforced by RLS.
