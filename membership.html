@@ -183,7 +183,7 @@ body{background:radial-gradient(ellipse at 90% 4%,#f0e6e8 0,transparent 28%),#f3
 <button class="primary" id="submitBtn" style="width:100%">Become a VSS Member</button></form><div id="formMsg" class="msg" role="status" aria-live="polite"></div></section>
 
 <section class="panel" id="memberAccessPanel"><h2>Already have a VSS ID?</h2><p class="hint">Enter your VSS membership number and the email address registered with it to retrieve your digital ID card.</p>
-<form id="accessRequestForm"><div class="field"><label for="accessMembershipNo">VSS Membership ID *</label><input id="accessMembershipNo" required maxlength="8" placeholder="e.g. VSS00001" autocomplete="off"></div><div class="field"><label for="accessEmail">Registered email address *</label><input id="accessEmail" type="email" required maxlength="254" placeholder="Your registered email" autocomplete="email"></div><button class="primary" id="getExistingIdBtn" style="width:100%">View my VSS ID</button></form>
+<form id="accessRequestForm"><div class="field"><label for="accessMembershipNo">VSS Membership ID *</label><input id="accessMembershipNo" required maxlength="8" placeholder="e.g. VSS00001" autocomplete="off"></div><div class="field"><label for="accessEmail">Registered email address *</label><input id="accessEmail" type="email" required maxlength="254" placeholder="Your registered email" autocomplete="email"></div><button class="primary" id="getExistingIdBtn" style="width:100%">Login to VSS</button></form>
 <div class="msg" id="accessMsg" role="status" aria-live="polite"></div>
 <div id="accessResult" class="hidden"><div class="idcard" id="accessIdCard"><div class="cardhead"><div><strong>VSS COMMUNITY</strong><small>VIDYARTHI SEVA SANGATHAN</small></div><span class="stamp">MEMBER</span></div><div class="person"><img class="avatar" id="accessCardPhoto" alt="Member photo"><div><h3 id="accessCardName"></h3><p id="accessCardCategory"></p><p id="accessCardBranch"></p><p id="accessCardSemester"></p><div class="number" id="accessCardNo"></div></div></div><div class="cardfoot"><div>CGIT RAIPUR<br>Digital membership card</div><div id="accessQrCode" class="qr"></div></div></div>
 <div class="actions"><button class="primary" id="accessPngBtn" type="button">Download PNG</button><button class="secondary" id="accessJpegBtn" type="button">Download JPEG</button><button class="secondary" id="accessPrintBtn" type="button">Print / Save PDF</button></div>
@@ -350,7 +350,7 @@ $('accessRequestForm').addEventListener('submit',async e=>{
   window.vssCurrentMember={membership_no:member.membership_no,email,photo_url:member.photo_url||''};
   $('accessResult').scrollIntoView({behavior:'smooth',block:'start'});
  }catch(err){msg.textContent=err.message||'Could not retrieve your VSS ID. Please try again.';}
- finally{btn.disabled=false;btn.textContent='View my VSS ID';}
+ finally{btn.disabled=false;btn.textContent='Login to VSS';}
 });
 async function downloadAccessCard(format){
  const img=$('accessCardPhoto'),originalSrc=img.src;let objectUrl='';
