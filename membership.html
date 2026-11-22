@@ -12,9 +12,9 @@
 <div class="field"><label for="email">Email address *</label><input id="email" type="email" maxlength="254" required autocomplete="email"></div>
 <div class="field"><label for="photo">Upload your photo *</label><input id="photo" type="file" accept="image/jpeg,image/png,image/webp" required><span class="hint">JPG, PNG or WEBP · Maximum 3 MB · Use a clear passport-style photo.</span></div>
 <div class="field"><label for="category">Membership category *</label><select id="category" required><option value="">Select category</option><option>Student Member</option><option>Alumni Member</option><option>Faculty Member</option><option>Volunteer</option><option>Organizing Committee</option></select></div>
-<p class="hint">Your name, mobile number and email must each be unique. Duplicate registrations will be rejected. No email verification or approval is required.</p>
+<p class="hint">Names may be repeated. Each mobile number and email address can be registered only once. No email verification or approval is required.</p>
 <button class="primary" id="submitBtn" style="width:100%">Generate my VSS ID</button></form><div id="formMsg" class="msg" role="status" aria-live="polite"></div></section>
-<section class="panel hidden" id="resultPanel"><h2>Your digital VSS ID</h2><p class="hint">Registration successful. Save your ID card now.</p><div class="idcard" id="idCard"><div class="cardhead"><div><strong>VSS COMMUNITY</strong><small>VIDYARTHI SEVA SANGATHAN</small></div><span class="stamp">MEMBER</span></div><div class="person"><img class="avatar" id="cardPhoto" alt="Member photo"><div><h3 id="cardName"></h3><p id="cardCategory"></p><p id="cardBranch"></p><p id="cardSemester"></p><div class="number" id="cardNo"></div></div></div><div class="cardfoot"><div>CGIT RAIPUR<br>Digital membership card</div><div id="qrCode" class="qr"></div></div></div><div class="actions"><button class="primary" id="downloadBtn">Download ID card</button><button class="secondary" id="printBtn">Print / Save PDF</button></div><div class="msg" id="successMsg"></div></section></div></main><div class="footer">Vidyarthi Seva Sangathan · By the students, for the students · CGIT Raipur</div>
+<section class="panel hidden" id="resultPanel"><h2>Your digital VSS ID</h2><p class="hint">Registration successful. Save your ID card now.</p><div class="idcard" id="idCard"><div class="cardhead"><div><strong>VSS COMMUNITY</strong><small>VIDYARTHI SEVA SANGATHAN</small></div><span class="stamp">MEMBER</span></div><div class="person"><img class="avatar" id="cardPhoto" alt="Member photo"><div><h3 id="cardName"></h3><p id="cardCategory"></p><p id="cardBranch"></p><p id="cardSemester"></p><div class="number" id="cardNo"></div></div></div><div class="cardfoot"><div>CGIT RAIPUR<br>Digital membership card</div><div id="qrCode" class="qr"></div></div></div><div class="actions"><button class="primary" id="downloadPngBtn">Download PNG</button><button class="secondary" id="downloadJpegBtn">Download JPEG</button><button class="secondary" id="printBtn">Print / Save PDF</button></div><div class="msg" id="successMsg"></div></section></div></main><div class="footer">Vidyarthi Seva Sangathan · By the students, for the students · CGIT Raipur</div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script><script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 <script>
 const SUPABASE_URL="https://aukiryqoqpotjuuqwsec.supabase.co";
@@ -34,12 +34,29 @@ $('registerForm').addEventListener('submit',async e=>{
   if(uploadError)throw uploadError;
   payload.p_photo_url=db.storage.from('vss-member-photos').getPublicUrl(photoPath).data.publicUrl;
   const {data,error}=await db.rpc('vss_register_member',payload);if(error)throw error;const member=Array.isArray(data)?data[0]:data;if(!member||!member.membership_no)throw new Error('Registration did not return an ID. Please contact VSS.');
-  $('cardPhoto').src=member.photo_url||payload.p_photo_url;$('cardName').textContent=member.full_name;$('cardCategory').textContent=member.membership_category;$('cardBranch').textContent=member.branch;$('cardSemester').textContent=member.semester;$('cardNo').textContent=member.membership_no;
+  const photoUrl=member.photo_url||payload.p_photo_url;$('cardPhoto').crossOrigin='anonymous';$('cardPhoto').src=photoUrl;$('cardName').textContent=member.full_name;$('cardCategory').textContent=member.membership_category;$('cardBranch').textContent=member.branch;$('cardSemester').textContent=member.semester;$('cardNo').textContent=member.membership_no;
   $('qrCode').innerHTML='';new QRCode($('qrCode'),{text:member.membership_no,width:70,height:70,colorDark:'#17191d',colorLight:'#ffffff'});
   $('resultPanel').classList.remove('hidden');msg.textContent='';$('successMsg').textContent='Your member ID is '+member.membership_no+'. Keep it safe.';$('resultPanel').scrollIntoView({behavior:'smooth',block:'start'});
   $('registerForm').reset();$('registerForm').querySelectorAll('input,select,button').forEach(el=>el.disabled=true);
  }catch(err){const m=String(err.message||err);msg.textContent=/duplicate|unique|already exists|23505/i.test(m)?'A registration already exists with this name, mobile number or email. Each detail can be used only once.':m;btn.disabled=false;btn.textContent='Generate my VSS ID';}
 });
-$('downloadBtn').addEventListener('click',async()=>{const canvas=await html2canvas($('idCard'),{scale:2,backgroundColor:null});const a=document.createElement('a');a.download=$('cardNo').textContent+'.png';a.href=canvas.toDataURL('image/png');a.click();});
+async function downloadCard(format){
+ const img=$('cardPhoto'),originalSrc=img.src;let objectUrl='';
+ try{
+  if(originalSrc){
+   const response=await fetch(originalSrc,{mode:'cors',cache:'no-store'});
+   if(!response.ok)throw new Error('Could not load member photo for download. Please refresh and try again.');
+   objectUrl=URL.createObjectURL(await response.blob());
+   img.src=objectUrl;await img.decode();
+  }
+  const canvas=await html2canvas($('idCard'),{scale:2,backgroundColor:format==='jpeg'?'#a91020':null,useCORS:true,allowTaint:false,logging:false});
+  const mime=format==='jpeg'?'image/jpeg':'image/png';
+  const a=document.createElement('a');a.download=$('cardNo').textContent+(format==='jpeg'?'.jpg':'.png');
+  a.href=canvas.toDataURL(mime,0.95);a.click();
+ }catch(err){$('successMsg').textContent=err.message||'Could not export the ID card. Please try again.';}
+ finally{if(objectUrl){img.src=originalSrc;URL.revokeObjectURL(objectUrl);}}
+}
+$('downloadPngBtn').addEventListener('click',()=>downloadCard('png'));
+$('downloadJpegBtn').addEventListener('click',()=>downloadCard('jpeg'));
 $('printBtn').addEventListener('click',()=>window.print());
 </script></body></html>
