@@ -12,8 +12,16 @@ The schema creates a new table and does not delete old member data. Registration
 Never expose a Supabase service-role/secret key in frontend code. The public pages use only the anon/publishable key.
 
 
-## Existing member card retrieval
+## Existing member card retrieval (email OTP required)
 
-The membership page includes an **Already have a VSS ID?** section. Members enter only their existing VSS membership number to retrieve the card. No email address, OTP, or email verification is required. The lookup does not create or allocate a new ID.
+Members enter their VSS ID number and the email address registered with that ID. The portal sends a 6-digit OTP to the registered email. Only after the OTP is verified does the Edge Function return the card details. OTPs expire after 5 minutes and allow up to 5 attempts.
 
-After updating the repository, run the complete updated `supabase/schema.sql` in Supabase SQL Editor to install the `vss_get_member_card_by_number` RPC function. **Security note:** this is an intentionally public lookup. Anyone who knows or guesses a membership number can view the card details returned by the function. Do not include private contact information in the returned card data.
+### Install and configure OTP
+
+1. Run the complete updated `supabase/schema.sql` in Supabase SQL Editor. This creates the private OTP table and removes the old public ID-only lookup function.
+2. Deploy `supabase/functions/vss-member-otp/index.ts` as an Edge Function named `vss-member-otp` (Supabase CLI: `supabase functions deploy vss-member-otp`).
+3. In Supabase → Edge Functions → Secrets, ensure `RESEND_API_KEY` is set. Add `OTP_PEPPER` as a long random secret and `OTP_FROM_EMAIL` as a sender address authorised in your Resend account. Supabase provides `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY` to Edge Functions.
+4. In Resend, verify your sending domain and configure the matching sender address before sending OTPs to all members. The Resend test sender `onboarding@resend.dev` is restricted to the verified test recipient.
+5. Test with a real member ID and its registered email. Confirm delivery, correct OTP acceptance, expiry, and ID photo export.
+
+Do not put the Resend API key, OTP pepper, or Supabase service-role key in `membership.html` or any public GitHub file. The public ID-only lookup has been removed; email OTP is required.
