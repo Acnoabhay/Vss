@@ -186,6 +186,19 @@ img{
   filter:none!important;
 }
 
+
+.member-header-link{display:none}.member-header-profile{display:none;position:relative;align-items:center;gap:9px}
+.member-header-profile>button{display:flex;align-items:center;gap:8px;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:4px 11px 4px 4px;cursor:pointer;font:inherit;font-size:12px;font-weight:750}
+.member-header-profile img{width:34px;height:34px;border-radius:50%;object-fit:cover;border:2px solid color-mix(in srgb,var(--red) 35%,var(--line))}
+.member-profile-menu{display:none;position:absolute;right:0;top:calc(100% + 10px);min-width:220px;padding:9px;background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);z-index:40}
+.member-profile-menu.open{display:grid;gap:4px}
+.member-profile-menu a,.member-profile-menu button{display:block;text-align:left;padding:10px 12px;border-radius:10px;color:var(--ink);background:transparent;border:0;font:inherit;font-size:12px;cursor:pointer}
+.member-profile-menu a:hover,.member-profile-menu button:hover{background:var(--soft)}
+.member-profile-menu small{display:block;padding:8px 12px;color:var(--muted);font-size:10px}
+.nav-actions.member-active>a.btn{display:none}
+.nav-actions.member-active .member-header-profile{display:flex}
+.nav-actions.member-active .member-header-link{display:inline-flex}
+@media(max-width:900px){.member-header-profile>button span{display:none}.member-profile-menu{right:0}}
 </style>
 </head>
 <body>
@@ -396,5 +409,30 @@ document.getElementById('contactForm').addEventListener('submit',e=>{
  window.location.href='mailto:info.vsscommunity@gmail.com?subject='+subject+'&body='+body;
 });
 </script>
-</body>
+<script>
+// Member-aware header: the public site remains fully accessible after login.
+(function(){
+ const actions=document.querySelector('.nav-actions');if(!actions)return;
+ let member=null;try{member=JSON.parse(sessionStorage.getItem('vss-member-session')||'null')}catch(e){}
+ if(!member||!member.membership_no)return;
+ actions.classList.add('member-active');
+ const home=document.createElement('a');home.className='btn member-header-link';home.href='membership.html#memberAccessPanel';home.textContent='My VSS ↗';actions.insertBefore(home,document.getElementById('menuToggle'));
+ const wrap=document.createElement('div');wrap.className='member-header-profile';
+ const button=document.createElement('button');button.type='button';button.setAttribute('aria-label','Open member profile menu');
+ const img=document.createElement('img');img.alt='';img.src=member.photo_url||'';img.onerror=()=>{img.style.display='none'};
+ const name=document.createElement('span');name.textContent=(member.full_name||'Member').split(' ')[0];
+ button.append(img,name);
+ const menu=document.createElement('div');menu.className='member-profile-menu';
+ const heading=document.createElement('small');heading.textContent=(member.full_name||'VSS Member')+' · '+member.membership_no;menu.appendChild(heading);
+ const dash=document.createElement('a');dash.href='membership.html#memberAccessPanel';dash.textContent='My member dashboard';menu.appendChild(dash);
+ const card=document.createElement('a');card.href='membership.html#member-card-section';card.textContent='My digital ID card';menu.appendChild(card);
+ const logout=document.createElement('button');logout.type='button';logout.textContent='Sign out';logout.addEventListener('click',()=>{try{sessionStorage.removeItem('vss-member-session')}catch(e){};window.location.reload()});menu.appendChild(logout);
+ button.addEventListener('click',()=>menu.classList.toggle('open'));
+ document.addEventListener('click',e=>{if(!wrap.contains(e.target))menu.classList.remove('open')});
+ wrap.append(button,menu);actions.insertBefore(wrap,document.getElementById('menuToggle'));
+ // Replace member login/register links with member destinations while retaining all public navigation.
+ document.querySelectorAll('.links a[href="login.html"],.mobile-panel a[href="login.html"]').forEach(a=>{a.href='membership.html#memberAccessPanel';a.textContent='My VSS Dashboard'});
+ document.querySelectorAll('.mobile-panel a[href="membership.html"]').forEach(a=>{a.href='membership.html#memberAccessPanel';a.textContent='My VSS Dashboard'});
+})();
+</script></body>
 </html>
