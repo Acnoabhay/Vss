@@ -126,13 +126,13 @@ language sql
 stable
 security definer
 set search_path=public
-as $
+as $$
  select m.membership_no,m.full_name,m.branch,m.semester,m.membership_category,m.photo_url
  from public.vss_id_cards m
  where upper(m.membership_no)=upper(trim(coalesce(p_membership_no,'')))
    and lower(trim(m.email))=lower(trim(coalesce(p_email,'')))
  limit 1;
-$;
+$$;
 revoke all on function public.vss_get_member_card_by_number(text,text) from public;
 grant execute on function public.vss_get_member_card_by_number(text,text) to anon,authenticated;
 
