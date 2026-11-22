@@ -12,10 +12,8 @@ In Authentication → URL Configuration:
 
 ## 3. Edge Function secrets
 In Project Settings → Edge Functions → Secrets, ensure these secrets exist:
-- `SUPABASE_URL` — project URL
-- `SUPABASE_ANON_KEY` — publishable/anon key
-- `SUPABASE_SERVICE_ROLE_KEY` — service-role key (server only; never put in GitHub)
-- `RESEND_API_KEY` — Resend API key
+Supabase provides `SUPABASE_URL`, `SUPABASE_ANON_KEY`, and `SUPABASE_SERVICE_ROLE_KEY` to Edge Functions automatically. Add these two custom secrets:
+- `RESEND_API_KEY` — your Resend API key
 - `RESEND_FROM_EMAIL` — sender identity on a domain verified in Resend, e.g. `VSS Community <members@your-verified-domain.in>`
 
 Do not share or commit any secret values.
