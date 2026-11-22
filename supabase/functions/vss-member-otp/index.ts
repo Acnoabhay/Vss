@@ -3,8 +3,9 @@
 // OTP_FROM_EMAIL (a sender authorised by Resend), OTP_PEPPER (long random secret).
 const cors = {
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-api-version, x-supabase-client-platform, x-supabase-client-runtime, x-supabase-client-version",
   "Access-Control-Allow-Methods": "POST, OPTIONS",
+  "Access-Control-Max-Age": "86400",
   "Content-Type": "application/json"
 };
 const json = (body: unknown, status = 200) => new Response(JSON.stringify(body), { status, headers: cors });
@@ -65,6 +66,8 @@ Deno.serve(async (req) => {
       });
       if (!mail.ok) {
         const err = await mail.json().catch(() => ({}));
+        // Remove the pending OTP so a failed email send does not lock the member out for 60 seconds.
+        await db("vss_member_email_otps?membership_no=eq." + encodeURIComponent(membershipNo), { method: "DELETE" }).catch(() => null);
         throw new Error(err.message || "Email provider could not send the OTP. Check the sender domain configuration.");
       }
       return json({ success: true, message: "OTP sent." });
