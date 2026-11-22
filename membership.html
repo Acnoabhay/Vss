@@ -18,8 +18,8 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script><script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 <script>
 // Paste the Supabase Project URL and anon/public key here. Never put a service-role key in this file.
-const SUPABASE_URL = "YOUR_SUPABASE_PROJECT_URL";
-const SUPABASE_ANON_KEY = "YOUR_SUPABASE_ANON_KEY";
+const SUPABASE_URL = "https://aukiryqoqpotjuuqwsec.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF1a2lyeXFvcXBvdGp1dXF3c2VjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTUzNTk5MTcsImV4cCI6MjExMDkzNTkxN30.fqfDg2bU70gT3RpRp0cOYyZhusUwLuathrFI42p3v_w";
 const configured = SUPABASE_URL.startsWith("https://") && !SUPABASE_URL.includes("YOUR_") && !SUPABASE_ANON_KEY.includes("YOUR_");
 document.getElementById("configNotice").classList.toggle("hidden",configured);
 const $=id=>document.getElementById(id);
