@@ -1,0 +1,5 @@
+[functions.login-by-member-id]
+verify_jwt = false
+
+[functions.send-membership-email]
+verify_jwt = false
