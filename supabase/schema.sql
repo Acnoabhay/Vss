@@ -65,3 +65,11 @@ as $$
   from public.vss_members m where m.membership_no=upper(trim(p_membership_no)) limit 1;
 $$;
 grant execute on function public.vss_verify_member(text) to anon, authenticated;
+
+-- Server-only email send cooldown log. Edge Functions use the service-role key.
+create table if not exists public.vss_email_send_log (
+  user_id uuid primary key references auth.users(id) on delete cascade,
+  last_sent_at timestamptz not null default now()
+);
+alter table public.vss_email_send_log enable row level security;
+revoke all on public.vss_email_send_log from anon, authenticated;
