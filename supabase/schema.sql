@@ -65,6 +65,7 @@ on conflict (id) do update set public=true,file_size_limit=3145728,allowed_mime_
 drop policy if exists "VSS members can upload ID photos" on storage.objects;
 create policy "VSS members can upload ID photos" on storage.objects
 for insert to anon,authenticated with check (bucket_id='vss-member-photos');
+grant insert on storage.objects to anon,authenticated;
 
 alter table public.vss_id_cards enable row level security;
 drop policy if exists "VSS admin can read members" on public.vss_id_cards;
