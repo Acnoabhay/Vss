@@ -17,8 +17,7 @@ create table if not exists public.vss_id_cards (
 );
 alter table public.vss_id_cards add column if not exists photo_url text not null default '';
 
-create unique index if not exists vss_id_cards_name_unique
-  on public.vss_id_cards (lower(regexp_replace(trim(full_name), '\s+', ' ', 'g')));
+drop index if exists public.vss_id_cards_name_unique;
 create unique index if not exists vss_id_cards_email_unique on public.vss_id_cards (lower(trim(email)));
 create unique index if not exists vss_id_cards_phone_unique on public.vss_id_cards (regexp_replace(phone, '\D', '', 'g'));
 
@@ -41,10 +40,9 @@ begin
  end if;
  v_phone:=regexp_replace(p_phone,'\D','','g');
  if exists(select 1 from public.vss_id_cards m
-  where lower(regexp_replace(trim(m.full_name),'\s+',' ','g'))=lower(regexp_replace(trim(p_full_name),'\s+',' ','g'))
-  or lower(trim(m.email))=lower(trim(p_email))
+  where lower(trim(m.email))=lower(trim(p_email))
   or regexp_replace(m.phone,'\D','','g')=v_phone) then
-  raise exception 'A registration already exists with this name, mobile number or email.';
+  raise exception 'This mobile number or email address is already registered.';
  end if;
  v_no:='VSS'||lpad(nextval('public.vss_id_number_seq')::text,5,'0');
  return query insert into public.vss_id_cards as m
@@ -52,7 +50,7 @@ begin
  values(v_no,trim(p_full_name),trim(p_branch),trim(p_semester),trim(p_phone),lower(trim(p_email)),trim(p_category),trim(p_photo_url))
  returning m.membership_no,m.full_name,m.branch,m.semester,m.membership_category,m.photo_url;
 exception when unique_violation then
- raise exception 'A registration already exists with this name, mobile number or email. Please check your details.';
+ raise exception 'This mobile number or email address is already registered. Please check your details.';
 end; $$;
 
 revoke all on function public.vss_register_member(text,text,text,text,text,text,text) from public;
