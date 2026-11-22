@@ -195,7 +195,7 @@ img{
 .member-profile-menu a,.member-profile-menu button{display:block;text-align:left;padding:10px 12px;border-radius:10px;color:var(--ink);background:transparent;border:0;font:inherit;font-size:12px;cursor:pointer}
 .member-profile-menu a:hover,.member-profile-menu button:hover{background:var(--soft)}
 .member-profile-menu small{display:block;padding:8px 12px;color:var(--muted);font-size:10px}
-.nav-actions.member-active>a.btn{display:none}
+.nav-actions.member-active>a.btn:not(.member-header-link){display:none}
 .nav-actions.member-active .member-header-profile{display:flex}
 .nav-actions.member-active .member-header-link{display:inline-flex}
 @media(max-width:900px){.member-header-profile>button span{display:none}.member-profile-menu{right:0}}
