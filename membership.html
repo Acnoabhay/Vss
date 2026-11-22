@@ -9,10 +9,10 @@
 <div class="layout" id="portal" style="margin-top:20px">
 <section class="panel" id="authPanel"><div class="tabs"><button class="tab active" data-tab="signin">Sign in</button><button class="tab" data-tab="signup">Apply for membership</button></div>
 <form id="signinForm"><h2>Member / committee sign in</h2><div class="field"><label>Email</label><input type="email" id="loginEmail" required autocomplete="email"></div><div class="field"><label>Password</label><input type="password" id="loginPassword" required autocomplete="current-password"></div><button class="primary" style="width:100%">Sign in</button></form>
-<form id="signupForm" class="hidden"><h2>New member application</h2><p class="hint">Applications are reviewed by the VSS committee. Your ID is generated only after approval.</p><div class="field"><label>Full name</label><input id="fullName" maxlength="100" required></div><div class="row"><div class="field"><label>Branch</label><input id="branch" maxlength="80" placeholder="e.g. Civil" required></div><div class="field"><label>Semester</label><input id="semester" maxlength="40" placeholder="e.g. 3rd" required></div></div><div class="field"><label>Mobile number</label><input id="phone" type="tel" maxlength="20" required></div><div class="field"><label>Email</label><input id="signupEmail" type="email" required autocomplete="email"></div><div class="field"><label>Create password</label><input id="signupPassword" type="password" minlength="8" required autocomplete="new-password"></div><div class="field"><label>Profile photo (JPG/PNG/WebP, max 2 MB)</label><input id="photo" type="file" accept="image/jpeg,image/png,image/webp"></div><button class="primary" style="width:100%">Submit application</button></form><div id="authMsg" class="msg" role="status"></div></section>
-<section class="panel hidden" id="memberPanel"><div style="display:flex;justify-content:space-between;align-items:center;gap:10px"><h2>Your membership</h2><button class="secondary" id="logoutBtn">Sign out</button></div><div id="memberStatus"></div><div id="digitalCard" class="card hidden"><div class="cardhead"><div><strong>VSS COMMUNITY</strong><small>VIDYARTHI SEVA SANGATHAN</small></div><span class="stamp">MEMBER</span></div><div class="person"><img id="cardPhoto" class="avatar" alt="Member photo"><div><h3 id="cardName">Member Name</h3><p id="cardRole">VSS Member</p><p id="cardBranch"></p><div class="member-no" id="cardNo"></div></div></div><div class="cardfoot"><div>CGIT RAIPUR<br>Issued by VSS Committee</div><div id="qrCode" class="qr"></div></div></div><div class="actions hidden" id="cardActions"><button class="primary" id="downloadCard">Download ID card</button><button class="secondary" id="printCard">Print / Save PDF</button></div><form id="profileForm" class="hidden" style="margin-top:22px"><h2>Update your details</h2><div class="field"><label>Full name</label><input id="editName" required maxlength="100"></div><div class="row"><div class="field"><label>Branch</label><input id="editBranch" required maxlength="80"></div><div class="field"><label>Semester</label><input id="editSemester" required maxlength="40"></div></div><div class="field"><label>Mobile</label><input id="editPhone" required maxlength="20"></div><div class="field"><label>Update profile photo (optional, max 2 MB)</label><input id="editPhoto" type="file" accept="image/jpeg,image/png,image/webp"></div><button class="secondary">Save details</button></form><div id="memberMsg" class="msg"></div></section>
+<form id="signupForm" class="hidden"><h2>Create your VSS account</h2><p class="hint">Create an account and your digital VSS membership ID will be issued automatically.</p><div class="field"><label>Full name</label><input id="fullName" maxlength="100" required autocomplete="name"></div><div class="field"><label>Email</label><input id="signupEmail" type="email" required autocomplete="email"></div><div class="field"><label>Create password</label><input id="signupPassword" type="password" minlength="8" required autocomplete="new-password"></div><button class="primary" style="width:100%">Create account & get ID</button></form><div id="authMsg" class="msg" role="status"></div></section>
+<section class="panel hidden" id="memberPanel"><div style="display:flex;justify-content:space-between;align-items:center;gap:10px"><h2>Your membership</h2><button class="secondary" id="logoutBtn">Sign out</button></div><div id="memberStatus"></div><div id="digitalCard" class="card hidden"><div class="cardhead"><div><strong>VSS COMMUNITY</strong><small>VIDYARTHI SEVA SANGATHAN</small></div><span class="stamp">MEMBER</span></div><div class="person"><div id="cardPhoto" class="avatar" style="display:grid;place-items:center;font-size:28px;font-weight:850;color:#9b1420">VSS</div><div><h3 id="cardName">Member Name</h3><p id="cardRole">VSS Member</p><p id="cardBranch">CGIT Raipur</p><div class="member-no" id="cardNo"></div></div></div><div class="cardfoot"><div>CGIT RAIPUR<br>Auto-issued digital membership</div><div id="qrCode" class="qr"></div></div></div><div class="actions hidden" id="cardActions"><button class="primary" id="downloadCard">Download ID card</button><button class="secondary" id="printCard">Print / Save PDF</button></div><div id="memberMsg" class="msg"></div></section>
 </div>
-<section class="panel hidden" id="adminPanel" style="margin-top:20px"><div style="display:flex;justify-content:space-between;gap:12px;align-items:center"><div><span class="eyebrow">Committee controls</span><h2>Membership applications</h2></div><button class="secondary" id="refreshAdmin">Refresh</button></div><div id="adminList">Loading applications…</div><p class="hint">Committee access is assigned manually by the Supabase project owner. Never share the service-role key in this website.</p></section>
+
 <section class="panel" id="verifyPanel" style="margin-top:20px"><span class="eyebrow">Public verification</span><h2>Verify a VSS member ID</h2><form id="verifyForm"><div class="row"><div class="field"><label>Membership number</label><input id="verifyNo" placeholder="VSS-CGIT-2026-0001" required></div><div class="field" style="align-self:end"><button class="primary" style="width:100%">Verify ID</button></div></div></form><div id="verifyResult" class="msg" aria-live="polite"></div></section>
 </main><div class="footer">Vidyarthi Seva Sangathan · By the students, for the students · CGIT Raipur</div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script><script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
@@ -27,58 +27,29 @@ let db=null,currentUser=null,currentMember=null;
 if(configured && window.supabase) db=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
 document.querySelectorAll(".tab").forEach(b=>b.addEventListener("click",()=>{document.querySelectorAll(".tab").forEach(x=>x.classList.toggle("active",x===b));$("signinForm").classList.toggle("hidden",b.dataset.tab!=="signin");$("signupForm").classList.toggle("hidden",b.dataset.tab!=="signup");}));
 function msg(id,text){$(id).textContent=text;}
-function statusBadge(s){return '<span class="status '+s+'">'+s.toUpperCase()+'</span>';}
 async function loadMember(){
  if(!db||!currentUser)return;
- const {data,error}=await db.from("vss_members").select("*").eq("user_id",currentUser.id).single();
+ const {data,error}=await db.from("vss_members").select("user_id,full_name,membership_no,status").eq("user_id",currentUser.id).single();
  if(error){msg("memberMsg",error.message);return;}
  currentMember=data;$("authPanel").classList.add("hidden");$("memberPanel").classList.remove("hidden");
- $("memberStatus").innerHTML='<p>Application status: '+statusBadge(data.status)+'</p>';
- $("profileForm").classList.remove("hidden");$("editName").value=data.full_name;$("editBranch").value=data.branch;$("editSemester").value=data.semester;$("editPhone").value=data.phone;$("editPhoto").value="";
- const isApproved=data.status==="approved"&&data.membership_no;
- $("digitalCard").classList.toggle("hidden",!isApproved);$("cardActions").classList.toggle("hidden",!isApproved);
- if(isApproved){
-  $("cardName").textContent=data.full_name;$("cardRole").textContent=data.role==="committee_admin"?"Committee Administrator":"VSS Member";$("cardBranch").textContent=data.branch+" · "+data.semester+" Semester";$("cardNo").textContent=data.membership_no;
-  $("cardPhoto").src=data.photo_path?await signedPhoto(data.photo_path):"";
-  $("qrCode").innerHTML="";const verifyUrl=location.origin+location.pathname+"?verify="+encodeURIComponent(data.membership_no);
-  new QRCode($("qrCode"),{text:verifyUrl,width:72,height:72,colorDark:"#151515",colorLight:"#ffffff",correctLevel:QRCode.CorrectLevel.M});
- }
- if(data.role==="committee_admin"&&data.status==="approved"){$("adminPanel").classList.remove("hidden");await loadAdmin();}
+ $("memberStatus").textContent="Your VSS membership is active.";
+ $("digitalCard").classList.remove("hidden");$("cardActions").classList.remove("hidden");
+ $("cardName").textContent=data.full_name||currentUser.email.split("@")[0];$("cardRole").textContent="VSS Member";$("cardBranch").textContent="CGIT Raipur";$("cardNo").textContent=data.membership_no;
+ $("cardPhoto").textContent=(data.full_name||"V").trim().split(/\s+/).slice(0,2).map(x=>x[0]).join("").toUpperCase();
+ $("qrCode").innerHTML="";const verifyUrl=location.origin+location.pathname+"?verify="+encodeURIComponent(data.membership_no);
+ new QRCode($("qrCode"),{text:verifyUrl,width:72,height:72,colorDark:"#151515",colorLight:"#ffffff",correctLevel:QRCode.CorrectLevel.M});
 }
 async function signedPhoto(path){const {data}=await db.storage.from("vss-member-photos").createSignedUrl(path,3600);return data?.signedUrl||"";}
 $("signinForm").addEventListener("submit",async e=>{e.preventDefault();if(!db)return;msg("authMsg","Signing in…");const {error}=await db.auth.signInWithPassword({email:$("loginEmail").value,password:$("loginPassword").value});msg("authMsg",error?.message||"Signed in.");});
 $("signupForm").addEventListener("submit",async e=>{
- e.preventDefault();if(!db)return;msg("authMsg","Submitting application…");
- const email=$("signupEmail").value,password=$("signupPassword").value;
- const {data,error}=await db.auth.signUp({email,password,options:{data:{full_name:$("fullName").value.trim(),branch:$("branch").value.trim(),semester:$("semester").value.trim(),phone:$("phone").value.trim()}}});
+ e.preventDefault();if(!db){msg("authMsg","Portal setup is not complete yet.");return;}
+ msg("authMsg","Creating your account and issuing your VSS ID…");
+ const {data,error}=await db.auth.signUp({email:$("signupEmail").value.trim(),password:$("signupPassword").value,options:{data:{full_name:$("fullName").value.trim()}}});
  if(error){msg("authMsg",error.message);return;}
- if(!data.user){msg("authMsg","Please check your email to confirm your account.");return;}
- let photoPath=null;const file=$("photo").files[0];
- if(file&&file.size>2*1024*1024){msg("authMsg","Photo must be 2 MB or smaller.");return;}
- if(data.session){if(file){photoPath=data.user.id+"/"+Date.now()+"-"+file.name.replace(/[^a-zA-Z0-9._-]/g,"_");const up=await db.storage.from("vss-member-photos").upload(photoPath,file,{upsert:false});if(up.error){msg("authMsg","Account created, but photo upload failed: "+up.error.message);return;}}
-  const upd=await db.rpc("vss_update_my_profile",{p_full_name:$("fullName").value.trim(),p_branch:$("branch").value.trim(),p_semester:$("semester").value.trim(),p_phone:$("phone").value.trim(),p_photo_path:photoPath});if(upd.error){msg("authMsg",upd.error.message);return;}
- }
- msg("authMsg",data.session?"Application submitted. Your application is pending committee approval.":"Account created. Confirm your email, sign in, and upload your photo from your profile.");
- if(data.session){currentUser=data.user;await loadMember();}
+ if(data.session){currentUser=data.user;msg("authMsg","Account created! Your VSS ID is ready.");await loadMember();}
+ else{msg("authMsg","Account created and your ID has been issued. Please confirm your email, then sign in to view your card.");}
 });
-$("logoutBtn").addEventListener("click",async()=>{await db.auth.signOut();currentUser=null;currentMember=null;$("memberPanel").classList.add("hidden");$("adminPanel").classList.add("hidden");$("authPanel").classList.remove("hidden");});
-$("profileForm").addEventListener("submit",async e=>{e.preventDefault();let photoPath=null;const file=$("editPhoto").files[0];if(file){if(file.size>2*1024*1024){msg("memberMsg","Photo must be 2 MB or smaller.");return;}photoPath=currentUser.id+"/"+Date.now()+"-"+file.name.replace(/[^a-zA-Z0-9._-]/g,"_");const up=await db.storage.from("vss-member-photos").upload(photoPath,file,{upsert:false});if(up.error){msg("memberMsg",up.error.message);return;}}const {error}=await db.rpc("vss_update_my_profile",{p_full_name:$("editName").value.trim(),p_branch:$("editBranch").value.trim(),p_semester:$("editSemester").value.trim(),p_phone:$("editPhone").value.trim(),p_photo_path:photoPath});msg("memberMsg",error?.message||"Details saved.");if(!error)await loadMember();});
-async function loadAdmin(){
- const {data,error}=await db.from("vss_members").select("user_id,full_name,branch,semester,phone,status,membership_no,created_at").order("created_at",{ascending:false});
- if(error){$("adminList").textContent=error.message;return;}
- $("adminList").innerHTML="";
- data.forEach(m=>{const el=document.createElement("div");el.className="member";const info=document.createElement("div");const name=document.createElement("strong");name.textContent=m.full_name||"Unnamed applicant";const small=document.createElement("small");small.textContent=m.branch+" · "+m.semester+" · "+m.phone+" · "+m.status+(m.membership_no?" · "+m.membership_no:"");info.append(name,small);el.append(info);
- const actions=document.createElement("div");actions.className="member-actions";
- const add=(label,decision,cls)=>{const b=document.createElement("button");b.textContent=label;b.className=cls;b.onclick=async()=>{b.disabled=true;const {error}=await db.rpc("vss_review_member",{p_user_id:m.user_id,p_decision:decision});if(error)alert(error.message);await loadAdmin();await loadMember();};actions.append(b);};
- if(m.status==="pending"||m.status==="rejected"||m.status==="suspended")add("Approve","approve","primary");
- if(m.status==="pending")add("Reject","reject","danger");
- if(m.status==="approved")add("Suspend","suspend","danger");
- if(m.status==="suspended")add("Reinstate","reinstate","secondary");
- el.append(actions);$("adminList").append(el);
- });
- if(!data.length)$("adminList").textContent="No applications yet.";
-}
-$("refreshAdmin").addEventListener("click",loadAdmin);
+$("logoutBtn").addEventListener("click",async()=>{await db.auth.signOut();currentUser=null;currentMember=null;$("memberPanel").classList.add("hidden");$("authPanel").classList.remove("hidden");});
 $("downloadCard").addEventListener("click",async()=>{const canvas=await html2canvas($("digitalCard"),{scale:3,backgroundColor:null});const a=document.createElement("a");a.download=(currentMember.membership_no||"VSS-member-ID")+".png";a.href=canvas.toDataURL("image/png");a.click();});
 $("printCard").addEventListener("click",()=>window.print());
 $("verifyForm").addEventListener("submit",async e=>{e.preventDefault();if(!db){msg("verifyResult","Portal setup is not complete yet.");return;}const no=$("verifyNo").value.trim().toUpperCase();msg("verifyResult","Checking…");const {data,error}=await db.rpc("vss_verify_member",{p_membership_no:no});if(error){msg("verifyResult",error.message);return;}if(!data?.length){$("verifyResult").innerHTML='<div class="verify-result"><b>Not found</b><br>This membership number does not exist.</div>';return;}const m=data[0];$("verifyResult").innerHTML='<div class="verify-result"><b>'+ (m.valid?"✓ Valid VSS membership":"Membership not valid")+'</b><br>'+escapeHtml(m.full_name)+'<br>'+escapeHtml(m.membership_no)+'<br>'+escapeHtml(m.role_label)+' · '+escapeHtml(m.branch)+'<br>Status: '+escapeHtml(m.status)+'</div>';});
