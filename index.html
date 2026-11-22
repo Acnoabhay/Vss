@@ -160,6 +160,32 @@ img{transition:transform .65s cubic-bezier(.2,.75,.25,1),filter .5s}
   object-position:center!important;
 }
 
+
+/* VSS photo preservation: never crop, zoom, or distort photographs */
+img{
+  object-fit:contain!important;
+  object-position:center center!important;
+}
+.alumni-photo img,
+.vss-family-gallery .alumni-photo img{
+  width:100%;
+  height:auto!important;
+  min-height:0!important;
+  max-height:none!important;
+  aspect-ratio:auto!important;
+  object-fit:contain!important;
+  object-position:center center!important;
+  transform:none!important;
+}
+.alumni-photo:hover img,
+.alumni-photo-wide img,
+.vss-family-gallery .alumni-photo:hover img{
+  object-fit:contain!important;
+  object-position:center center!important;
+  transform:none!important;
+  filter:none!important;
+}
+
 </style>
 </head>
 <body>
