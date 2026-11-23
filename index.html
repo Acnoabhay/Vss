@@ -448,6 +448,27 @@ img,video,iframe,svg{max-width:100%}
 .home-hero-photo img{display:block;width:100%;height:100%;object-fit:cover;object-position:center}
 .hero>.wrap,.hero .hero-grid,.hero .hero-grid>*{position:relative;z-index:2!important}
 @media(prefers-reduced-motion:reduce){.home-hero-photo{transition:opacity 1.8s ease!important}}
+
+/* Hero refinement: visible photo slideshow on the right, clean text on the left */
+.hero{display:block;min-height:unset;background:var(--paper)!important}
+.hero-grid{display:grid;grid-template-columns:minmax(0,1fr);gap:0;max-width:1160px}
+.home-hero-backdrop{left:auto!important;right:0!important;width:68%!important;z-index:0!important}
+.home-hero-shade{z-index:1!important;background:linear-gradient(90deg,var(--paper) 0%,color-mix(in srgb,var(--paper) 22%,transparent) 48%,color-mix(in srgb,var(--paper) 8%,transparent) 100%)!important}
+.home-hero-photo{inset:0!important;filter:blur(.5px)!important;transform:scale(1.015)!important}
+.home-hero-photo.active{opacity:.38!important}
+.home-hero-photo img{object-position:center!important}
+.hero>.wrap{z-index:2!important}
+.hero-grid>div:first-child{max-width:760px;position:relative;z-index:3}
+.hero-principle{margin:10px 0 0;font-size:14px;font-weight:650;letter-spacing:.035em;color:var(--muted)}
+.hero-art{display:none!important}
+.home-gallery{scroll-margin-top:90px}
+@media(max-width:700px){
+ .home-hero-backdrop{width:100%!important}
+ .home-hero-shade{background:linear-gradient(90deg,color-mix(in srgb,var(--paper) 91%,transparent) 0%,color-mix(in srgb,var(--paper) 78%,transparent) 100%)!important}
+ .home-hero-photo.active{opacity:.24!important}
+ .hero-grid>div:first-child{max-width:100%}
+}
+
 </style>
 </head>
 <body>
@@ -477,10 +498,10 @@ img,video,iframe,svg{max-width:100%}
  <div><span class="eyebrow">CGIT Raipur · Student community</span><h1>Students first.<br><span>Service always.</span></h1>
  <p class="lead">A student-led initiative built on a simple belief: when students support one another, the whole campus moves forward. VSS brings people, ideas and opportunities together — by the students, for the students.</p>
  <div class="hero-actions"><a class="btn" href="login.html">Login Portal ↗</a><a class="btn secondary" href="membership.html">New member registration</a><a class="btn secondary" href="#about">Discover VSS</a></div>
- <p class="hero-note">A platform for guidance, collaboration, leadership and meaningful campus experiences.</p>
+ <p class="hero-note">A platform for guidance, collaboration, leadership and meaningful campus experiences.</p><p class="hero-principle">By the students · For the students</p>
  <div class="vss-head-highlight"><img src="assets/abhay-baghel.webp" alt="Abhay Baghel, Head of VSS"><div><small>Head of VSS</small><strong>Abhay Baghel</strong><span>Overall leadership & direction</span></div></div>
  <div class="stats"><div class="stat"><strong>Student-led</strong><span>Driven by student initiative</span></div><div class="stat"><strong>One campus</strong><span>Many voices and ideas</span></div><div class="stat"><strong>Shared growth</strong><span>Learning through service</span></div></div></div>
- <div class="hero-art"><div class="hero-logo"><img src="assets/vss-community.jpg" alt="Vidyarthi Seva Sangathan community" loading="eager"></div><div class="art-caption">By the students · For the students</div></div>
+ 
 </div></section>
 
 <section class="home-updates" id="home-updates" aria-label="VSS notices and upcoming events"><div class="wrap">
@@ -505,7 +526,7 @@ img,video,iframe,svg{max-width:100%}
 </section>
 
 <section class="home-gallery" id="home-gallery" aria-label="VSS events photo slideshow"><div class="wrap">
- <div class="home-gallery-heading"><div><span class="eyebrow">Our memories</span><h2>Moments that bring us together</h2><p>Photos published by the VSS Admin Portal appear here automatically.</p></div><a class="btn secondary" href="#events">View all events ↗</a></div>
+ <div class="home-gallery-heading"><div><span class="eyebrow">Our memories</span><h2>VSS Event Gallery</h2><p>Photos published by the VSS Admin Portal appear here automatically.</p></div><a class="btn secondary" href="#events">View all events ↗</a></div>
  <div class="home-gallery-slider" id="homeGallerySlider" aria-roledescription="carousel">
   <div class="home-gallery-stage" id="homeGalleryStage" aria-live="polite">
    <div class="updates-empty">Loading published event photos from the VSS Admin Portal…</div>
