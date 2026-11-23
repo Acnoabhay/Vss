@@ -30,12 +30,20 @@
  .note{font-size:13px;margin-top:34px}
 }
 
+
+/* Shared responsive safety and keyboard-accessibility polish */
+html{overflow-x:clip;scroll-behavior:smooth}
+body{max-width:100%;overflow-x:clip}
+img,video,canvas,svg{max-width:100%}
+button,a,input,select,textarea{touch-action:manipulation}
+:focus-visible{outline:3px solid color-mix(in srgb,var(--red,#a71928) 55%,#fff);outline-offset:3px}
+@media(max-width:480px){.top{gap:10px;flex-wrap:wrap}.wrap,.shell{max-width:100%}.panel,.login{min-width:0}}
 </style></head><body>
 <header class="top"><div class="brand">VSS COMMUNITY<small>VIDYARTHI SEVA SANGATHAN · CGIT RAIPUR</small></div><button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">☾</button><a href="index.html">← Main website</a></header>
 <main class="wrap"><div class="intro"><span class="eyebrow">WELCOME TO VSS</span><h1>Choose your login</h1><p>Continue to the right portal for your VSS account.</p></div>
 <div class="choices">
 <a class="card" href="membership.html#memberAccessPanel"><span class="icon">♙</span><h2>Member Login</h2><p>Enter your VSS membership ID and registered email to access your digital ID, membership profile, notices, events and student resources.</p><span class="go">Continue to Member Login ↗</span></a>
-<a class="card" href="admin.html"><span class="icon">⚿</span><h2>Administration Login</h2><p>Administrator access using the authorised VSS ID and a the existing registered-email verification process.</p><span class="go">Continue to Administration ↗</span></a>
+<a class="card" href="admin.html"><span class="icon">⚿</span><h2>Administration Login</h2><p>Administrator access using the authorised VSS ID and the existing registered-email verification process.</p><span class="go">Continue to Administration ↗</span></a>
 </div>
 <p class="note">VSS is an independent, unofficial student-led community. Its member and admin portals are separate from CGIT Raipur and CSVTU official systems.</p></main><script>
 (()=>{const root=document.documentElement,key='vss-theme';const saved=localStorage.getItem(key);if(saved)root.dataset.theme=saved;const b=document.getElementById('themeToggle');const paint=()=>b.textContent=root.dataset.theme==='dark'?'☀':'☾';paint();b.addEventListener('click',()=>{root.dataset.theme=root.dataset.theme==='dark'?'light':'dark';localStorage.setItem(key,root.dataset.theme);paint();});})();
