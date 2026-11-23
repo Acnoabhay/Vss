@@ -103,6 +103,8 @@ img,video,canvas,svg{max-width:100%}
 button,a,input,select,textarea{touch-action:manipulation}
 :focus-visible{outline:3px solid color-mix(in srgb,var(--red,#a71928) 55%,#fff);outline-offset:3px}
 @media(max-width:480px){.top{gap:10px;flex-wrap:wrap}.wrap,.shell{max-width:100%}.panel,.login{min-width:0}}
+
+.gallery-admin-previews{display:flex;flex-wrap:wrap;gap:9px;margin:8px 0 14px}.gallery-admin-previews:empty{display:none}
 </style>
 </head>
 <body>
@@ -279,7 +281,7 @@ $("galleryPhotoForm").addEventListener("submit",async e=>{
  finally{btn.disabled=false;}
 });
 async function toggleGalleryPhoto(id){const p=galleryPhotos.find(x=>x.id===id);if(!p)return;const {error}=await db.from("vss_gallery_photos").update({is_published:!p.is_published,updated_at:new Date().toISOString()}).eq("id",id);if(error){$("galleryPhotoMsg").textContent=error.message;return;}await refreshAll();}
-async function deleteGalleryPhoto(id){const p=galleryPhotos.find(x=>x.id===id);if(!p||!confirm("Delete this photo from the VSS website gallery?"))return;const {error}=await db.from("vss_gallery_photos").delete().eq("id",id);if(error){$("galleryPhotoMsg").textContent=error.message;return;}await refreshAll();}
+async function deleteGalleryPhoto(id){const p=galleryPhotos.find(x=>x.id===id);if(!p||!confirm("Delete this photo from the VSS website gallery?"))return;const marker="/storage/v1/object/public/vss-event-gallery/";const path=p.image_url&&p.image_url.includes(marker)?decodeURIComponent(p.image_url.split(marker)[1]):null;if(path){const {error:storageError}=await db.storage.from("vss-event-gallery").remove([path]);if(storageError)console.warn("Could not remove stored gallery image",storageError);}const {error}=await db.from("vss_gallery_photos").delete().eq("id",id);if(error){$("galleryPhotoMsg").textContent=error.message;return;}await refreshAll();}
 $("refreshGalleryPhotos").addEventListener("click",refreshAll);
 
 function renderEvents(){$("eventCount").textContent=events.length;$("eventList").innerHTML=events.length?events.map(e=>"<article class='item'>"+(e.image_url?"<img src='"+esc(e.image_url)+"' alt='"+esc(e.title)+" event photo' style='display:block;width:100%;max-height:190px;object-fit:contain;background:#f3f4f6;border-radius:10px;margin-bottom:12px'>":"")+"<div class='toolbar'><span class='pill "+(e.is_published?"live":"")+"'>"+(e.is_published?"Published":"Draft")+"</span>"+(e.image_url?"<span class='pill live'>Homepage gallery</span>":"")+"</div><h3>"+esc(e.title)+"</h3><p>"+esc(dateText(e.event_date))+" · "+esc(e.venue||"Venue to be announced")+"</p><p>"+esc(e.description)+"</p>"+(e.registration_url?"<p><a href='"+esc(e.registration_url)+"' target='_blank' rel='noopener'>Registration link ↗</a></p>":"")+"<div class='item-actions'><button class='light action' data-edit-event='"+esc(e.id)+"'>Edit</button><button class='danger action' data-delete-event='"+esc(e.id)+"'>Delete</button></div></article>").join(""):"<div class='empty'>No events have been added.</div>";document.querySelectorAll("[data-edit-event]").forEach(b=>b.addEventListener("click",()=>editEvent(b.dataset.editEvent)));document.querySelectorAll("[data-delete-event]").forEach(b=>b.addEventListener("click",()=>deleteEvent(b.dataset.deleteEvent)));}
