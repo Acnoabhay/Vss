@@ -437,6 +437,17 @@ img,video,iframe,svg{max-width:100%}
 .home-gallery-slide img{transition:opacity .8s ease}
 .home-gallery{scroll-margin-top:90px}
 @media(prefers-reduced-motion:reduce){.home-hero-photo{transition:none}.home-gallery-slide.is-active{animation:none}}
+
+/* Fix hero image slideshow: keep images above hero background, below the copy */
+.hero{position:relative;isolation:isolate;overflow:hidden}
+.home-hero-backdrop{position:absolute!important;inset:0;z-index:0!important;overflow:hidden;pointer-events:none}
+.home-hero-shade{position:absolute!important;inset:0;z-index:1!important;pointer-events:none;background:rgba(255,255,255,.68)!important}
+[data-theme="dark"] .home-hero-shade{background:rgba(17,18,22,.68)!important}
+.home-hero-photo{position:absolute;inset:0;z-index:0;opacity:0;transition:opacity 1.8s ease;filter:blur(1px);transform:scale(1.025);will-change:opacity}
+.home-hero-photo.active{opacity:.10!important}
+.home-hero-photo img{display:block;width:100%;height:100%;object-fit:cover;object-position:center}
+.hero>.wrap,.hero .hero-grid,.hero .hero-grid>*{position:relative;z-index:2!important}
+@media(prefers-reduced-motion:reduce){.home-hero-photo{transition:opacity 1.8s ease!important}}
 </style>
 </head>
 <body>
@@ -757,11 +768,15 @@ document.getElementById('contactForm').addEventListener('submit',e=>{
  function stop(){if(timer)clearInterval(timer);timer=null}
  function start(){stop();if(!reduced&&!paused&&slides.length>1)timer=setInterval(()=>show(active+1),5600)}
  function stopHero(){if(heroTimer)clearInterval(heroTimer);heroTimer=null}
- function startHero(){stopHero();if(!reduced&&heroImages.length>1&&!document.hidden)heroTimer=setInterval(()=>{const next=(heroImages.findIndex(x=>x.classList.contains('active'))+1)%heroImages.length;heroImages.forEach((el,i)=>el.classList.toggle('active',i===next));},7600)}
+ function startHero(){stopHero();if(heroImages.length>1&&!document.hidden)heroTimer=setInterval(()=>{const next=(heroImages.findIndex(x=>x.classList.contains('active'))+1)%heroImages.length;heroImages.forEach((el,i)=>el.classList.toggle('active',i===next));},7600)}
  root.addEventListener('mouseenter',()=>{paused=true;stop()});root.addEventListener('mouseleave',()=>{paused=false;start()});root.addEventListener('focusin',()=>{paused=true;stop()});root.addEventListener('focusout',e=>{if(!root.contains(e.relatedTarget)){paused=false;start()}});
  document.addEventListener('visibilitychange',()=>{if(document.hidden){stop();stopHero()}else{start();startHero()}});
  document.getElementById('homeGalleryPrev').addEventListener('click',()=>{show(active-1);start()});
  document.getElementById('homeGalleryNext').addEventListener('click',()=>{show(active+1);start()});
+ // Start the hero slideshow immediately with existing VSS, family, event and Head photos.
+ const localPhotos=['assets/alumni-meet-2026-01.jpg','assets/alumni-meet-2026-02.jpg','assets/alumni-meet-2026-03.jpg','assets/alumni-meet-2026-04.jpg','assets/alumni-meet-2026-05.jpg','assets/vss-family-01.jpg','assets/vss-family-02.jpg','assets/vss-family-03.jpg','assets/vss-family-04.jpg','assets/abhay-baghel.webp','assets/abhay-baghel.jpg','assets/khileshwar-verma.webp','assets/prachet-sinha.webp','assets/vss-community.jpg'];
+ localPhotos.forEach(src=>{if(!hero||hero.dataset.sources?.split('|').includes(src))return;hero.dataset.sources=(hero.dataset.sources?hero.dataset.sources+'|':'')+src;const layer=document.createElement('div');layer.className='home-hero-photo';const img=document.createElement('img');img.src=src;img.alt='';img.loading=heroImages.length?'lazy':'eager';img.decoding='async';img.onerror=()=>{layer.remove();heroImages=heroImages.filter(x=>x!==layer)};layer.appendChild(img);hero.appendChild(layer);heroImages.push(layer);});
+ if(heroImages.length){heroImages[0].classList.add('active');heroIndex=0;startHero();}
  try{
   if(!window.supabase||!window.supabase.createClient)throw new Error('Gallery service unavailable');
   const db=window.supabase.createClient('https://aukiryqoqpotjuuqwsec.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF1a2lyeXFvcXBvdGp1dXF3c2VjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTUzNTk5MTcsImV4cCI6MjExMDkzNTkxN30.fqfDg2bU70gT3RpRp0cOYyZhusUwLuathrFI42p3v_w');
