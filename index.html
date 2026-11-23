@@ -453,6 +453,12 @@ img,video,iframe,svg{max-width:100%}
 .hero{display:block;min-height:unset;background:var(--paper)!important}
 .hero-grid{display:grid;grid-template-columns:minmax(0,1fr);gap:0;max-width:1160px}
 .home-hero-backdrop{left:auto!important;right:0!important;width:68%!important;z-index:0!important}
+/* Soft dissolve at the image's left boundary; retain a clear, visible photo on the right. */
+.home-hero-backdrop{-webkit-mask-image:linear-gradient(90deg,transparent 0%,rgba(0,0,0,.18) 9%,rgba(0,0,0,.72) 22%,#000 34%);mask-image:linear-gradient(90deg,transparent 0%,rgba(0,0,0,.18) 9%,rgba(0,0,0,.72) 22%,#000 34%)}
+.home-hero-photo{transition:opacity 2s cubic-bezier(.22,.7,.2,1)!important}
+.home-hero-photo.active{opacity:.42!important}
+.home-hero-photo img{object-position:center!important}
+.home-hero-shade{background:linear-gradient(90deg,var(--paper) 0%,color-mix(in srgb,var(--paper) 34%,transparent) 36%,color-mix(in srgb,var(--paper) 9%,transparent) 70%,transparent 100%)!important}
 .home-hero-shade{z-index:1!important;background:linear-gradient(90deg,var(--paper) 0%,color-mix(in srgb,var(--paper) 22%,transparent) 48%,color-mix(in srgb,var(--paper) 8%,transparent) 100%)!important}
 .home-hero-photo{inset:0!important;filter:blur(.5px)!important;transform:scale(1.015)!important}
 .home-hero-photo.active{opacity:.38!important}
@@ -804,13 +810,16 @@ document.getElementById('contactForm').addEventListener('submit',e=>{
   const {data,error}=await db.from('vss_events').select('title,description,event_date,venue,image_url').eq('is_published',true).not('image_url','is',null).neq('image_url','').order('event_date',{ascending:false,nullsFirst:false}).limit(30);
   if(error)throw error;
   const gallery=(data||[]).filter(x=>x.image_url);
+  const {data:photoData,error:photoError}=await db.from('vss_gallery_photos').select('title,caption,event_id,image_url,created_at').eq('is_published',true).order('created_at',{ascending:false});
+  if(photoError)throw photoError;
+  (photoData||[]).forEach(photo=>gallery.push({title:photo.title||'VSS Event',description:photo.caption||'',event_date:photo.created_at,venue:'VSS photo gallery',image_url:photo.image_url}));
   if(!gallery.length){showEmpty('Event photos will appear here when the VSS Admin Portal publishes event photos.');return;}
   stage.innerHTML='';dots.innerHTML='';
   gallery.forEach((event,i)=>{
    const figure=document.createElement('figure');figure.className='home-gallery-slide'+(i===0?' is-active':'');figure.setAttribute('aria-hidden',i===0?'false':'true');
-   const img=document.createElement('img');img.src=event.image_url;img.alt=(event.title||'VSS event')+' — event photo';img.loading=i===0?'eager':'lazy';
+   const img=document.createElement('img');img.src=event.image_url;img.alt=(event.title||'VSS event')+(event.description?' — '+event.description:'')+' — event photo';img.loading=i===0?'eager':'lazy';
    img.onerror=()=>{figure.remove();slides=slides.filter(x=>x!==figure);dots.innerHTML='';slides.forEach((el,n)=>{const b=document.createElement('button');b.type='button';b.setAttribute('aria-label','Show event photo '+(n+1));b.addEventListener('click',()=>{show(n);start()});dots.appendChild(b)});if(!slides.length)showEmpty('Event photos could not be loaded. Please check the image in Admin Portal.');else show(Math.min(active,slides.length-1));};
-   const caption=document.createElement('figcaption');const date=event.event_date?new Intl.DateTimeFormat('en-IN',{day:'2-digit',month:'short',year:'numeric'}).format(new Date(event.event_date)):'VSS community event';caption.textContent=(event.title||'VSS Event')+' · '+date;
+   const caption=document.createElement('figcaption');const date=event.event_date?new Intl.DateTimeFormat('en-IN',{day:'2-digit',month:'short',year:'numeric'}).format(new Date(event.event_date)):'VSS community event';caption.textContent=(event.title||'VSS Event')+(event.description?' — '+event.description:'')+' · '+date;
    figure.append(img,caption);stage.appendChild(figure);slides.push(figure);
    const dot=document.createElement('button');dot.type='button';dot.setAttribute('aria-label','Show event photo '+(i+1));dot.addEventListener('click',()=>{show(i);start()});dots.appendChild(dot);
    if(hero){const bg=document.createElement('div');bg.className='home-hero-photo'+(i===0?' active':'');const background=document.createElement('img');background.src=event.image_url;background.alt='';background.loading=i===0?'eager':'lazy';bg.appendChild(background);hero.appendChild(bg);heroImages.push(bg);}
