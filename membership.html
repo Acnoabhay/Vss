@@ -206,6 +206,40 @@ body{background:radial-gradient(ellipse at 90% 4%,#f0e6e8 0,transparent 28%),#f3
 .registration-invite p{margin:0;font-size:13px;color:var(--muted)}
 .registration-invite button{font-size:12px}
 @media(max-width:600px){.registration-invite{flex-direction:column}.registration-invite button{width:100%}}
+
+/* Premium PDF preview and print styling */
+.pdf-head{background:linear-gradient(120deg,#17191d,#34302a 58%,#8c6b2d)!important;border-bottom:4px solid #d8b45b}
+.pdf-title{color:#725018!important;font-weight:900;letter-spacing:1.5px}
+.pdf-section{border-color:#dfcfaa!important;box-shadow:0 4px 14px rgba(87,65,24,.06)}
+.pdf-section h2{color:#8a6827!important}
+.pdf-photo{object-fit:contain!important;background:#f8f5ed;border:2px solid #d6b56c!important;padding:3px}
+.pdf-qr{padding:4px;background:#fff;border:1px solid #d6b56c;border-radius:8px}
+.pdf-notice{background:#fbf7eb!important;border-left-color:#b58a37!important}
+.pdf-foot{color:#725018!important;border-top-color:#d6b56c!important}
+.pdf-preview-modal{position:fixed;inset:0;z-index:1000;background:rgba(13,15,20,.78);display:none;align-items:center;justify-content:center;padding:14px}
+.pdf-preview-modal.open{display:flex}
+.pdf-preview-shell{width:min(900px,100%);height:min(94vh,1000px);display:flex;flex-direction:column;background:#f1f2f4;border-radius:18px;overflow:hidden;box-shadow:0 25px 80px #0008}
+.pdf-preview-toolbar{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 16px;background:#17191d;color:#fff}
+.pdf-preview-toolbar strong{font-size:13px}.pdf-preview-actions{display:flex;gap:8px;flex-wrap:wrap}
+.pdf-preview-actions button{border:1px solid #d6b56c;background:#d6b56c;color:#211a0c;border-radius:9px;padding:9px 13px;font:700 12px inherit;cursor:pointer}
+.pdf-preview-actions button.close-preview{background:transparent;color:#fff;border-color:#666}
+.pdf-preview-scroll{overflow:auto;padding:22px;flex:1}
+.pdf-preview-paper{width:min(100%,760px);min-height:920px;margin:0 auto;background:#fff;color:#17191d;padding:38px;box-shadow:0 8px 30px #17191d24}
+.pdf-preview-paper .pdf-head{border-radius:10px;padding:25px}
+.pdf-preview-paper .pdf-section{break-inside:avoid}
+.pdf-gold-card{min-height:380px;display:flex;align-items:center;justify-content:center;padding:55px;background:#fff}
+.pdf-gold-card .premium-gold-card{width:100%;max-width:650px;min-height:300px;grid-template-columns:1fr auto;padding:38px;border-radius:24px;print-color-adjust:exact;-webkit-print-color-adjust:exact}
+.pdf-gold-card .premium-gold-card img{width:120px;height:150px;object-fit:contain;background:#fff8e6}
+@media(max-width:600px){.pdf-preview-modal{padding:0}.pdf-preview-shell{height:100vh;border-radius:0}.pdf-preview-scroll{padding:10px}.pdf-preview-paper{padding:18px;min-height:0}.pdf-preview-toolbar{align-items:flex-start;flex-direction:column}.pdf-preview-actions{width:100%}.pdf-gold-card{padding:18px}.pdf-gold-card .premium-gold-card{padding:20px;min-height:240px}}
+@media print{
+ @page{size:A4 portrait;margin:12mm}
+ body.printing>*:not(#printDocument){display:none!important}
+ body.printing #printDocument{display:block!important;background:#fff!important;padding:0!important}
+ body.printing #printDocument .pdf-head{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+ body.printing #printDocument .premium-gold-card{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+ body.printing.gold-pdf-mode #printDocument{min-height:250mm;display:flex!important;align-items:center;justify-content:center}
+}
+
 </style></head><body>
 <header class="top"><div class="brand">VSS COMMUNITY<small>VIDYARTHI SEVA SANGATHAN · CGIT RAIPUR</small></div><button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">☾</button><a href="index.html" style="color:white;text-decoration:none;font-size:13px">← Main website</a></header>
 
@@ -227,7 +261,7 @@ body{background:radial-gradient(ellipse at 90% 4%,#f0e6e8 0,transparent 28%),#f3
 <form id="accessRequestForm"><div class="field"><label for="accessMembershipNo">VSS Membership ID *</label><input id="accessMembershipNo" required maxlength="8" placeholder="e.g. VSS00001" autocomplete="off"></div><div class="field"><label for="accessEmail">Registered email address *</label><input id="accessEmail" type="email" required maxlength="254" placeholder="Your registered email" autocomplete="email"></div><button class="primary" id="getExistingIdBtn" style="width:100%">Login to VSS</button></form>
 <div class="msg" id="accessMsg" role="status" aria-live="polite"></div><div class="registration-invite"><p>Do not have a VSS account yet?</p><button type="button" class="secondary" id="showRegistrationBtn">Become a VSS Member · New Registration</button></div>
 <div id="accessResult" class="hidden"><div class="idcard" id="accessIdCard"><div class="cardhead"><div><strong>VSS COMMUNITY</strong><small>VIDYARTHI SEVA SANGATHAN</small></div><span class="stamp">MEMBER</span></div><div class="person"><img class="avatar" id="accessCardPhoto" alt="Member photo"><div><h3 id="accessCardName"></h3><p id="accessCardCategory"></p><p id="accessCardBranch"></p><p id="accessCardSemester"></p><div class="number" id="accessCardNo"></div></div></div><div class="cardfoot"><div>CGIT RAIPUR<br>Digital membership card</div><div id="accessQrCode" class="qr"></div></div></div>
-<div class="actions"><button class="primary" id="accessPngBtn" type="button">Download PNG</button><button class="secondary" id="accessJpegBtn" type="button">Download JPEG</button><button class="secondary" id="accessPrintBtn" type="button">Print / Save PDF</button></div>
+<div class="actions"><button class="primary" id="accessPngBtn" type="button">Download PNG</button><button class="secondary" id="accessJpegBtn" type="button">Download JPEG</button><button class="secondary" id="accessPrintBtn" type="button">Preview Premium PDF</button></div>
 <div id="memberPortalView" class="hidden">
  <div class="portal-head"><div><span class="eyebrow">VSS member dashboard</span><h2 style="margin:4px 0">Welcome, <span id="portalWelcomeName">Member</span></h2><p class="hint">Your membership details and digital ID are available here.</p></div><button class="secondary" id="portalSignOutBtn" type="button">Sign out</button></div>
  
@@ -241,7 +275,7 @@ body{background:radial-gradient(ellipse at 90% 4%,#f0e6e8 0,transparent 28%),#f3
     <div><div class="gold-brand">VSS · VIDYARTHI SEVA SANGATHAN</div><h3 id="goldMemberName">Core Member</h3><div class="gold-role" id="goldMemberRole">CORE TEAM</div><div class="gold-meta" id="goldMemberBranch"></div><div class="gold-id" id="goldMemberId"></div></div>
     <img id="goldMemberPhoto" alt="Core member portrait">
    </div>
-   <div class="premium-card-actions"><button class="primary" id="downloadGoldCard" type="button">Download Gold ID · PNG</button></div>
+   <div class="premium-card-actions"><button class="primary" id="downloadGoldCard" type="button">Download Gold ID · PNG</button><button class="secondary" id="previewGoldPdfBtn" type="button">Preview Gold ID PDF</button></div>
   </div>
  </section>
 
@@ -329,7 +363,7 @@ body{background:radial-gradient(ellipse at 90% 4%,#f0e6e8 0,transparent 28%),#f3
   </div>
  </div>
 </div></div></section>
-<section class="panel hidden" id="resultPanel"><h2>Your digital VSS ID</h2><p class="hint">Registration successful. Save your ID card now.</p><div class="idcard" id="idCard"><div class="cardhead"><div><strong>VSS COMMUNITY</strong><small>VIDYARTHI SEVA SANGATHAN</small></div><span class="stamp">MEMBER</span></div><div class="person"><img class="avatar" id="cardPhoto" alt="Member photo"><div><h3 id="cardName"></h3><p id="cardCategory"></p><p id="cardBranch"></p><p id="cardSemester"></p><div class="number" id="cardNo"></div></div></div><div class="cardfoot"><div>CGIT RAIPUR<br>Digital membership card</div><div id="qrCode" class="qr"></div></div></div><div class="actions"><button class="primary" id="downloadPngBtn">Download PNG</button><button class="secondary" id="downloadJpegBtn">Download JPEG</button><button class="secondary" id="printBtn">Print / Save PDF</button></div><div class="msg" id="successMsg"></div></section></div></main><div class="footer">Vidyarthi Seva Sangathan · By the students, for the students · CGIT Raipur</div>
+<section class="panel hidden" id="resultPanel"><h2>Your digital VSS ID</h2><p class="hint">Registration successful. Save your ID card now.</p><div class="idcard" id="idCard"><div class="cardhead"><div><strong>VSS COMMUNITY</strong><small>VIDYARTHI SEVA SANGATHAN</small></div><span class="stamp">MEMBER</span></div><div class="person"><img class="avatar" id="cardPhoto" alt="Member photo"><div><h3 id="cardName"></h3><p id="cardCategory"></p><p id="cardBranch"></p><p id="cardSemester"></p><div class="number" id="cardNo"></div></div></div><div class="cardfoot"><div>CGIT RAIPUR<br>Digital membership card</div><div id="qrCode" class="qr"></div></div></div><div class="actions"><button class="primary" id="downloadPngBtn">Download PNG</button><button class="secondary" id="downloadJpegBtn">Download JPEG</button><button class="secondary" id="printBtn">Preview Premium PDF</button></div><div class="msg" id="successMsg"></div></section></div></main><div class="footer">Vidyarthi Seva Sangathan · By the students, for the students · CGIT Raipur</div>
 <div id="printDocument" class="print-document">
  <div class="pdf-head"><h1>VSS COMMUNITY</h1><p>VIDYARTHI SEVA SANGATHAN · INDEPENDENT COMMUNITY</p><p>BY THE STUDENTS, FOR THE STUDENTS</p></div>
  <h2 class="pdf-title">MEMBERSHIP IDENTITY DOCUMENT</h2>
@@ -347,12 +381,31 @@ body{background:radial-gradient(ellipse at 90% 4%,#f0e6e8 0,transparent 28%),#f3
  </section>
  <div class="pdf-foot">Vidyarthi Seva Sangathan · By the students, for the students<br>This document confirms VSS community membership only.</div>
 </div>
+<div class="pdf-preview-modal" id="pdfPreviewModal" role="dialog" aria-modal="true" aria-label="Premium PDF preview">
+ <div class="pdf-preview-shell"><div class="pdf-preview-toolbar"><strong id="pdfPreviewTitle">VSS Premium PDF Preview</strong><div class="pdf-preview-actions"><button type="button" id="pdfPreviewPrintBtn">Print / Save PDF</button><button type="button" class="close-preview" id="pdfPreviewCloseBtn">Close</button></div></div>
+ <div class="pdf-preview-scroll"><div class="pdf-preview-paper" id="pdfPreviewPaper"></div></div></div>
+</div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script><script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 <script>
 const SUPABASE_URL="https://aukiryqoqpotjuuqwsec.supabase.co";
 const SUPABASE_ANON_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF1a2lyeXFvcXBvdGp1dXF3c2VjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTUzNTk5MTcsImV4cCI6MjExMDkzNTkxN30.fqfDg2bU70gT3RpRp0cOYyZhusUwLuathrFI42p3v_w";
 const db=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
 const $=id=>document.getElementById(id);
+function openPdfPreview(title,mode){
+ const modal=$('pdfPreviewModal'),paper=$('pdfPreviewPaper'),doc=$('printDocument');
+ $('pdfPreviewTitle').textContent=title||'VSS Premium PDF Preview';
+ doc.classList.toggle('gold-pdf-mode',mode==='gold');
+ paper.innerHTML=doc.innerHTML;
+ paper.classList.toggle('pdf-gold-card',mode==='gold');
+ modal.classList.add('open');document.body.style.overflow='hidden';
+}
+function closePdfPreview(){ $('pdfPreviewModal').classList.remove('open');document.body.style.overflow='';}
+$('pdfPreviewCloseBtn').addEventListener('click',closePdfPreview);
+$('pdfPreviewModal').addEventListener('click',e=>{if(e.target===$('pdfPreviewModal'))closePdfPreview();});
+$('pdfPreviewPrintBtn').addEventListener('click',()=>{
+ closePdfPreview();document.body.classList.add('printing');
+ setTimeout(()=>window.print(),220);
+});
 function prepareMemberPdf(name,category,branch,semester,membershipNo,photoUrl){
  $('pdfMemberName').textContent=name||'—';$('pdfCategory').textContent=category||'—';
  $('pdfBranch').textContent=branch||'—';$('pdfSemester').textContent=semester||'—';
@@ -360,10 +413,11 @@ function prepareMemberPdf(name,category,branch,semester,membershipNo,photoUrl){
  $('pdfIssueDate').textContent=new Intl.DateTimeFormat('en-IN',{day:'2-digit',month:'long',year:'numeric'}).format(new Date());
  $('pdfPhoto').src=photoUrl||'';$('pdfQrCode').innerHTML='';
  new QRCode($('pdfQrCode'),{text:membershipNo||'VSS',width:82,height:82,colorDark:'#17191d',colorLight:'#ffffff'});
- document.body.classList.add('printing');
- setTimeout(()=>window.print(),250);
+ $('pdfPhoto').onerror=()=>{$('pdfPhoto').style.visibility='hidden';};
+ $('pdfPhoto').onload=()=>{$('pdfPhoto').style.visibility='visible';};
+ openPdfPreview('VSS Premium Membership PDF Preview','member');
 }
-window.addEventListener('afterprint',()=>document.body.classList.remove('printing'));
+window.addEventListener('afterprint',()=>{document.body.classList.remove('printing','gold-pdf-mode');});
 
 
 // Existing-member retrieval: membership number + registered email match; no email OTP.
@@ -422,6 +476,13 @@ async function downloadAccessCard(format){
 $('accessPngBtn').addEventListener('click',()=>downloadAccessCard('png'));
 $('accessJpegBtn').addEventListener('click',()=>downloadAccessCard('jpeg'));
 $('accessPrintBtn').addEventListener('click',()=>prepareMemberPdf($('accessCardName').textContent,$('accessCardCategory').textContent,$('accessCardBranch').textContent,$('accessCardSemester').textContent,$('accessCardNo').textContent,$('accessCardPhoto').src));
+$('previewGoldPdfBtn').addEventListener('click',()=>{
+ const target=$('printDocument'),gold=$('premiumGoldCard');
+ if(!gold||gold.classList.contains('hidden'))return;
+ target.innerHTML='<div class="pdf-gold-card">'+gold.outerHTML+'</div>';
+ document.body.classList.add('gold-pdf-mode');
+ openPdfPreview('VSS Premium Gold Core ID · PDF Preview','gold');
+});
 
 $('registerForm').addEventListener('submit',async e=>{
  e.preventDefault();const btn=$('submitBtn'),msg=$('formMsg');btn.disabled=true;btn.textContent='Creating your ID…';msg.textContent='Checking details and generating your unique ID…';
