@@ -114,7 +114,7 @@ function setTab(name){document.querySelectorAll(".tab").forEach(x=>x.classList.a
 document.querySelectorAll("[data-tab]").forEach(b=>b.addEventListener("click",()=>setTab(b.dataset.tab)));
 document.querySelectorAll("[data-go]").forEach(b=>b.addEventListener("click",()=>setTab(b.dataset.go)));
 async function authorisedSession(){const {data:{user}}=await db.auth.getUser();return !!user&&String(user.email||"").toLowerCase()===ADMIN_EMAIL;}
-async function enterApp(){if(!await authorisedSession()){await db.auth.signOut();$("loginView").classList.remove("hidden");$("appView").classList.add("hidden");return;} $("loginView").classList.add("hidden");$("appView").classList.remove("hidden");await refreshAll();}
+async function enterApp(){if(!await authorisedSession()){await db.auth.signOut();$("loginView").classList.remove("hidden");$("appView").classList.add("hidden");return;} $("loginView").classList.add("hidden");$("appView").classList.remove("hidden");await refreshAll();await refreshCoreCardRequests();}
 $("loginForm").addEventListener("submit",async e=>{e.preventDefault();$("loginBtn").disabled=true;$("loginMsg").textContent="Signing in…";try{if($("adminId").value.trim().toLowerCase()!==ADMIN_ID.toLowerCase())throw new Error("Invalid admin ID or password.");const {error}=await db.auth.signInWithPassword({email:ADMIN_EMAIL,password:$("password").value});if(error)throw error;await enterApp();}catch(err){$("loginMsg").textContent=err.message||"Sign in failed. Check your admin credentials.";}finally{$("loginBtn").disabled=false;}});
 $("refreshCoreCards").addEventListener("click",refreshCoreCardRequests);
 $("logoutBtn").addEventListener("click",async()=>{await db.auth.signOut();location.reload();});
