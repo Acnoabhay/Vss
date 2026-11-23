@@ -10,6 +10,26 @@
 [data-theme="dark"] .top{background:linear-gradient(110deg,#090d14,#182536)}
 [data-theme="dark"] .note{color:#aab5c4}
 .theme-toggle{width:38px;height:38px;border-radius:50%;border:1px solid #ffffff55;background:#ffffff14;color:#fff;cursor:pointer;font-size:18px;margin-left:auto;margin-right:14px}
+
+/* VSS portal chooser — desktop-first composition */
+@media(min-width:1000px){
+ .top{min-height:88px;padding-inline:max(48px,calc((100% - 1440px)/2))}
+ .brand{font-size:16px;letter-spacing:.12em}
+ .brand small{font-size:10px}
+ .wrap{width:min(1320px,calc(100% - 100px));margin:100px auto}
+ .intro{text-align:left;max-width:900px;margin:0 auto 48px}
+ .intro h1{font-size:58px;letter-spacing:-.06em}
+ .intro p{font-size:17px}
+ .choices{grid-template-columns:repeat(2,minmax(0,1fr));gap:28px;max-width:1050px;margin:0 auto}
+ .card{min-height:330px;padding:42px;border-radius:28px;position:relative;overflow:hidden}
+ .card:after{content:"";position:absolute;width:220px;height:220px;border-radius:50%;right:-95px;bottom:-110px;background:radial-gradient(circle,#d9b56f2b,transparent 68%);pointer-events:none}
+ .icon{width:68px;height:68px;border-radius:20px;font-size:30px}
+ .card h2{font-size:28px;margin:26px 0 10px}
+ .card p{font-size:15px;line-height:1.75;max-width:380px}
+ .go{font-size:14px}
+ .note{font-size:13px;margin-top:34px}
+}
+
 </style></head><body>
 <header class="top"><div class="brand">VSS COMMUNITY<small>VIDYARTHI SEVA SANGATHAN · CGIT RAIPUR</small></div><button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">☾</button><a href="index.html">← Main website</a></header>
 <main class="wrap"><div class="intro"><span class="eyebrow">WELCOME TO VSS</span><h1>Choose your login</h1><p>Continue to the right portal for your VSS account.</p></div>
