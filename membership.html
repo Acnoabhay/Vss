@@ -307,6 +307,14 @@ body{background:radial-gradient(ellipse at 90% 4%,#f0e6e8 0,transparent 28%),#f3
  .member-guide-panel{padding:38px}
 }
 
+
+/* Shared responsive safety and keyboard-accessibility polish */
+html{overflow-x:clip;scroll-behavior:smooth}
+body{max-width:100%;overflow-x:clip}
+img,video,canvas,svg{max-width:100%}
+button,a,input,select,textarea{touch-action:manipulation}
+:focus-visible{outline:3px solid color-mix(in srgb,var(--red,#a71928) 55%,#fff);outline-offset:3px}
+@media(max-width:480px){.top{gap:10px;flex-wrap:wrap}.wrap,.shell{max-width:100%}.panel,.login{min-width:0}}
 </style></head><body>
 <header class="top"><div class="brand">VSS COMMUNITY<small>VIDYARTHI SEVA SANGATHAN · CGIT RAIPUR</small></div><button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">☾</button><a href="index.html" style="color:white;text-decoration:none;font-size:13px">← Main website</a></header>
 
