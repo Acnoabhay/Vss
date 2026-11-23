@@ -95,6 +95,14 @@ input,select,textarea{transition:border-color .2s,box-shadow .2s}
  .shell{max-width:1660px;grid-template-columns:300px minmax(0,1fr);gap:38px}
 }
 
+
+/* Shared responsive safety and keyboard-accessibility polish */
+html{overflow-x:clip;scroll-behavior:smooth}
+body{max-width:100%;overflow-x:clip}
+img,video,canvas,svg{max-width:100%}
+button,a,input,select,textarea{touch-action:manipulation}
+:focus-visible{outline:3px solid color-mix(in srgb,var(--red,#a71928) 55%,#fff);outline-offset:3px}
+@media(max-width:480px){.top{gap:10px;flex-wrap:wrap}.wrap,.shell{max-width:100%}.panel,.login{min-width:0}}
 </style>
 </head>
 <body>
