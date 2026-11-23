@@ -407,6 +407,19 @@ html{overflow-x:clip}body{max-width:100%;overflow-x:clip}img{max-width:100%}
 @media(min-width:1100px){.home-gallery-heading{margin-bottom:30px}.home-gallery-slider{padding:16px}.updates-slider-card{min-height:210px}.updates-content p{font-size:15px}}
 @media(max-width:600px){.home-gallery-heading{align-items:flex-start;flex-direction:column}.home-gallery-slider{padding:8px;border-radius:17px}.home-gallery-stage{min-height:235px}.home-gallery-slide img{height:235px}.home-gallery-controls{gap:7px}.home-gallery-controls>button{width:34px;height:34px}.home-gallery-count{font-size:10px}.updates-banner{padding:15px 13px;gap:8px}.updates-banner-tools{gap:5px}.updates-flash-label{display:none}.updates-banner-tools button{width:32px;height:32px}.updates-slider-card{align-items:flex-start;flex-direction:column;gap:12px;min-height:220px;padding:20px 16px}.updates-type{min-width:0;padding:7px 11px}.updates-slider-footer{padding:11px 13px}.updates-slider-footer>span{font-size:10px;text-align:right}}
 @media(prefers-reduced-motion:reduce){.home-gallery-slide.is-active,.updates-slider-card,.updates-live-dot,.updates-flash-label{animation:none!important}}
+
+/* Fit-to-screen repair: prevent fixed-width children and horizontal page clipping */
+*,*::before,*:after{box-sizing:border-box}
+html,body{width:100%;max-width:100%;min-width:0;overflow-x:hidden}
+.wrap{width:calc(100% - 40px);max-width:1160px;margin-left:auto;margin-right:auto}
+.hero-grid,.split,.contact-grid,.footer-grid,.grid,.quick-grid,.values,.stats{min-width:0}
+.hero-grid>* ,.split>* ,.contact-grid>* ,.footer-grid>* ,.grid>* ,.quick-grid>*{min-width:0;max-width:100%}
+img,video,iframe,svg{max-width:100%}
+.hero-art,.hero-logo,.card,.value,.initiative,.team-card,.gallery-tile,.cta,.alumni-gallery,.home-gallery-slider,.updates-slider{min-width:0;max-width:100%}
+.alumni-photo img,.alumni-photo-wide img{width:100%;height:auto;max-height:480px;object-fit:contain;object-position:center;background:var(--soft)}
+@media(max-width:1100px){.wrap{width:calc(100% - 36px)}.hero-grid{gap:30px}.links{gap:12px}.brand{min-width:0}.hero h1{font-size:clamp(38px,6vw,64px)}}
+@media(max-width:760px){.wrap{width:calc(100% - 28px)}.hero-grid,.split,.contact-grid{grid-template-columns:minmax(0,1fr)}.hero-grid>*{width:100%}.hero-art{width:100%;min-height:250px}.quick-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.grid-3,.grid-2,.values{grid-template-columns:minmax(0,1fr)}.section-head{align-items:flex-start}.cta{width:100%;padding:28px;display:block}.footer-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:480px){.wrap{width:calc(100% - 24px)}.nav{gap:8px}.brand{gap:7px}.brand img{width:66px;height:40px}.hero{padding:42px 0 38px}.hero h1{font-size:clamp(36px,10vw,48px)}.hero-actions{gap:8px}.hero-actions .btn{padding:10px 12px;font-size:12px}.stats{grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}.stat{padding-left:8px}.stat strong{font-size:15px}.quick-grid{gap:8px}.quick-card{min-width:0}.footer-grid{grid-template-columns:minmax(0,1fr)}.footer-brand{grid-column:auto}}
 </style>
 </head>
 <body>
@@ -442,14 +455,10 @@ html{overflow-x:clip}body{max-width:100%;overflow-x:clip}img{max-width:100%}
  <div class="hero-art"><div class="hero-logo"><img src="assets/vss-community.jpg" alt="Vidyarthi Seva Sangathan community" loading="eager"></div><div class="art-caption">By the students · For the students</div></div>
 </div></section>
 <section class="home-gallery" id="home-gallery" aria-label="VSS events photo slideshow"><div class="wrap">
- <div class="home-gallery-heading"><div><span class="eyebrow">Our memories</span><h2>Moments that bring us together</h2><p>Highlights from VSS programmes and the CGIT Raipur Alumni Meet.</p></div><a class="btn secondary" href="#events">View all events ↗</a></div>
+ <div class="home-gallery-heading"><div><span class="eyebrow">Our memories</span><h2>Moments that bring us together</h2><p>Photos published by the VSS Admin Portal appear here automatically.</p></div><a class="btn secondary" href="#events">View all events ↗</a></div>
  <div class="home-gallery-slider" id="homeGallerySlider" aria-roledescription="carousel">
   <div class="home-gallery-stage" id="homeGalleryStage" aria-live="polite">
-   <figure class="home-gallery-slide is-active"><img src="assets/alumni-meet-2026-01.jpg" alt="VSS organising team at Alumni Meet 2026" loading="lazy"><figcaption>CGIT Raipur Alumni Meet 2026 · Organising team</figcaption></figure>
-   <figure class="home-gallery-slide"><img src="assets/alumni-meet-2026-02.jpg" alt="Alumni, students and guests at the Alumni Meet" loading="lazy"><figcaption>Alumni, students and guests together</figcaption></figure>
-   <figure class="home-gallery-slide"><img src="assets/alumni-meet-2026-03.jpg" alt="Students receiving certificates at a college programme" loading="lazy"><figcaption>Recognising student contributions</figcaption></figure>
-   <figure class="home-gallery-slide"><img src="assets/alumni-meet-2026-04.jpg" alt="Students celebrating achievements outside the college" loading="lazy"><figcaption>Celebrating achievements</figcaption></figure>
-   <figure class="home-gallery-slide"><img src="assets/alumni-meet-2026-05.jpg" alt="A memorable moment from the VSS community" loading="lazy"><figcaption>Memories from our campus community</figcaption></figure>
+   <div class="updates-empty">Loading published event photos from the VSS Admin Portal…</div>
   </div>
   <div class="home-gallery-controls"><button type="button" id="homeGalleryPrev" aria-label="Previous event photo">‹</button><div class="home-gallery-dots" id="homeGalleryDots" aria-label="Choose event photo"></div><button type="button" id="homeGalleryNext" aria-label="Next event photo">›</button><span class="home-gallery-count" id="homeGalleryCount">1 / 5</span></div>
  </div></div></section>
@@ -721,16 +730,36 @@ document.getElementById('contactForm').addEventListener('submit',e=>{
 <script>
 (function(){
  const reduced=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
- function setupPhotoShow(){
+ async function setupPhotoShow(){
   const root=document.getElementById('homeGallerySlider');if(!root)return;
-  const slides=[...root.querySelectorAll('.home-gallery-slide')],dots=document.getElementById('homeGalleryDots'),count=document.getElementById('homeGalleryCount');
-  if(!slides.length)return;let active=0,timer=null,paused=false;
-  function show(i){active=(i+slides.length)%slides.length;slides.forEach((el,n)=>{el.classList.toggle('is-active',n===active);el.setAttribute('aria-hidden',n===active?'false':'true')});dots.querySelectorAll('button').forEach((b,n)=>b.setAttribute('aria-current',n===active?'true':'false'));count.textContent=(active+1)+' / '+slides.length;}
-  slides.forEach((_,i)=>{const b=document.createElement('button');b.type='button';b.setAttribute('aria-label','Show event photo '+(i+1));b.addEventListener('click',()=>{show(i);restart()});dots.appendChild(b)});
-  function stop(){if(timer)clearInterval(timer);timer=null}function start(){stop();if(!reduced&&!paused&&slides.length>1)timer=setInterval(()=>show(active+1),5200)}function restart(){start()}
+  const stage=document.getElementById('homeGalleryStage'),dots=document.getElementById('homeGalleryDots'),count=document.getElementById('homeGalleryCount');
+  let slides=[],active=0,timer=null,paused=false;
+  const showEmpty=msg=>{stage.innerHTML='';const p=document.createElement('p');p.className='updates-empty';p.textContent=msg;stage.appendChild(p);count.textContent='Event gallery';};
+  function show(i){if(!slides.length)return;active=(i+slides.length)%slides.length;slides.forEach((el,n)=>{el.classList.toggle('is-active',n===active);el.setAttribute('aria-hidden',n===active?'false':'true')});dots.querySelectorAll('button').forEach((b,n)=>b.setAttribute('aria-current',n===active?'true':'false'));count.textContent=(active+1)+' / '+slides.length;}
+  function stop(){if(timer)clearInterval(timer);timer=null}
+  function start(){stop();if(!reduced&&!paused&&slides.length>1)timer=setInterval(()=>show(active+1),5200)}
+  function restart(){start()}
   root.addEventListener('mouseenter',()=>{paused=true;stop()});root.addEventListener('mouseleave',()=>{paused=false;start()});root.addEventListener('focusin',()=>{paused=true;stop()});root.addEventListener('focusout',e=>{if(!root.contains(e.relatedTarget)){paused=false;start()}});
   document.addEventListener('visibilitychange',()=>document.hidden?stop():start());
-  document.getElementById('homeGalleryPrev').addEventListener('click',()=>{show(active-1);restart()});document.getElementById('homeGalleryNext').addEventListener('click',()=>{show(active+1);restart()});show(0);start();
+  document.getElementById('homeGalleryPrev').addEventListener('click',()=>{show(active-1);restart()});
+  document.getElementById('homeGalleryNext').addEventListener('click',()=>{show(active+1);restart()});
+  try{
+   if(!window.supabase||!window.supabase.createClient)throw new Error('Gallery service unavailable');
+   const db=window.supabase.createClient('https://aukiryqoqpotjuuqwsec.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF1a2lyeXFvcXBvdGp1dXF3c2VjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTUzNTk5MTcsImV4cCI6MjExMDkzNTkxN30.fqfDg2bU70gT3RpRp0cOYyZhusUwLuathrFI42p3v_w');
+   const {data,error}=await db.from('vss_events').select('title,description,event_date,venue,image_url').eq('is_published',true).not('image_url','is',null).neq('image_url','').order('event_date',{ascending:false,nullsFirst:false}).limit(30);
+   if(error)throw error;
+   const gallery=(data||[]).filter(x=>x.image_url);
+   if(!gallery.length){showEmpty('Event photos will appear here when the VSS Admin Portal publishes event photos.');return;}
+   stage.innerHTML='';dots.innerHTML='';
+   gallery.forEach((event,i)=>{
+    const figure=document.createElement('figure');figure.className='home-gallery-slide';figure.setAttribute('aria-hidden',i===0?'false':'true');
+    const img=document.createElement('img');img.src=event.image_url;img.alt=(event.title||'VSS event')+' — event photo';img.loading=i===0?'eager':'lazy';img.onerror=()=>{figure.remove();slides=slides.filter(x=>x!==figure);dots.innerHTML='';if(!slides.length)showEmpty('Event photos could not be loaded. Please check the image in Admin Portal.');else{slides.forEach((el,n)=>{const b=document.createElement('button');b.type='button';b.setAttribute('aria-label','Show event photo '+(n+1));b.addEventListener('click',()=>{show(n);restart()});dots.appendChild(b)});show(Math.min(active,slides.length-1));}};
+    const caption=document.createElement('figcaption');const date=event.event_date?new Intl.DateTimeFormat('en-IN',{day:'2-digit',month:'short',year:'numeric'}).format(new Date(event.event_date)):'VSS community event';caption.textContent=(event.title||'VSS Event')+' · '+date;
+    figure.append(img,caption);stage.appendChild(figure);slides.push(figure);
+   });
+   slides.forEach((_,i)=>{const b=document.createElement('button');b.type='button';b.setAttribute('aria-label','Show event photo '+(i+1));b.addEventListener('click',()=>{show(i);restart()});dots.appendChild(b)});
+   show(0);start();
+  }catch(err){console.warn('VSS event gallery could not load',err);showEmpty('The event gallery is being connected. Please check again shortly.');}
  }
  function setupUpdates(){
   const card=document.getElementById('homeUpdatesCard'),dots=document.getElementById('homeUpdateDots'),count=document.getElementById('homeUpdateCount'),root=document.getElementById('homeUpdatesSlider');if(!card||!dots||!root)return;
