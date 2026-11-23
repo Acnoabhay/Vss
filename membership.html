@@ -177,6 +177,24 @@ body{background:radial-gradient(ellipse at 90% 4%,#f0e6e8 0,transparent 28%),#f3
 .theme-toggle{width:38px;height:38px;border-radius:50%;border:1px solid #ffffff55;background:#ffffff14;color:#fff;cursor:pointer;font-size:18px}
 .top{gap:14px}
 .member-profile-top{width:38px;height:38px;border-radius:50%;object-fit:cover;border:2px solid #d9b56f}
+
+/* Premium core-member gold card */
+.core-card-request{margin:18px 0;padding:18px;border:1px solid #d6b56c;border-radius:18px;background:linear-gradient(135deg,#fffaf0,#fff 58%,#f8edcf)}
+.core-card-request h3{margin:0 0 7px;color:#725018}.core-card-request p{font-size:13px;color:#74664e}
+.core-card-request form{display:flex;gap:10px;flex-wrap:wrap;align-items:end}
+.core-card-request .field{flex:1;min-width:190px;margin:0}
+.core-card-request input{width:100%;padding:12px;border:1px solid #ddc98e;border-radius:10px;font:inherit}
+.core-card-status{font-size:12px;font-weight:750;margin-top:10px;color:#725018}
+.premium-gold-card{position:relative;overflow:hidden;display:grid;grid-template-columns:1fr auto;gap:14px;align-items:center;min-height:230px;padding:25px;border-radius:20px;color:#35250a;background:radial-gradient(circle at 85% 12%,#fff7c8 0,transparent 24%),linear-gradient(125deg,#8f6724 0%,#f8e6a0 24%,#c99a3e 50%,#fff0b3 72%,#9d742a 100%);box-shadow:0 18px 38px #8c682b35;border:1px solid #ffe8a0}
+.premium-gold-card:before{content:"";position:absolute;inset:9px;border:1px solid #fff2c4;border-radius:14px;pointer-events:none}
+.premium-gold-card .gold-brand{font-size:10px;letter-spacing:.2em;font-weight:900}.premium-gold-card h3{font:800 24px Georgia,serif;margin:14px 0 5px;color:#3e2a0a}
+.premium-gold-card .gold-role{font-size:13px;font-weight:900;letter-spacing:.1em;text-transform:uppercase}
+.premium-gold-card .gold-meta{font-size:11px;line-height:1.7;margin-top:15px}
+.premium-gold-card img{width:90px;height:110px;object-fit:cover;border:3px solid #fff0b6;border-radius:12px;box-shadow:0 6px 15px #563b1355}
+.premium-gold-card .gold-id{font-size:10px;font-weight:900;letter-spacing:.12em;margin-top:9px}
+.premium-card-actions{display:flex;gap:9px;flex-wrap:wrap;margin:12px 0}
+@media(max-width:560px){.premium-gold-card{padding:19px;min-height:205px}.premium-gold-card h3{font-size:20px}.premium-gold-card img{width:74px;height:92px}}
+
 </style></head><body>
 <header class="top"><div class="brand">VSS COMMUNITY<small>VIDYARTHI SEVA SANGATHAN · CGIT RAIPUR</small></div><button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">☾</button><a href="index.html" style="color:white;text-decoration:none;font-size:13px">← Main website</a></header>
 
@@ -201,6 +219,21 @@ body{background:radial-gradient(ellipse at 90% 4%,#f0e6e8 0,transparent 28%),#f3
 <div class="actions"><button class="primary" id="accessPngBtn" type="button">Download PNG</button><button class="secondary" id="accessJpegBtn" type="button">Download JPEG</button><button class="secondary" id="accessPrintBtn" type="button">Print / Save PDF</button></div>
 <div id="memberPortalView" class="hidden">
  <div class="portal-head"><div><span class="eyebrow">VSS member dashboard</span><h2 style="margin:4px 0">Welcome, <span id="portalWelcomeName">Member</span></h2><p class="hint">Your membership details and digital ID are available here.</p></div><button class="secondary" id="portalSignOutBtn" type="button">Sign out</button></div>
+ 
+ <section class="core-card-request" id="coreCardRequestPanel">
+  <h3>✦ Core Member · Premium Gold ID</h3>
+  <p>Core team members may request a premium gold ID card. Your request will be reviewed by VSS administration. The premium card is available only after approval.</p>
+  <form id="coreCardRequestForm"><div class="field"><label for="coreRequestedRole">Your core team role / designation</label><input id="coreRequestedRole" maxlength="80" placeholder="e.g. Core Coordinator" required></div><button class="primary" id="coreCardRequestBtn" type="submit">Request premium card</button></form>
+  <div class="core-card-status" id="coreCardRequestStatus" role="status">Approval required · Not issued automatically</div>
+  <div id="premiumGoldCardArea" class="hidden">
+   <div class="premium-gold-card" id="premiumGoldCard">
+    <div><div class="gold-brand">VSS · VIDYARTHI SEVA SANGATHAN</div><h3 id="goldMemberName">Core Member</h3><div class="gold-role" id="goldMemberRole">CORE TEAM</div><div class="gold-meta" id="goldMemberBranch"></div><div class="gold-id" id="goldMemberId"></div></div>
+    <img id="goldMemberPhoto" alt="Core member portrait">
+   </div>
+   <div class="premium-card-actions"><button class="primary" id="downloadGoldCard" type="button">Download Gold ID · PNG</button></div>
+  </div>
+ </section>
+
  <div class="student-summary">
   <div class="student-stat"><span>Membership ID</span><strong id="studentSummaryId">—</strong></div>
   <div class="student-stat"><span>Membership category</span><strong id="studentSummaryCategory">—</strong></div>
@@ -353,6 +386,7 @@ $('accessRequestForm').addEventListener('submit',async e=>{
   $('updateCategory').value=member.membership_category||'Student Member';
   $('memberPortalView').classList.remove('hidden');
   showPortalWelcome(member.full_name||'Member');
+  loadCorePremiumCard(member);
   $('studentSummaryId').textContent=member.membership_no||'—';
   $('studentSummaryCategory').textContent=member.membership_category||'—';
   loadStudentDashboardContent();
@@ -446,6 +480,54 @@ $('updateMemberForm').addEventListener('submit',async e=>{
  finally{btn.disabled=false;btn.textContent='Save ID updates';}
 });
 
+
+
+async function loadCorePremiumCard(member){
+ const panel=$('coreCardRequestPanel');if(!panel)return;
+ const roleInput=$('coreRequestedRole'),status=$('coreCardRequestStatus'),gold=$('premiumGoldCardArea');
+ try{
+  const {data,error}=await db.rpc('vss_core_card_status',{p_membership_no:member.membership_no,p_email:member.email});
+  if(error)throw error;
+  const row=Array.isArray(data)?data[0]:data;
+  if(row){
+   if(roleInput)roleInput.value=row.requested_role||'';
+   if(row.status==='approved'){
+    status.textContent='Approved · Your premium core-member card is ready.';
+    const {data:cardData,error:cardError}=await db.rpc('vss_core_card_get',{p_membership_no:member.membership_no,p_email:member.email});
+    if(cardError)throw cardError;
+    const card=Array.isArray(cardData)?cardData[0]:cardData;
+    if(card){
+     $('goldMemberName').textContent=card.full_name||member.full_name;
+     $('goldMemberRole').textContent=card.approved_role||'CORE MEMBER';
+     $('goldMemberBranch').textContent=[card.branch,card.semester].filter(Boolean).join(' · ');
+     $('goldMemberId').textContent='VSS CORE ID · '+card.membership_no;
+     $('goldMemberPhoto').src=card.photo_url||'';
+     gold.classList.remove('hidden');
+     $('coreCardRequestForm').classList.add('hidden');
+    }
+   }else if(row.status==='pending')status.textContent='Pending approval · Your request is with VSS administration.';
+   else status.textContent='Previous request was not approved. You may update your role and submit again.';
+  }else status.textContent='Approval required · Not issued automatically';
+ }catch(err){status.textContent='Premium card status is not available yet. Please try again later.';console.warn('Core card status:',err.message);}
+}
+$('coreCardRequestForm')?.addEventListener('submit',async e=>{
+ e.preventDefault();
+ const member=window.vssCurrentMember;if(!member?.membership_no||!member?.email){$('coreCardRequestStatus').textContent='Please sign in to your VSS member portal first.';return;}
+ const btn=$('coreCardRequestBtn');btn.disabled=true;btn.textContent='Submitting…';
+ try{
+  const {data,error}=await db.rpc('vss_core_card_request',{p_membership_no:member.membership_no,p_email:member.email,p_requested_role:$('coreRequestedRole').value.trim()});
+  if(error)throw error;
+  $('coreCardRequestStatus').textContent=data==='approved'?'Your request is already approved.':'Request submitted successfully. It will remain pending until admin approval.';
+  await loadCorePremiumCard(member);
+ }catch(err){$('coreCardRequestStatus').textContent=err.message||'Could not submit your request.';}
+ finally{btn.disabled=false;btn.textContent='Request premium card';}
+});
+$('downloadGoldCard')?.addEventListener('click',async()=>{
+ try{
+  const canvas=await html2canvas($('premiumGoldCard'),{scale:3,backgroundColor:null,useCORS:true,allowTaint:false,logging:false});
+  const a=document.createElement('a');a.download='VSS-Core-Premium-'+($('goldMemberId').textContent.split('·').pop().trim()||'ID')+'.png';a.href=canvas.toDataURL('image/png');a.click();
+ }catch(err){$('coreCardRequestStatus').textContent='Could not export the premium card. Please retry.';}
+});
 
 function showPortalWelcome(name){
  const overlay=$('portalWelcomeOverlay');if(!overlay)return;
