@@ -195,14 +195,25 @@ body{background:radial-gradient(ellipse at 90% 4%,#f0e6e8 0,transparent 28%),#f3
 .premium-card-actions{display:flex;gap:9px;flex-wrap:wrap;margin:12px 0}
 @media(max-width:560px){.premium-gold-card{padding:19px;min-height:205px}.premium-gold-card h3{font-size:20px}.premium-gold-card img{width:74px;height:92px}}
 
+
+/* Separate member login and new registration views */
+.layout.login-mode{grid-template-columns:1fr}
+.layout.login-mode #memberAccessPanel{grid-column:1/-1;max-width:650px;width:100%;margin:0 auto}
+.layout.registration-mode{grid-template-columns:1fr}
+.layout.registration-mode #registrationPanel{display:block!important;max-width:760px;width:100%;margin:0 auto}
+.layout.registration-mode #memberAccessPanel{display:none!important}
+.registration-invite{margin-top:20px;padding-top:17px;border-top:1px solid var(--line);display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;text-align:center}
+.registration-invite p{margin:0;font-size:13px;color:var(--muted)}
+.registration-invite button{font-size:12px}
+@media(max-width:600px){.registration-invite{flex-direction:column}.registration-invite button{width:100%}}
 </style></head><body>
 <header class="top"><div class="brand">VSS COMMUNITY<small>VIDYARTHI SEVA SANGATHAN · CGIT RAIPUR</small></div><button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">☾</button><a href="index.html" style="color:white;text-decoration:none;font-size:13px">← Main website</a></header>
 
 <div id="portalWelcomeOverlay" class="welcome-overlay" aria-hidden="true">
  <div class="welcome-card"><div class="welcome-orbit"><span>VSS</span></div><div class="eyebrow">WELCOME TO THE COMMUNITY</div><h2>Good to have you here<span id="welcomeMemberName">, Member</span>.</h2><p>Your VSS member space is ready.</p><button type="button" id="welcomeContinueBtn" class="primary">Explore my dashboard</button></div>
 </div>
-<main class="wrap"><div class="intro"><span class="eyebrow">Instant digital membership</span><h1>Become a VSS Member</h1><p>Enter your details carefully. Join the VSS community and be part of a student-led network built on support, service and shared growth.</p></div>
-<div class="layout"><section class="panel form-panel"><h2>Member details</h2><form id="registerForm">
+<main class="wrap"><div class="intro" id="memberPageIntro"><span class="eyebrow">VSS member portal</span><h1 id="memberPageTitle">VSS Member Login</h1><p id="memberPageDescription">Sign in with your VSS membership ID and registered email to access your digital ID and member dashboard.</p></div>
+<div class="layout login-mode" id="memberPageLayout"><section class="panel form-panel hidden" id="registrationPanel"><h2>New VSS Member Registration</h2><p class="hint">Complete the form below to join the VSS community.</p><form id="registerForm">
 <div class="field"><label for="fullName">Full name *</label><input id="fullName" maxlength="100" required autocomplete="name"></div>
 <div class="row"><div class="field"><label for="branch">Branch / Department *</label><input id="branch" maxlength="80" required placeholder="e.g. Civil Engineering"></div><div class="field"><label for="semester">Semester / Year *</label><select id="semester" required><option value="">Select</option><option>1st Semester</option><option>2nd Semester</option><option>3rd Semester</option><option>4th Semester</option><option>5th Semester</option><option>6th Semester</option><option>7th Semester</option><option>8th Semester</option><option>Alumni</option><option>Faculty</option><option>Other</option></select></div></div>
 <div class="field"><label for="phone">Mobile number *</label><input id="phone" type="tel" inputmode="numeric" minlength="10" maxlength="15" required placeholder="10-digit mobile number"></div>
@@ -210,11 +221,11 @@ body{background:radial-gradient(ellipse at 90% 4%,#f0e6e8 0,transparent 28%),#f3
 <div class="field"><label for="photo">Upload your photo *</label><input id="photo" type="file" accept="image/jpeg,image/png,image/webp" required><span class="hint">JPG, PNG or WEBP · Maximum 3 MB · Use a clear passport-style photo.</span></div>
 <div class="field"><label for="category">Membership category *</label><select id="category" required><option value="">Select category</option><option>Student Member</option><option>Alumni Member</option><option>Faculty Member</option><option>Volunteer</option><option>Organizing Committee</option></select></div>
 <p class="hint">Names may be repeated. Each mobile number and email address can be registered only once. No email verification or approval is required.</p>
-<button class="primary" id="submitBtn" style="width:100%">Become a VSS Member</button></form><div id="formMsg" class="msg" role="status" aria-live="polite"></div></section>
+<button class="primary" id="submitBtn" style="width:100%">Become a VSS Member</button></form><div id="formMsg" class="msg" role="status" aria-live="polite"></div><div class="registration-invite"><button type="button" class="secondary" id="backToLoginBtn">← Back to VSS Login</button></div></section>
 
-<section class="panel" id="memberAccessPanel"><h2>Already have a VSS ID?</h2><p class="hint">Enter your VSS membership number and the email address registered with it to retrieve your digital ID card.</p>
+<section class="panel" id="memberAccessPanel"><h2>VSS Member Login</h2><p class="hint">Enter your VSS membership number and the email address registered with it to access your digital ID card and member dashboard.</p>
 <form id="accessRequestForm"><div class="field"><label for="accessMembershipNo">VSS Membership ID *</label><input id="accessMembershipNo" required maxlength="8" placeholder="e.g. VSS00001" autocomplete="off"></div><div class="field"><label for="accessEmail">Registered email address *</label><input id="accessEmail" type="email" required maxlength="254" placeholder="Your registered email" autocomplete="email"></div><button class="primary" id="getExistingIdBtn" style="width:100%">Login to VSS</button></form>
-<div class="msg" id="accessMsg" role="status" aria-live="polite"></div>
+<div class="msg" id="accessMsg" role="status" aria-live="polite"></div><div class="registration-invite"><p>Do not have a VSS account yet?</p><button type="button" class="secondary" id="showRegistrationBtn">Become a VSS Member · New Registration</button></div>
 <div id="accessResult" class="hidden"><div class="idcard" id="accessIdCard"><div class="cardhead"><div><strong>VSS COMMUNITY</strong><small>VIDYARTHI SEVA SANGATHAN</small></div><span class="stamp">MEMBER</span></div><div class="person"><img class="avatar" id="accessCardPhoto" alt="Member photo"><div><h3 id="accessCardName"></h3><p id="accessCardCategory"></p><p id="accessCardBranch"></p><p id="accessCardSemester"></p><div class="number" id="accessCardNo"></div></div></div><div class="cardfoot"><div>CGIT RAIPUR<br>Digital membership card</div><div id="accessQrCode" class="qr"></div></div></div>
 <div class="actions"><button class="primary" id="accessPngBtn" type="button">Download PNG</button><button class="secondary" id="accessJpegBtn" type="button">Download JPEG</button><button class="secondary" id="accessPrintBtn" type="button">Print / Save PDF</button></div>
 <div id="memberPortalView" class="hidden">
@@ -617,6 +628,19 @@ function launchConfetti(){
 </script><script>
 (()=>{const root=document.documentElement,key='vss-theme';const saved=localStorage.getItem(key);if(saved)root.dataset.theme=saved;const b=document.getElementById('themeToggle');const paint=()=>b.textContent=root.dataset.theme==='dark'?'☀':'☾';paint();b.addEventListener('click',()=>{root.dataset.theme=root.dataset.theme==='dark'?'light':'dark';localStorage.setItem(key,root.dataset.theme);paint();});
  try{const member=JSON.parse(sessionStorage.getItem('vss-member-session')||'null');if(member&&member.membership_no){const header=document.querySelector('.top');const avatar=document.createElement('img');avatar.className='member-profile-top';avatar.alt='Member profile';avatar.src=member.photo_url||'';avatar.onerror=()=>avatar.style.display='none';const label=document.createElement('span');label.style.cssText='color:white;font-size:12px;font-weight:750';label.textContent=(member.full_name||'Member').split(' ')[0];header.insertBefore(avatar,header.querySelector('a'));header.insertBefore(label,header.querySelector('a'));const no=document.getElementById('accessMembershipNo'),em=document.getElementById('accessEmail');if(no&&em){no.value=member.membership_no;em.value=member.email||'';document.getElementById('accessRequestForm').dispatchEvent(new Event('submit',{bubbles:true,cancelable:true}));}}}catch(e){}
+})();
+</script><script>
+(()=>{
+ const layout=document.getElementById('memberPageLayout');
+ const registration=document.getElementById('registrationPanel');
+ const login=document.getElementById('memberAccessPanel');
+ const title=document.getElementById('memberPageTitle');
+ const description=document.getElementById('memberPageDescription');
+ const show=document.getElementById('showRegistrationBtn');
+ const back=document.getElementById('backToLoginBtn');
+ if(!layout||!registration||!login||!show||!back)return;
+ show.addEventListener('click',()=>{layout.classList.remove('login-mode');layout.classList.add('registration-mode');registration.classList.remove('hidden');title.textContent='Become a VSS Member';description.textContent='Complete your details below to register and join the VSS community.';window.scrollTo({top:0,behavior:'smooth'});});
+ back.addEventListener('click',()=>{layout.classList.remove('registration-mode');layout.classList.add('login-mode');registration.classList.add('hidden');title.textContent='VSS Member Login';description.textContent='Sign in with your VSS membership ID and registered email to access your digital ID and member dashboard.';window.scrollTo({top:0,behavior:'smooth'});});
 })();
 </script><script src="assets/vss-help-chatbot.js"></script>
 </body></html>
