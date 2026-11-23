@@ -17,3 +17,12 @@ The Admin Panel is available at `admin.html`. Members can access the student das
 For an existing Supabase project, run the complete SQL migration in `supabase/dashboard-admin-migration.sql` once in the Supabase SQL Editor. For a new project, run `supabase/schema.sql`.
 
 The migration creates the announcements and events tables, enables public read access only for published content, and allows the authorised VSS administrator account to manage content and correct member details. Keep the Supabase service-role key private; the website uses only the public anon key.
+
+
+## Core-member premium gold ID cards
+
+Run `supabase/core-member-premium-cards.sql` once in the Supabase Dashboard SQL Editor. This creates the private request workflow and admin-only approval functions. Only records categorised as **Core Member**, **Core Team**, or **Organizing Committee** can request a premium card. Requests remain pending until the configured VSS administrator approves them. The gold card is shown only after approval.
+
+## VSS Help Assistant
+
+The floating VSS Help Assistant is a curated, on-site FAQ and navigation helper. It can direct visitors to VSS pages and explain common membership, ID-card, events and contact workflows. It does not send chat messages to an external AI service.
