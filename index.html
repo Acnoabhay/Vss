@@ -299,6 +299,73 @@ body{padding-bottom:100px}
 @media(max-width:760px){.home-updates .update-panel{min-height:0}.update-ticker{height:245px}}
 @media(prefers-reduced-motion:reduce){.update-ticker{height:auto;overflow:visible;mask-image:none}.update-ticker-track{animation:none!important}.update-ticker-track .ticker-duplicate{display:none}}
 
+
+/* VSS DESKTOP EXPERIENCE — intentionally distinct from the mobile layout */
+@media(min-width:1100px){
+ body{font-size:15px}
+ .wrap{width:min(1480px,calc(100% - 112px))}
+ header .wrap{width:min(1540px,calc(100% - 88px))}
+ .nav{min-height:94px;padding:12px 0;gap:30px}
+ .brand img{width:66px;height:66px}
+ .brand>span strong{font-size:16px;max-width:250px}
+ .brand>span small{font-size:10px}
+ .links{display:flex!important;gap:clamp(16px,1.65vw,28px);font-size:13px}
+ .links a{position:relative;padding:12px 0}
+ .links a:after{content:"";position:absolute;left:0;right:100%;bottom:4px;height:2px;background:var(--red);transition:right .25s}
+ .links a:hover:after{right:0}
+ .menu-btn,.mobile-panel{display:none!important}
+ .nav-actions .btn{display:inline-flex!important;padding:12px 19px;font-size:13px}
+ .vss-bottom-bar{display:none!important}
+ body{padding-bottom:0!important}
+ .hero{padding:112px 0 100px;min-height:650px;display:flex;align-items:center}
+ .hero-grid{width:100%;grid-template-columns:minmax(0,1.12fr) minmax(440px,.88fr);gap:clamp(60px,7vw,120px)}
+ .hero h1{font-size:clamp(68px,6vw,96px);max-width:760px}
+ .lead{font-size:20px;line-height:1.7;max-width:700px}
+ .hero-art{min-height:510px;border-radius:38px}
+ .hero-logo{width:min(76%,500px);padding:30px}
+ .stats{max-width:700px;gap:25px;margin-top:42px}
+ .stat strong{font-size:27px}
+ .stat span{font-size:12px}
+ section{padding:112px 0}
+ .section-head{margin-bottom:48px}
+ .section-head h2{font-size:48px}
+ .section-head p{font-size:15px;max-width:570px}
+ .grid{gap:24px}
+ .grid-3{grid-template-columns:repeat(3,minmax(0,1fr))}
+ .grid-2{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .card{padding:34px;border-radius:26px}
+ .card p{font-size:15px;line-height:1.75}
+ .quick-links{padding:50px 0 62px}
+ .quick-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:18px}
+ .quick-card{min-height:136px;padding:22px}
+ .quick-card strong{font-size:15px}.quick-card small{font-size:12px}
+ .updates-grid{grid-template-columns:minmax(0,.82fr) minmax(0,1.18fr);gap:26px}
+ .update-panel{padding:30px;border-radius:26px}
+ .update-ticker{height:350px}
+ .update-ticker-item{padding:18px 20px;min-height:92px}
+ .update-ticker-item strong{font-size:15px}.update-ticker-item p{font-size:13px}
+ .split{grid-template-columns:minmax(300px,.8fr) minmax(0,1.2fr);gap:90px}
+ .statement{font-size:36px}
+ .values{gap:18px}.value{padding:26px}
+ .team-card .avatar{height:230px!important;min-height:230px!important}
+ .team-info{padding:25px}.team-info h3{font-size:21px}
+ .vss-family-gallery .alumni-photo-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:20px}
+ .vss-family-gallery .alumni-photo{min-width:0}
+ .contact-grid{grid-template-columns:.8fr 1.2fr;gap:60px}
+ .contact-box{gap:18px}
+ .form input,.form textarea{font-size:15px;padding:17px}
+ .cta{padding:64px 72px;border-radius:36px}
+ footer{padding:72px 0 30px}
+ .footer-grid{grid-template-columns:1.4fr .7fr .8fr;gap:70px}
+}
+@media(min-width:1500px){
+ .wrap{width:min(1560px,calc(100% - 140px))}
+ .hero{min-height:720px}
+ .hero-grid{gap:140px}
+ .hero-art{min-height:560px}
+ .quick-grid{grid-template-columns:repeat(6,minmax(0,1fr))}
+}
+
 </style>
 </head>
 <body>
