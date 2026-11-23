@@ -404,7 +404,9 @@ function closePdfPreview(){ $('pdfPreviewModal').classList.remove('open');docume
 $('pdfPreviewCloseBtn').addEventListener('click',closePdfPreview);
 $('pdfPreviewModal').addEventListener('click',e=>{if(e.target===$('pdfPreviewModal'))closePdfPreview();});
 $('pdfPreviewPrintBtn').addEventListener('click',()=>{
- closePdfPreview();document.body.classList.add('printing');
+ closePdfPreview();
+ if(activePdfMode==='gold'){$('printDocument').innerHTML=$('pdfPreviewPaper').innerHTML;document.body.classList.add('gold-pdf-mode');}
+ document.body.classList.add('printing');
  setTimeout(()=>window.print(),220);
 });
 function prepareMemberPdf(name,category,branch,semester,membershipNo,photoUrl){
