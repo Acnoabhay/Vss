@@ -475,6 +475,30 @@ img,video,iframe,svg{max-width:100%}
  .hero-grid>div:first-child{max-width:100%}
 }
 
+
+/* VSS team directory: compact profile grid on desktop, scannable list on phones */
+#team .grid.grid-3{grid-template-columns:repeat(4,minmax(0,1fr));gap:18px}
+#team .team-card{display:flex;flex-direction:column;align-items:center;text-align:center;padding:20px 14px;min-width:0;gap:10px}
+#team .team-card .avatar{width:92px;height:92px;min-width:92px;border-radius:50%;overflow:hidden;display:grid;place-items:center;font-size:22px;font-weight:800;flex:none;margin:0 auto;background:var(--soft,#eef1f4)}
+#team .team-card .avatar img{width:100%;height:100%;object-fit:cover;object-position:center;border-radius:50%}
+#team .team-card .team-info{width:100%;min-width:0;padding:0}
+#team .team-card .team-info h3{font-size:15px;line-height:1.25;margin:5px 0}
+#team .team-card .team-info small{font-size:11px;line-height:1.35}
+#team .team-card .team-info p{font-size:12px;line-height:1.45;margin:6px 0 0}
+@media(max-width:760px){
+ #team .grid.grid-3{grid-template-columns:minmax(0,1fr);gap:8px}
+ #team .team-card{flex-direction:row;align-items:center;text-align:left;justify-content:flex-start;padding:10px 12px;gap:13px;border-radius:13px;min-height:76px}
+ #team .team-card .avatar{width:54px;height:54px;min-width:54px;margin:0;font-size:15px}
+ #team .team-card .team-info{flex:1}
+ #team .team-card .team-info h3{font-size:14px;margin:2px 0}
+ #team .team-card .team-info small{font-size:11px}
+ #team .team-card .team-info p{display:none}
+ #team .section-head{margin-top:26px!important;margin-bottom:12px}
+ #team .section-head h2{font-size:21px}
+ #team .notice{font-size:11px}
+}
+@media(min-width:761px) and (max-width:1050px){#team .grid.grid-3{grid-template-columns:repeat(3,minmax(0,1fr))}}
+
 </style>
 </head>
 <body>
