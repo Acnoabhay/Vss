@@ -284,6 +284,21 @@ body{padding-bottom:100px}
 .upcoming-meta{display:flex;flex-wrap:wrap;gap:7px;margin-top:8px}
 .upcoming-meta span{font-size:10px;font-weight:750;color:var(--red);background:color-mix(in srgb,var(--red) 8%,var(--card));padding:5px 8px;border-radius:99px}
 @media(max-width:760px){.home-updates{padding:42px 0}.updates-grid{grid-template-columns:1fr}.update-panel{padding:19px}}
+
+/* Government-style automatic VSS updates ticker */
+.home-updates .update-panel{display:flex;flex-direction:column;min-height:390px}
+.update-ticker{height:280px;overflow:hidden;position:relative;border:1px solid var(--line);border-radius:15px;background:var(--soft);mask-image:linear-gradient(to bottom,transparent 0,#000 7%,#000 93%,transparent 100%)}
+.update-ticker-track{display:flex;flex-direction:column;gap:10px;padding:12px;animation:vssTickerScroll var(--ticker-duration,28s) linear infinite}
+.update-ticker:hover .update-ticker-track,.update-ticker:focus-within .update-ticker-track{animation-play-state:paused}
+.update-ticker-item{display:block;padding:13px 14px;border:1px solid var(--line);border-left:3px solid var(--red);border-radius:12px;background:var(--card);min-height:76px}
+.update-ticker-item strong{display:block;font-size:13px;line-height:1.4;margin-bottom:4px}
+.update-ticker-item p{font-size:12px;color:var(--muted);margin:0;line-height:1.5}
+.update-ticker-meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:7px;color:var(--red);font-size:10px;font-weight:750}
+.update-ticker-status{font-size:11px;color:var(--muted);padding:10px 2px}
+@keyframes vssTickerScroll{from{transform:translateY(0)}to{transform:translateY(-50%)}}
+@media(max-width:760px){.home-updates .update-panel{min-height:0}.update-ticker{height:245px}}
+@media(prefers-reduced-motion:reduce){.update-ticker{height:auto;overflow:visible;mask-image:none}.update-ticker-track{animation:none!important}.update-ticker-track .ticker-duplicate{display:none}}
+
 </style>
 </head>
 <body>
@@ -321,12 +336,9 @@ body{padding-bottom:100px}
  <div class="wrap">
   <div class="section-head"><div><span class="eyebrow">Stay connected</span><h2>VSS notices & upcoming events</h2></div><p>Important community updates and planned activities, together in one place.</p></div>
   <div class="updates-grid">
-   <article class="update-panel" id="vss-notices"><div class="update-panel-head"><div><span class="update-label">Notice board</span><h2>VSS notices</h2></div><span aria-hidden="true">📢</span></div><div class="notice-empty"><strong>No new notices right now</strong><p>Any important VSS announcement will be shared here. Please check back for updates.</p></div></article>
+   <article class="update-panel" id="vss-notices"><div class="update-panel-head"><div><span class="update-label">Notice board</span><h2>VSS notices</h2></div><span aria-hidden="true">📢</span></div><div class="update-ticker" aria-label="Scrolling VSS notices"><div class="update-ticker-track" id="homeNoticeTicker"><div class="update-ticker-status">Loading latest notices…</div></div></div></article>
    <article class="update-panel" id="upcoming-events"><div class="update-panel-head"><div><span class="update-label">Coming up</span><h2>Upcoming events</h2></div><span aria-hidden="true">📅</span></div>
-    <div class="upcoming-list">
-     <div class="upcoming-item"><div class="upcoming-icon" aria-hidden="true">🎓</div><div><h3>Weekly online mentorship</h3><p>Planned online sessions with corporate professionals to explore career paths, workplace skills and professional growth.</p><div class="upcoming-meta"><span>Weekly programme</span><span>Schedule to be announced</span></div></div></div>
-     <div class="upcoming-item"><div class="upcoming-icon" aria-hidden="true">💡</div><div><h3>Industry & career seminars</h3><p>Planned on-campus sessions with industry and job professionals, focused on career awareness and practical guidance.</p><div class="upcoming-meta"><span>Monthly programme</span><span>Date to be announced</span></div></div></div>
-    </div>
+    <div class="update-ticker" aria-label="Scrolling upcoming VSS events"><div class="update-ticker-track" id="homeEventTicker"><div class="update-ticker-status">Loading upcoming events…</div></div></div>
    </article>
   </div>
  </div>
@@ -585,6 +597,47 @@ document.getElementById('contactForm').addEventListener('submit',e=>{
 })();
 </script>
 
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+/* Live homepage notices and events from the existing VSS Supabase project */
+(function(){
+ const URL="https://aukiryqoqpotjuuqwsec.supabase.co";
+ const KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhbGciOiJIUzI1NiIsInR5cCI6MTc5NTM1OTkxNywiZXhwIjoyMTEwOTM1OTE3fQ.fqfDg2bU70gT3RpRp0cOYyZhusUwLuathrFI42p3v_w";
+ const db=window.supabase.createClient(URL,KEY);
+ const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+ const date=v=>{if(!v)return 'Date to be announced';const d=new Date(v);return isNaN(d)?'Date to be announced':new Intl.DateTimeFormat('en-IN',{day:'2-digit',month:'short',year:'numeric'}).format(d)};
+ function renderTicker(id,rows,kind){
+  const el=document.getElementById(id);if(!el)return;
+  if(!rows.length){el.innerHTML='<div class="update-ticker-status">No '+(kind==='notice'?'new notices':'upcoming events')+' at the moment. Please check back soon.</div>';return;}
+  const cards=rows.map(x=>{
+   const title=esc(x.title||'VSS update'),body=esc(kind==='notice'?(x.body||'Please read this VSS announcement.'):(x.description||'Details will be announced soon.'));
+   const meta=kind==='notice'?esc(x.category||'Announcement')+' · '+date(x.created_at):date(x.event_date)+' · '+esc(x.venue||'Venue to be announced');
+   return '<article class="update-ticker-item"><strong>'+title+'</strong><p>'+body+'</p><div class="update-ticker-meta">'+meta+'</div></article>';
+  }).join('');
+  el.innerHTML=cards+cards.replaceAll('update-ticker-item','update-ticker-item ticker-duplicate');
+  el.style.setProperty('--ticker-duration',Math.max(20,rows.length*8)+'s');
+  if(window.matchMedia('(prefers-reduced-motion: reduce)').matches){const dup=el.querySelectorAll('.ticker-duplicate');dup.forEach(n=>n.remove());}
+ }
+ async function load(){
+  const n=document.getElementById('homeNoticeTicker'),e=document.getElementById('homeEventTicker');
+  try{
+   const now=new Date().toISOString();
+   const [nr,er]=await Promise.all([
+    db.from('vss_announcements').select('title,category,body,created_at,is_published,is_pinned').eq('is_published',true).order('is_pinned',{ascending:false}).order('created_at',{ascending:false}).limit(12),
+    db.from('vss_events').select('title,description,event_date,venue,is_published').eq('is_published',true).or('event_date.is.null,event_date.gte.'+now).order('event_date',{ascending:true,nullsFirst:false}).limit(12)
+   ]);
+   if(nr.error)throw nr.error;if(er.error)throw er.error;
+   renderTicker('homeNoticeTicker',nr.data||[],'notice');renderTicker('homeEventTicker',er.data||[],'event');
+  }catch(err){
+   console.warn('VSS homepage updates could not be loaded:',err);
+   if(n)n.innerHTML='<div class="update-ticker-status">Notices are temporarily unavailable. Please check again later.</div>';
+   if(e)e.innerHTML='<div class="update-ticker-status">Upcoming events are temporarily unavailable. Please check again later.</div>';
+  }
+ }
+ load();
+})();
+</script>
 <script src="assets/vss-help-chatbot.js"></script>
 </body>
 </html>
