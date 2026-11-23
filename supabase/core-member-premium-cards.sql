@@ -25,8 +25,9 @@ begin
  if not exists(select 1 from public.vss_id_cards m
    where upper(m.membership_no)=upper(trim(coalesce(p_membership_no,'')))
    and lower(trim(m.email))=lower(trim(coalesce(p_email,'')))
-   and coalesce(m.is_blocked,false)=false) then
-  raise exception 'Your VSS ID and registered email could not be verified.';
+   and coalesce(m.is_blocked,false)=false
+   and (lower(m.membership_category) like '%core%' or lower(trim(m.membership_category))='organizing committee')) then
+  raise exception 'Premium gold cards are limited to members recorded as Core Member, Core Team or Organizing Committee. Please contact VSS administration if your role is incorrect.';
  end if;
  insert into public.vss_core_card_requests(membership_no,requested_role,status,approved_role,requested_at,reviewed_at,admin_note)
  values(upper(trim(p_membership_no)),trim(p_requested_role),'pending',null,now(),null,null)
