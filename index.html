@@ -603,7 +603,7 @@ document.getElementById('contactForm').addEventListener('submit',e=>{
 /* Live homepage notices and events from the existing VSS Supabase project */
 (function(){
  const URL="https://aukiryqoqpotjuuqwsec.supabase.co";
- const KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhbGciOiJIUzI1NiIsInR5cCI6MTc5NTM1OTkxNywiZXhwIjoyMTEwOTM1OTE3fQ.fqfDg2bU70gT3RpRp0cOYyZhusUwLuathrFI42p3v_w";
+ const KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhbGciOiJIUzI1NiIsInJlZiI6ImF1a2lyeXFvcXBvdGp1dXF3c2VjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTUzNTk5MTcsImV4cCI6MjExMDkzNTkxN30.fqfDg2bU70gT3RpRp0cOYyZhusUwLuathrFI42p3v_w";
  const db=window.supabase.createClient(URL,KEY);
  const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
  const date=v=>{if(!v)return 'Date to be announced';const d=new Date(v);return isNaN(d)?'Date to be announced':new Intl.DateTimeFormat('en-IN',{day:'2-digit',month:'short',year:'numeric'}).format(d)};
