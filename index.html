@@ -715,45 +715,7 @@ document.getElementById('contactForm').addEventListener('submit',e=>{
 
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script>
-/* Live homepage notices and events from the existing VSS Supabase project */
-(function(){
- const URL="https://aukiryqoqpotjuuqwsec.supabase.co";
- const KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhbGciOiJIUzI1NiIsInJlZiI6ImF1a2lyeXFvcXBvdGp1dXF3c2VjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTUzNTk5MTcsImV4cCI6MjExMDkzNTkxN30.fqfDg2bU70gT3RpRp0cOYyZhusUwLuathrFI42p3v_w";
- const db=window.supabase.createClient(URL,KEY);
- const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
- const date=v=>{if(!v)return 'Date to be announced';const d=new Date(v);return isNaN(d)?'Date to be announced':new Intl.DateTimeFormat('en-IN',{day:'2-digit',month:'short',year:'numeric'}).format(d)};
- function renderTicker(id,rows,kind){
-  const el=document.getElementById(id);if(!el)return;
-  if(!rows.length){el.innerHTML='<div class="update-ticker-status">No '+(kind==='notice'?'new notices':'upcoming events')+' at the moment. Please check back soon.</div>';return;}
-  const cards=rows.map(x=>{
-   const title=esc(x.title||'VSS update'),body=esc(kind==='notice'?(x.body||'Please read this VSS announcement.'):(x.description||'Details will be announced soon.'));
-   const meta=kind==='notice'?esc(x.category||'Announcement')+' · '+date(x.created_at):date(x.event_date)+' · '+esc(x.venue||'Venue to be announced');
-   return '<article class="update-ticker-item"><strong>'+title+'</strong><p>'+body+'</p><div class="update-ticker-meta">'+meta+'</div></article>';
-  }).join('');
-  el.innerHTML=cards+cards.replaceAll('update-ticker-item','update-ticker-item ticker-duplicate');
-  el.style.setProperty('--ticker-duration',Math.max(20,rows.length*8)+'s');
-  if(window.matchMedia('(prefers-reduced-motion: reduce)').matches){const dup=el.querySelectorAll('.ticker-duplicate');dup.forEach(n=>n.remove());}
- }
- async function load(){
-  const n=document.getElementById('homeNoticeTicker'),e=document.getElementById('homeEventTicker');
-  try{
-   const now=new Date().toISOString();
-   const [nr,er]=await Promise.all([
-    db.from('vss_announcements').select('title,category,body,created_at,is_published,is_pinned').eq('is_published',true).order('is_pinned',{ascending:false}).order('created_at',{ascending:false}).limit(12),
-    db.from('vss_events').select('title,description,event_date,venue,is_published').eq('is_published',true).or('event_date.is.null,event_date.gte.'+now).order('event_date',{ascending:true,nullsFirst:false}).limit(12)
-   ]);
-   if(nr.error)throw nr.error;if(er.error)throw er.error;
-   renderTicker('homeNoticeTicker',nr.data||[],'notice');renderTicker('homeEventTicker',er.data||[],'event');
-  }catch(err){
-   console.warn('VSS homepage updates could not be loaded:',err);
-   if(n)n.innerHTML='<div class="update-ticker-status">Notices are temporarily unavailable. Please check again later.</div>';
-   if(e)e.innerHTML='<div class="update-ticker-status">Upcoming events are temporarily unavailable. Please check again later.</div>';
-  }
- }
- load();
-})();
-</script>
+
 <script src="assets/vss-help-chatbot.js"></script>
 
 <script>
@@ -787,7 +749,7 @@ document.getElementById('contactForm').addEventListener('submit',e=>{
   document.addEventListener('visibilitychange',()=>document.hidden?stop():start());
   async function load(){try{
    if(!window.supabase||!window.supabase.createClient)throw new Error('Supabase client is unavailable');
-   const db=window.supabase.createClient('https://aukiryqoqpotjuuqwsec.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhbGciOiJIUzI1NiIsInJlZiI6ImF1a2lyeXFvcXBvdGp1dXF3c2VjIiwicm9sZSI6ImFub24iLCJpYXQiMTc5NTM1OTkxNywiZXhwIjoyMTEwOTM1OTE3fQ.fqfDg2bU70gT3RpRp0cOYyZhusUwLuathrFI42p3v_w');
+   const db=window.supabase.createClient('https://aukiryqoqpotjuuqwsec.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhbGciOiJIUzI1NiIsInJlZiI6ImF1a2lyeXFvcXBvdGp1dXF3c2VjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTUzNTk5MTcsImV4cCI6MjExMDkzNTkxN30.fqfDg2bU70gT3RpRp0cOYyZhusUwLuathrFI42p3v_w');
    const now=new Date().toISOString();const [nr,er]=await Promise.all([
     db.from('vss_announcements').select('title,category,body,created_at,is_published,is_pinned').eq('is_published',true).order('is_pinned',{ascending:false}).order('created_at',{ascending:false}).limit(20),
     db.from('vss_events').select('title,description,event_date,venue,is_published').eq('is_published',true).or('event_date.is.null,event_date.gte.'+now).order('event_date',{ascending:true,nullsFirst:false}).limit(20)
