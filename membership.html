@@ -391,12 +391,13 @@ const SUPABASE_URL="https://aukiryqoqpotjuuqwsec.supabase.co";
 const SUPABASE_ANON_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF1a2lyeXFvcXBvdGp1dXF3c2VjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTUzNTk5MTcsImV4cCI6MjExMDkzNTkxN30.fqfDg2bU70gT3RpRp0cOYyZhusUwLuathrFI42p3v_w";
 const db=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
 const $=id=>document.getElementById(id);
+const memberPdfTemplate=$('printDocument').innerHTML;let activePdfMode='member';
 function openPdfPreview(title,mode){
  const modal=$('pdfPreviewModal'),paper=$('pdfPreviewPaper'),doc=$('printDocument');
+ activePdfMode=mode||'member';
  $('pdfPreviewTitle').textContent=title||'VSS Premium PDF Preview';
- doc.classList.toggle('gold-pdf-mode',mode==='gold');
- paper.innerHTML=doc.innerHTML;
- paper.classList.toggle('pdf-gold-card',mode==='gold');
+ paper.innerHTML=activePdfMode==='gold'?'<div class="pdf-gold-card">'+$('premiumGoldCard').outerHTML+'</div>':doc.innerHTML;
+ paper.classList.toggle('pdf-gold-card',activePdfMode==='gold');
  modal.classList.add('open');document.body.style.overflow='hidden';
 }
 function closePdfPreview(){ $('pdfPreviewModal').classList.remove('open');document.body.style.overflow='';}
@@ -417,7 +418,7 @@ function prepareMemberPdf(name,category,branch,semester,membershipNo,photoUrl){
  $('pdfPhoto').onload=()=>{$('pdfPhoto').style.visibility='visible';};
  openPdfPreview('VSS Premium Membership PDF Preview','member');
 }
-window.addEventListener('afterprint',()=>{document.body.classList.remove('printing','gold-pdf-mode');});
+window.addEventListener('afterprint',()=>{document.body.classList.remove('printing','gold-pdf-mode');$('printDocument').innerHTML=memberPdfTemplate;activePdfMode='member';});
 
 
 // Existing-member retrieval: membership number + registered email match; no email OTP.
@@ -477,10 +478,8 @@ $('accessPngBtn').addEventListener('click',()=>downloadAccessCard('png'));
 $('accessJpegBtn').addEventListener('click',()=>downloadAccessCard('jpeg'));
 $('accessPrintBtn').addEventListener('click',()=>prepareMemberPdf($('accessCardName').textContent,$('accessCardCategory').textContent,$('accessCardBranch').textContent,$('accessCardSemester').textContent,$('accessCardNo').textContent,$('accessCardPhoto').src));
 $('previewGoldPdfBtn').addEventListener('click',()=>{
- const target=$('printDocument'),gold=$('premiumGoldCard');
- if(!gold||gold.classList.contains('hidden'))return;
- target.innerHTML='<div class="pdf-gold-card">'+gold.outerHTML+'</div>';
- document.body.classList.add('gold-pdf-mode');
+ const gold=$('premiumGoldCard');
+ if(!gold||$('premiumGoldCardArea').classList.contains('hidden'))return;
  openPdfPreview('VSS Premium Gold Core ID · PDF Preview','gold');
 });
 
