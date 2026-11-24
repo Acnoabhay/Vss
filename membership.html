@@ -581,6 +581,19 @@ async function renderClearIdCard(element,format,scale=4){
   onclone:clonedDoc=>{
    const clonedCard=clonedDoc.getElementById(element.id);
    if(!clonedCard)return;
+   // Clear effects on the card AND every ancestor: opacity on a parent
+   // composites the entire card and cannot be repaired on child elements alone.
+   let ancestor=clonedCard;
+   while(ancestor&&ancestor!==clonedDoc.body){
+    ancestor.style.setProperty('opacity','1','important');
+    ancestor.style.setProperty('filter','none','important');
+    ancestor.style.setProperty('-webkit-filter','none','important');
+    ancestor.style.setProperty('visibility','visible','important');
+    ancestor.style.setProperty('mix-blend-mode','normal','important');
+    ancestor.style.setProperty('animation','none','important');
+    ancestor.style.setProperty('transition','none','important');
+    ancestor=ancestor.parentElement;
+   }
    [clonedCard,...clonedCard.querySelectorAll('*')].forEach(node=>{
     node.style.setProperty('opacity','1','important');
     node.style.setProperty('filter','none','important');
@@ -590,6 +603,19 @@ async function renderClearIdCard(element,format,scale=4){
     node.style.setProperty('animation','none','important');
     node.style.setProperty('transition','none','important');
     node.style.setProperty('font-synthesis','none','important');
+   });
+   // Force solid card colors and crisp, fully opaque white type in the export.
+   clonedCard.style.setProperty('background','linear-gradient(135deg,#850b18 0%,#a91020 62%,#c51e2d 100%)','important');
+   clonedCard.style.setProperty('color','#ffffff','important');
+   clonedCard.querySelectorAll('.cardhead,.cardhead strong,.cardhead small,.stamp,.person h3,.person p,.number,.cardfoot').forEach(node=>{
+    node.style.setProperty('color','#ffffff','important');
+    node.style.setProperty('opacity','1','important');
+    node.style.setProperty('font-weight','800','important');
+    node.style.setProperty('text-shadow','none','important');
+   });
+   clonedCard.querySelectorAll('img,canvas').forEach(node=>{
+    node.style.setProperty('opacity','1','important');
+    node.style.setProperty('filter','none','important');
    });
    clonedCard.style.setProperty('animation','none','important');
    clonedCard.style.setProperty('transform','none','important');
