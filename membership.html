@@ -480,7 +480,8 @@ button,a,input,select,textarea{touch-action:manipulation}
  <div class="pdf-preview-scroll"><div class="pdf-preview-paper" id="pdfPreviewPaper"></div></div></div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script><script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
-<script>
+<script>function vssVerificationUrl(membershipNo){return 'https://acnoabhay.github.io/Vss/admin.html?verify='+encodeURIComponent(String(membershipNo||'').trim().toUpperCase());}
+
 const SUPABASE_URL="https://aukiryqoqpotjuuqwsec.supabase.co";
 const SUPABASE_ANON_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF1a2lyeXFvcXBvdGp1dXF3c2VjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTUzNTk5MTcsImV4cCI6MjExMDkzNTkxN30.fqfDg2bU70gT3RpRp0cOYyZhusUwLuathrFI42p3v_w";
 const db=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
@@ -510,7 +511,7 @@ function prepareMemberPdf(name,category,branch,semester,membershipNo,photoUrl){
  $('pdfMembershipNo').textContent=membershipNo||'—';
  $('pdfIssueDate').textContent=new Intl.DateTimeFormat('en-IN',{day:'2-digit',month:'long',year:'numeric'}).format(new Date());
  $('pdfPhoto').src=photoUrl||'';$('pdfQrCode').innerHTML='';
- new QRCode($('pdfQrCode'),{text:membershipNo||'VSS',width:82,height:82,colorDark:'#17191d',colorLight:'#ffffff'});
+ new QRCode($('pdfQrCode'),{text:vssVerificationUrl(membershipNo),width:82,height:82,colorDark:'#17191d',colorLight:'#ffffff'});
  $('pdfPhoto').onerror=()=>{$('pdfPhoto').style.visibility='hidden';};
  $('pdfPhoto').onload=()=>{$('pdfPhoto').style.visibility='visible';};
  openPdfPreview('VSS Premium Membership PDF Preview','member');
@@ -532,7 +533,7 @@ $('accessRequestForm').addEventListener('submit',async e=>{
   $('accessCardPhoto').crossOrigin='anonymous';$('accessCardPhoto').src=member.photo_url||'';
   $('accessCardName').textContent=member.full_name;$('accessCardCategory').textContent=member.membership_category;
   $('accessCardBranch').textContent=member.branch;$('accessCardSemester').textContent=member.semester;$('accessCardNo').textContent=member.membership_no;
-  $('accessQrCode').innerHTML='';new QRCode($('accessQrCode'),{text:member.membership_no,width:70,height:70,colorDark:'#17191d',colorLight:'#ffffff'});
+  $('accessQrCode').innerHTML='';new QRCode($('accessQrCode'),{text:vssVerificationUrl(member.membership_no),width:70,height:70,colorDark:'#17191d',colorLight:'#ffffff'});
   $('accessResult').classList.remove('hidden');
   $('memberAccessPanel').classList.add('portal-open');
   $('memberAccessPanel').querySelector('h2').textContent='VSS Member Portal';
@@ -659,7 +660,7 @@ $('registerForm').addEventListener('submit',async e=>{
   payload.p_photo_url=db.storage.from('vss-member-photos').getPublicUrl(photoPath).data.publicUrl;
   const {data,error}=await db.rpc('vss_register_member',payload);if(error)throw error;const member=Array.isArray(data)?data[0]:data;if(!member||!member.membership_no)throw new Error('Registration did not return an ID. Please contact VSS.');
   const photoUrl=member.photo_url||payload.p_photo_url;$('cardPhoto').crossOrigin='anonymous';$('cardPhoto').src=photoUrl;$('cardName').textContent=member.full_name;$('cardCategory').textContent=member.membership_category;$('cardBranch').textContent=member.branch;$('cardSemester').textContent=member.semester;$('cardNo').textContent=member.membership_no;
-  $('qrCode').innerHTML='';new QRCode($('qrCode'),{text:member.membership_no,width:70,height:70,colorDark:'#17191d',colorLight:'#ffffff'});
+  $('qrCode').innerHTML='';new QRCode($('qrCode'),{text:vssVerificationUrl(member.membership_no),width:70,height:70,colorDark:'#17191d',colorLight:'#ffffff'});
   $('resultPanel').classList.remove('hidden');msg.textContent='';$('successMsg').innerHTML='<div class="congrats-mark" aria-hidden="true">🎉</div><strong>Congratulations, '+escapeHtml(member.full_name)+'!</strong><span>Welcome to the VSS family. Your registration is successful.</span><b>Your VSS Member ID: '+escapeHtml(member.membership_no)+'</b><small>Keep your membership number safe for future access to your ID card.</small>'; $('successMsg').classList.add('congratulations'); launchConfetti();$('resultPanel').scrollIntoView({behavior:'smooth',block:'start'});
   $('registerForm').reset();$('registerForm').querySelectorAll('input,select,button').forEach(el=>el.disabled=true);
  }catch(err){const m=String(err.message||err);msg.textContent=/duplicate|unique|already exists|23505/i.test(m)?'A registration already exists with this name, mobile number or email. Each detail can be used only once.':m;btn.disabled=false;btn.textContent='Generate my VSS ID';}
