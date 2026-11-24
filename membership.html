@@ -557,11 +557,33 @@ $('accessRequestForm').addEventListener('submit',async e=>{
  }catch(err){msg.textContent=err.message||'Could not retrieve your VSS ID. Please try again.';}
  finally{btn.disabled=false;btn.textContent='Login to VSS';}
 });
+async function renderClearIdCard(element,format,scale=3){
+ const canvas=await html2canvas(element,{
+  scale,
+  backgroundColor:format==='jpeg'?'#a91020':null,
+  useCORS:true,
+  allowTaint:false,
+  logging:false,
+  imageTimeout:20000,
+  onclone:clonedDoc=>{
+   const clonedCard=clonedDoc.getElementById(element.id);
+   if(!clonedCard)return;
+   [clonedCard,...clonedCard.querySelectorAll('*')].forEach(node=>{
+    node.style.setProperty('opacity','1','important');
+    node.style.setProperty('filter','none','important');
+    node.style.setProperty('-webkit-filter','none','important');
+    node.style.setProperty('visibility','visible','important');
+    node.style.setProperty('mix-blend-mode','normal','important');
+   });
+  }
+ });
+ return canvas;
+}
 async function downloadAccessCard(format){
  const img=$('accessCardPhoto'),originalSrc=img.src;let objectUrl='';
  try{
   if(originalSrc){const response=await fetch(originalSrc,{mode:'cors',cache:'no-store'});if(!response.ok)throw new Error('Could not load the member photo for download.');objectUrl=URL.createObjectURL(await response.blob());img.src=objectUrl;await img.decode();}
-  const canvas=await html2canvas($('accessIdCard'),{scale:2,backgroundColor:format==='jpeg'?'#a91020':null,useCORS:true,allowTaint:false,logging:false});
+  const canvas=await renderClearIdCard($('accessIdCard'),format,3);
   const a=document.createElement('a');a.download=$('accessCardNo').textContent+(format==='jpeg'?'.jpg':'.png');a.href=canvas.toDataURL(format==='jpeg'?'image/jpeg':'image/png',0.95);a.click();
  }catch(err){$('accessMsg').textContent=err.message||'Could not export the ID card.';}
  finally{if(objectUrl){img.src=originalSrc;URL.revokeObjectURL(objectUrl);}}
@@ -695,7 +717,7 @@ $('coreCardRequestForm')?.addEventListener('submit',async e=>{
 });
 $('downloadGoldCard')?.addEventListener('click',async()=>{
  try{
-  const canvas=await html2canvas($('premiumGoldCard'),{scale:3,backgroundColor:null,useCORS:true,allowTaint:false,logging:false});
+  const canvas=await renderClearIdCard($('premiumGoldCard'),'png',4);
   const a=document.createElement('a');a.download='VSS-Core-Premium-'+($('goldMemberId').textContent.split('·').pop().trim()||'ID')+'.png';a.href=canvas.toDataURL('image/png');a.click();
  }catch(err){$('coreCardRequestStatus').textContent='Could not export the premium card. Please retry.';}
 });
@@ -759,7 +781,7 @@ async function downloadCard(format){
    objectUrl=URL.createObjectURL(await response.blob());
    img.src=objectUrl;await img.decode();
   }
-  const canvas=await html2canvas($('idCard'),{scale:2,backgroundColor:format==='jpeg'?'#a91020':null,useCORS:true,allowTaint:false,logging:false});
+  const canvas=await renderClearIdCard($('idCard'),format,3);
   const mime=format==='jpeg'?'image/jpeg':'image/png';
   const a=document.createElement('a');a.download=$('cardNo').textContent+(format==='jpeg'?'.jpg':'.png');
   a.href=canvas.toDataURL(mime,0.95);a.click();
