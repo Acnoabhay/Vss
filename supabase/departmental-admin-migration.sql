@@ -81,5 +81,17 @@ on public.vss_gallery_photos for all to authenticated
 using (public.vss_is_main_admin() or public.vss_admin_department() = 'technical')
 with check (public.vss_is_main_admin() or public.vss_admin_department() = 'technical');
 
+-- Gallery storage uploads/deletes are limited to the Main Admin and Technical Team.
+drop policy if exists "VSS technical admins upload gallery files" on storage.objects;
+create policy "VSS technical admins upload gallery files" on storage.objects for insert to authenticated
+with check (bucket_id = 'vss-event-gallery' and (public.vss_is_main_admin() or public.vss_admin_department() = 'technical'));
+drop policy if exists "VSS technical admins delete gallery files" on storage.objects;
+create policy "VSS technical admins delete gallery files" on storage.objects for delete to authenticated
+using (bucket_id = 'vss-event-gallery' and (public.vss_is_main_admin() or public.vss_admin_department() = 'technical'));
+grant select, insert, update, delete on public.vss_gallery_photos to authenticated;
+grant select, insert, update, delete on public.vss_announcements to authenticated;
+grant select, insert, update, delete on public.vss_events to authenticated;
+grant select, insert, update, delete on public.vss_id_cards to authenticated;
+
 -- Existing main-admin-only SECURITY DEFINER RPCs retain their main-admin checks.
 -- This migration does not grant departmental accounts permission to create admins.
