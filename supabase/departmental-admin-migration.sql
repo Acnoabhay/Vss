@@ -46,6 +46,7 @@ grant execute on function public.vss_admin_department() to authenticated;
 grant execute on function public.vss_is_active_admin() to authenticated;
 
 -- Main Admin can view account records. Departmental users cannot enumerate or edit admin accounts.
+drop policy if exists "VSS main admin can view departmental admins" on public.vss_admin_accounts;
 create policy "VSS main admin can view departmental admins"
 on public.vss_admin_accounts for select to authenticated
 using (public.vss_is_main_admin());
