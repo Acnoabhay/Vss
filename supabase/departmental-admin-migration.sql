@@ -93,5 +93,40 @@ grant select, insert, update, delete on public.vss_announcements to authenticate
 grant select, insert, update, delete on public.vss_events to authenticated;
 grant select, insert, update, delete on public.vss_id_cards to authenticated;
 
+
+-- Restrictive policies ensure older permissive policies cannot give one department another department's write access.
+drop policy if exists "VSS enforce academic domain boundary for announcements" on public.vss_announcements;
+create policy "VSS enforce academic domain boundary for announcements"
+on public.vss_announcements as restrictive for all to authenticated
+using (is_published = true or public.vss_is_main_admin() or public.vss_admin_department() = 'academic')
+with check (public.vss_is_main_admin() or public.vss_admin_department() = 'academic');
+
+drop policy if exists "VSS enforce academic domain boundary for events" on public.vss_events;
+create policy "VSS enforce academic domain boundary for events"
+on public.vss_events as restrictive for all to authenticated
+using (is_published = true or public.vss_is_main_admin() or public.vss_admin_department() = 'academic')
+with check (public.vss_is_main_admin() or public.vss_admin_department() = 'academic');
+
+drop policy if exists "VSS enforce administration domain boundary for members" on public.vss_id_cards;
+create policy "VSS enforce administration domain boundary for members"
+on public.vss_id_cards as restrictive for all to authenticated
+using (public.vss_is_main_admin() or public.vss_admin_department() = 'administration')
+with check (public.vss_is_main_admin() or public.vss_admin_department() = 'administration');
+
+drop policy if exists "VSS enforce technical domain boundary for gallery" on public.vss_gallery_photos;
+create policy "VSS enforce technical domain boundary for gallery"
+on public.vss_gallery_photos as restrictive for all to authenticated
+using (is_published = true or public.vss_is_main_admin() or public.vss_admin_department() = 'technical')
+with check (public.vss_is_main_admin() or public.vss_admin_department() = 'technical');
+
+drop policy if exists "VSS enforce technical storage boundary" on storage.objects;
+create policy "VSS enforce technical storage boundary"
+on storage.objects as restrictive for insert to authenticated
+with check (bucket_id <> 'vss-event-gallery' or public.vss_is_main_admin() or public.vss_admin_department() = 'technical');
+drop policy if exists "VSS enforce technical storage delete boundary" on storage.objects;
+create policy "VSS enforce technical storage delete boundary"
+on storage.objects as restrictive for delete to authenticated
+using (bucket_id <> 'vss-event-gallery' or public.vss_is_main_admin() or public.vss_admin_department() = 'technical');
+
 -- Existing main-admin-only SECURITY DEFINER RPCs retain their main-admin checks.
 -- This migration does not grant departmental accounts permission to create admins.
