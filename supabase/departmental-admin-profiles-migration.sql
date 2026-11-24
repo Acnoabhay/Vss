@@ -22,3 +22,11 @@ $$;
 
 revoke all on function public.vss_public_admin_profiles() from public;
 grant execute on function public.vss_public_admin_profiles() to anon, authenticated;
+
+-- Allow the Main Admin to update only the profile photo fields.
+grant update (photo_url, updated_at) on public.vss_admin_accounts to authenticated;
+drop policy if exists "VSS main admin can update departmental admin photos" on public.vss_admin_accounts;
+create policy "VSS main admin can update departmental admin photos"
+on public.vss_admin_accounts for update to authenticated
+using (public.vss_is_main_admin())
+with check (public.vss_is_main_admin());
