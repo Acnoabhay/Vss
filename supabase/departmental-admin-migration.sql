@@ -15,6 +15,7 @@ create table if not exists public.vss_admin_accounts (
 
 alter table public.vss_admin_accounts enable row level security;
 revoke all on public.vss_admin_accounts from public, anon, authenticated;
+grant select on public.vss_admin_accounts to authenticated;
 
 create or replace function public.vss_is_main_admin()
 returns boolean language sql stable security definer set search_path=public,auth as $$
