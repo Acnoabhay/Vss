@@ -569,11 +569,13 @@ $('accessRequestForm').addEventListener('submit',async e=>{
  finally{btn.disabled=false;btn.textContent='Login to VSS';}
 });
 async function renderClearIdCard(element,format,scale=4){
- // Export from a clean, fully-visible clone so entrance animations and UI opacity
- // never get baked into the downloaded ID image.
+ // html2canvas can capture a washed-out layer when the card remains inside the
+ // preview's preserve-3d/backface-hidden flip stack. Rasterize an isolated clone.
+ const rect=element.getBoundingClientRect();
+ const exportWidth=Math.max(280,Math.round(rect.width||element.offsetWidth||510));
  const canvas=await html2canvas(element,{
   scale:Math.max(4,scale),
-  backgroundColor:format==='jpeg'?'#a91020':null,
+  backgroundColor:format==='jpeg'?'#970d1b':null,
   useCORS:true,
   allowTaint:false,
   logging:false,
@@ -581,44 +583,46 @@ async function renderClearIdCard(element,format,scale=4){
   onclone:clonedDoc=>{
    const clonedCard=clonedDoc.getElementById(element.id);
    if(!clonedCard)return;
-   // Clear effects on the card AND every ancestor: opacity on a parent
-   // composites the entire card and cannot be repaired on child elements alone.
-   let ancestor=clonedCard;
-   while(ancestor&&ancestor!==clonedDoc.body){
-    ancestor.style.setProperty('opacity','1','important');
-    ancestor.style.setProperty('filter','none','important');
-    ancestor.style.setProperty('-webkit-filter','none','important');
-    ancestor.style.setProperty('visibility','visible','important');
-    ancestor.style.setProperty('mix-blend-mode','normal','important');
-    ancestor.style.setProperty('animation','none','important');
-    ancestor.style.setProperty('transition','none','important');
-    ancestor=ancestor.parentElement;
-   }
+   // Remove the card from all 3D flip/backface and transformed ancestors.
+   clonedCard.remove();
+   clonedDoc.body.appendChild(clonedCard);
+   clonedCard.style.setProperty('position','fixed','important');
+   clonedCard.style.setProperty('left','0','important');
+   clonedCard.style.setProperty('top','0','important');
+   clonedCard.style.setProperty('width',exportWidth+'px','important');
+   clonedCard.style.setProperty('max-width','none','important');
+   clonedCard.style.setProperty('min-width',exportWidth+'px','important');
+   clonedCard.style.setProperty('margin','0','important');
+   clonedCard.style.setProperty('display','block','important');
+   clonedCard.style.setProperty('transform','none','important');
+   clonedCard.style.setProperty('transform-style','flat','important');
+   clonedCard.style.setProperty('backface-visibility','visible','important');
+   clonedCard.style.setProperty('-webkit-backface-visibility','visible','important');
+   clonedCard.style.setProperty('opacity','1','important');
+   clonedCard.style.setProperty('filter','none','important');
+   clonedCard.style.setProperty('mix-blend-mode','normal','important');
+   clonedCard.style.setProperty('animation','none','important');
+   clonedCard.style.setProperty('transition','none','important');
+   clonedCard.style.setProperty('background','linear-gradient(135deg,#850b18 0%,#a91020 62%,#c51e2d 100%)','important');
+   clonedCard.style.setProperty('color','#ffffff','important');
    [clonedCard,...clonedCard.querySelectorAll('*')].forEach(node=>{
     node.style.setProperty('opacity','1','important');
     node.style.setProperty('filter','none','important');
     node.style.setProperty('-webkit-filter','none','important');
-    node.style.setProperty('visibility','visible','important');
     node.style.setProperty('mix-blend-mode','normal','important');
     node.style.setProperty('animation','none','important');
     node.style.setProperty('transition','none','important');
-    node.style.setProperty('font-synthesis','none','important');
    });
-   // Force solid card colors and crisp, fully opaque white type in the export.
-   clonedCard.style.setProperty('background','linear-gradient(135deg,#850b18 0%,#a91020 62%,#c51e2d 100%)','important');
-   clonedCard.style.setProperty('color','#ffffff','important');
    clonedCard.querySelectorAll('.cardhead,.cardhead strong,.cardhead small,.stamp,.person h3,.person p,.number,.cardfoot').forEach(node=>{
     node.style.setProperty('color','#ffffff','important');
-    node.style.setProperty('opacity','1','important');
     node.style.setProperty('font-weight','800','important');
+    node.style.setProperty('opacity','1','important');
     node.style.setProperty('text-shadow','none','important');
    });
    clonedCard.querySelectorAll('img,canvas').forEach(node=>{
     node.style.setProperty('opacity','1','important');
     node.style.setProperty('filter','none','important');
    });
-   clonedCard.style.setProperty('animation','none','important');
-   clonedCard.style.setProperty('transform','none','important');
   }
  });
  return canvas;
