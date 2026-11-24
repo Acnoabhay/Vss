@@ -888,7 +888,7 @@ document.getElementById('contactForm').addEventListener('submit',e=>{
 (async function loadVssDepartmentAdminsOnHome(){
  const team=document.querySelector('#team .grid.grid-3');if(!team)return;
  try{
-  const client=window.supabase.createClient('https://aukiryqoqpotjuuqwsec.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJhdWtpcnlycW9xb3RqdXVxd3NlYyIsInJvbGUiOiJhbm9uIiwiaWF0IjoxNzk1MzU5OTE3LCJleHAiOjIxMTA5MzU5MTl9.fqfDg2bU70gT3RpRp0cOYyZhusUwLuathrFI42p3v_w');
+  const client=window.supabase.createClient('https://aukiryqoqpotjuuqwsec.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF1a2lyeXFvcXBvdGp1dXF3c2VjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTUzNTk5MTcsImV4cCI6MjExMDkzNTkxN30.fqfDg2bU70gT3RpRp0cOYyZhusUwLuathrFI42p3v_w');
   const {data,error}=await client.rpc('vss_public_admin_profiles');if(error)throw error;
   (data||[]).forEach(a=>{
    const card=document.createElement('article');card.className='card team-card';
