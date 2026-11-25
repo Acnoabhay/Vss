@@ -40,7 +40,7 @@ Deno.serve(async (req) => {
     const department = String(body.department || "");
     const designation = String(body.designation || "").trim() || "Department Administrator";
     if (fullName.length < 2 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) ||
-        password.length < 12 || designation.length > 100 || !["academic", "technical", "administration"].includes(department)) {
+        password.length < 12 || designation.length > 100 || !["academic", "technical", "administration", "organizing"].includes(department)) {
       return json({ error: "Provide a name, valid email, department and a password of at least 12 characters." }, 400);
     }
     const { data: created, error: createError } = await admin.auth.admin.createUser({
@@ -54,14 +54,27 @@ Deno.serve(async (req) => {
       await admin.auth.admin.deleteUser(created.user.id);
       return json({ error: rowError.message }, 400);
     }
-    return json({ success: true, message: "Departmental admin account created." });
+    const defaults: Record<string,string[]> = {
+      academic: ["dashboard.view","notices.view","notices.create","notices.edit","notices.publish","notices.delete","events.view","events.manage","events.publish"],
+      technical: ["dashboard.view","gallery.view","gallery.upload","gallery.publish","gallery.delete"],
+      administration: ["dashboard.view","members.view","members.manage","members.verify","users.manage","corecards.review"],
+      organizing: ["dashboard.view","events.view","events.manage","events.publish","gallery.view","gallery.upload","gallery.publish"]
+    };
+    const { error: permissionError } = await admin.from("vss_admin_permissions").insert(
+      (defaults[department] || []).map(permission_key => ({ user_id: created.user!.id, permission_key, granted_by: actor.id }))
+    );
+    if (permissionError) {
+      await admin.auth.admin.deleteUser(created.user.id);
+      return json({ error: permissionError.message }, 400);
+    }
+    return json({ success: true, message: "Departmental admin account created with starter permissions." });
   }
 
   if (action === "update_profile") {
     const userId = String(body.user_id || "");
     const department = String(body.department || "");
     const designation = String(body.designation || "").trim();
-    if (!userId || !["academic", "technical", "administration"].includes(department) ||
+    if (!userId || !["academic", "technical", "administration", "organizing"].includes(department) ||
         designation.length < 2 || designation.length > 100) {
       return json({ error: "Choose a valid department and enter a designation between 2 and 100 characters." }, 400);
     }
@@ -72,6 +85,32 @@ Deno.serve(async (req) => {
       .update({ department, designation, updated_at: new Date().toISOString() }).eq("user_id", userId);
     if (error) return json({ error: error.message }, 400);
     return json({ success: true, message: "Department and designation updated." });
+  }
+
+  if (action === "set_permissions") {
+    const userId = String(body.user_id || "");
+    const requested = Array.isArray(body.permissions) ? body.permissions.map((v: unknown) => String(v)) : [];
+    const allowed = new Set([
+      "dashboard.view","members.view","members.manage","members.verify","users.manage",
+      "notices.view","notices.create","notices.edit","notices.publish","notices.delete",
+      "events.view","events.manage","events.publish",
+      "gallery.view","gallery.upload","gallery.publish","gallery.delete","corecards.review"
+    ]);
+    if (!userId || requested.some((key: string) => !allowed.has(key))) {
+      return json({ error: "Invalid administrator or permission selection." }, 400);
+    }
+    const { data: target, error: lookupError } = await admin.from("vss_admin_accounts")
+      .select("user_id").eq("user_id", userId).maybeSingle();
+    if (lookupError || !target) return json({ error: lookupError?.message || "Admin account not found." }, 404);
+    const { error: deleteError } = await admin.from("vss_admin_permissions").delete().eq("user_id", userId);
+    if (deleteError) return json({ error: deleteError.message }, 400);
+    if (requested.length) {
+      const { error: insertError } = await admin.from("vss_admin_permissions").insert(
+        [...new Set(requested)].map(permission_key => ({ user_id: userId, permission_key, granted_by: actor.id }))
+      );
+      if (insertError) return json({ error: insertError.message }, 400);
+    }
+    return json({ success: true, message: "Administrator permissions updated." });
   }
 
   if (action === "set_active") {
