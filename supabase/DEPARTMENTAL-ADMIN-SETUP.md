@@ -13,14 +13,16 @@ Run these files in this exact order, copying the complete file contents into the
 1. `supabase/departmental-admin-migration.sql`
 2. `supabase/departmental-admin-rpc-permissions.sql`
 3. `supabase/departmental-admin-designation-migration.sql`
+4. `supabase/departmental-admin-profiles-migration.sql`
 
 Raw file links:
 
 - https://raw.githubusercontent.com/Acnoabhay/Vss/main/supabase/departmental-admin-migration.sql
 - https://raw.githubusercontent.com/Acnoabhay/Vss/main/supabase/departmental-admin-rpc-permissions.sql
 - https://raw.githubusercontent.com/Acnoabhay/Vss/main/supabase/departmental-admin-designation-migration.sql
+- https://raw.githubusercontent.com/Acnoabhay/Vss/main/supabase/departmental-admin-profiles-migration.sql
 
-The first migration creates the admin role registry and database access policies. The second enables Administration Dept member-management and premium-card RPCs. The third adds a separate designation field; “Department Administrator” remains the account identity and is not used as the person’s job designation.
+The first migration creates the admin role registry and database access policies. The second enables Administration Dept member-management and premium-card RPCs. The third adds a separate designation field; “Department Administrator” remains the account identity and is not used as the person’s job designation. The fourth adds the `photo_url` column used by the Admin accounts table and the public VSS team profile feed. If this fourth migration is missing, the account list query fails because it selects `photo_url`.
 
 ## 2. Deploy the account-management Edge Function
 
@@ -60,7 +62,7 @@ If any migration reports an error, stop and resolve it before creating accounts.
 
 ## 4. Enable granular Main Admin permissions
 
-After the three migrations above, run this additional SQL file once:
+After all four migrations above, run this additional SQL file once:
 
 - `supabase/admin-permission-management-migration.sql`
 - SQL Editor link: https://supabase.com/dashboard/project/aukiryqoqpotjuuqwsec/sql/new
