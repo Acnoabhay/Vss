@@ -474,7 +474,7 @@ async function refreshAll(options={}){
    canGallery?fetchAllRows(()=>db.from("vss_gallery_photos").select("*").order("created_at",{ascending:false})):Promise.resolve(empty)
   ]);
   members=results[0];notices=results[1];events=results[2];galleryPhotos=results[3];
-  if(canMembers){try{await loadUserLimit();}catch(limitErr){userLimit=100000;if($("userLimit"))$("userLimit").value=userLimit;if($("limitMsg"))$("limitMsg").textContent="Member limit controls require the Main Admin migration permissions.";}}
+  if(hasPermission("users.manage")){try{await loadUserLimit();}catch(limitErr){userLimit=100000;if($("userLimit"))$("userLimit").value=userLimit;if($("limitMsg"))$("limitMsg").textContent="Member limit controls require the Main Admin migration permissions.";}}
   renderAll();
   lastDashboardSyncAt=new Date();
   const syncText=$("registrationSyncText");
@@ -625,6 +625,10 @@ db.auth.onAuthStateChange((_event,session)=>{if(!session){$("appView").classList
 
 function setupRoleWorkspace(){
  const allowed=permittedTabs();
+ const noticeForm=$("noticeForm");if(noticeForm)noticeForm.closest(".panel").classList.toggle("hidden",!(hasPermission("notices.create")||hasPermission("notices.edit")||hasPermission("notices.publish")));
+ const eventForm=$("eventForm");if(eventForm)eventForm.closest(".panel").classList.toggle("hidden",!(hasPermission("events.manage")||hasPermission("events.publish")));
+ const galleryForm=$("galleryPhotoForm");if(galleryForm)galleryForm.classList.toggle("hidden",!hasPermission("gallery.upload"));
+ const memberEditor=$("memberEditor");if(memberEditor&&!hasPermission("members.manage"))memberEditor.classList.add("hidden");
  document.querySelectorAll("[data-tab]").forEach(b=>{b.classList.toggle("hidden",!allowed.includes(b.dataset.tab));});
  const gallery=$("galleryAdminPanel");if(gallery&&$("tab-gallery")&&!$("tab-gallery").contains(gallery))$("tab-gallery").appendChild(gallery);
  $("adminManagementNav").classList.toggle("hidden",currentAdminRole!=="main");const manageQuick=$("manageAdminsQuick");if(manageQuick)manageQuick.classList.toggle("hidden",currentAdminRole!=="main");
