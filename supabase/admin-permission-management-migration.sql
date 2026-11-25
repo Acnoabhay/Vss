@@ -279,3 +279,82 @@ begin
 end; $$;
 revoke all on function public.vss_admin_set_member_blocked(text,boolean) from public;
 grant execute on function public.vss_admin_set_member_blocked(text,boolean) to authenticated;
+
+-- Enforce separation of content editing and publication even for direct API calls.
+create or replace function public.vss_guard_announcement_permissions()
+returns trigger language plpgsql security definer set search_path=public as $$
+begin
+ if public.vss_is_main_admin() then return new; end if;
+ if tg_op='INSERT' then
+  if new.is_published and not public.vss_admin_has_permission('notices.publish') then
+   raise exception 'Notice publication permission required.';
+  end if;
+  return new;
+ end if;
+ if public.vss_admin_has_permission('notices.edit') then
+  if new.is_published is distinct from old.is_published and not public.vss_admin_has_permission('notices.publish') then
+   raise exception 'Notice publication permission required.';
+  end if;
+  return new;
+ end if;
+ if public.vss_admin_has_permission('notices.publish')
+  and (to_jsonb(new)-'is_published'-'updated_at')=(to_jsonb(old)-'is_published'-'updated_at') then
+  return new;
+ end if;
+ raise exception 'Notice edit permission required.';
+end; $$;
+drop trigger if exists vss_guard_announcement_permissions on public.vss_announcements;
+create trigger vss_guard_announcement_permissions before insert or update on public.vss_announcements
+for each row execute function public.vss_guard_announcement_permissions();
+
+create or replace function public.vss_guard_event_permissions()
+returns trigger language plpgsql security definer set search_path=public as $$
+begin
+ if public.vss_is_main_admin() then return new; end if;
+ if tg_op='INSERT' then
+  if new.is_published and not public.vss_admin_has_permission('events.publish') then
+   raise exception 'Event publication permission required.';
+  end if;
+  return new;
+ end if;
+ if public.vss_admin_has_permission('events.manage') then
+  if new.is_published is distinct from old.is_published and not public.vss_admin_has_permission('events.publish') then
+   raise exception 'Event publication permission required.';
+  end if;
+  return new;
+ end if;
+ if public.vss_admin_has_permission('events.publish')
+  and (to_jsonb(new)-'is_published'-'updated_at')=(to_jsonb(old)-'is_published'-'updated_at') then
+  return new;
+ end if;
+ raise exception 'Event management permission required.';
+end; $$;
+drop trigger if exists vss_guard_event_permissions on public.vss_events;
+create trigger vss_guard_event_permissions before insert or update on public.vss_events
+for each row execute function public.vss_guard_event_permissions();
+
+create or replace function public.vss_guard_gallery_permissions()
+returns trigger language plpgsql security definer set search_path=public as $$
+begin
+ if public.vss_is_main_admin() then return new; end if;
+ if tg_op='INSERT' then
+  if new.is_published and not public.vss_admin_has_permission('gallery.publish') then
+   raise exception 'Gallery publication permission required.';
+  end if;
+  return new;
+ end if;
+ if public.vss_admin_has_permission('gallery.upload') then
+  if new.is_published is distinct from old.is_published and not public.vss_admin_has_permission('gallery.publish') then
+   raise exception 'Gallery publication permission required.';
+  end if;
+  return new;
+ end if;
+ if public.vss_admin_has_permission('gallery.publish')
+  and (to_jsonb(new)-'is_published'-'updated_at')=(to_jsonb(old)-'is_published'-'updated_at') then
+  return new;
+ end if;
+ raise exception 'Gallery upload permission required.';
+end; $$;
+drop trigger if exists vss_guard_gallery_permissions on public.vss_gallery_photos;
+create trigger vss_guard_gallery_permissions before insert or update on public.vss_gallery_photos
+for each row execute function public.vss_guard_gallery_permissions();
