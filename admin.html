@@ -292,7 +292,7 @@ button,a,input,select,textarea{touch-action:manipulation}
 </section>
 <section id="tab-members" class="tab hidden">
 <div class="page-head"><div><span class="eyebrow">Member directory</span><h1>Membership management</h1><p>Search, review and correct member records.</p></div><button class="primary" id="exportCsv">Export CSV</button></div>
-<div class="panel"><div class="panel-head"><h2>Registered members</h2><div class="toolbar"><input id="memberSearch" class="search" placeholder="Search name, ID, email, phone or branch"></div></div><div class="table-wrap"><table><thead><tr><th>VSS ID</th><th>Name</th><th>Mobile</th><th>Email</th><th>Branch</th><th>Semester</th><th>Category</th><th>Action</th></tr></thead><tbody id="memberRows"></tbody></table></div><div class="msg" id="memberMsg"></div></div>
+<div class="panel"><div class="panel-head"><div><h2>Registered members</h2><small class="muted" id="memberRecordCount">Loading all records…</small></div><div class="toolbar"><input id="memberSearch" class="search" placeholder="Search name, ID, email, phone or branch"></div></div><div class="table-wrap"><table><thead><tr><th>VSS ID</th><th>Name</th><th>Mobile</th><th>Email</th><th>Branch</th><th>Semester</th><th>Category</th><th>Action</th></tr></thead><tbody id="memberRows"></tbody></table></div><div class="msg" id="memberMsg"></div></div>
 <div class="panel hidden" id="memberEditor"><div class="panel-head"><h2>Edit member record</h2><span class="pill" id="editMemberId"></span></div><form id="memberEditForm"><div class="two-col"><div class="field"><label>Full name</label><input id="editName" required maxlength="100"></div><div class="field"><label>Mobile number</label><input id="editPhone" required maxlength="15"></div><div class="field"><label>Branch / Department</label><input id="editBranch" required maxlength="80"></div><div class="field"><label>Semester / Year</label><input id="editSemester" required maxlength="40"></div><div class="field"><label>Membership category</label><input id="editCategory" required maxlength="60"></div></div><div class="toolbar"><button class="primary" id="saveMemberBtn">Save member changes</button><button class="light" type="button" id="cancelMemberEdit">Cancel</button></div><div class="msg" id="memberEditMsg"></div></form><p class="footnote">VSS membership number and registered email are protected and cannot be changed here.</p></div>
 </section>
 
@@ -357,7 +357,19 @@ const db=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
 const $=id=>document.getElementById(id);
 let members=[],notices=[],events=[],galleryPhotos=[],editingMember=null,editingNotice=null,editingEvent=null,userLimit=100000;
 const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-const dateText=v=>v?new Intl.DateTimeFormat("en-IN",{dateStyle:"medium",timeStyle:"short"}).format(new Date(v)):"Date to be announced";
+const dateText=v=>v?new Intl.DateTimeFormat("en-IN",{dateStyle:"medium",timeStyle:"short",timeZone:"Asia/Kolkata"}).format(new Date(v)):"Date to be announced";
+const istDayKey=v=>v?new Intl.DateTimeFormat("en-CA",{timeZone:"Asia/Kolkata",year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date(v)):"";
+async function fetchAllRows(makeQuery,pageSize=20){
+ const all=[];let offset=0;
+ while(true){
+  const {data,error}=await makeQuery().range(offset,offset+pageSize-1);
+  if(error)throw error;
+  const page=data||[];all.push(...page);
+  if(page.length<pageSize)break;
+  offset+=pageSize;
+ }
+ return all;
+}
 function setTab(name){const allowed=currentAdminRole==="main"?["overview","verify","members","corecards","users","announcements","events","gallery","admin-management"]:currentAdminRole==="academic"?["announcements","events"]:currentAdminRole==="technical"?["gallery"]:currentAdminRole==="administration"?["verify","members","corecards","users"]:[];if(!allowed.includes(name))name=allowed[0]||"overview";document.querySelectorAll(".tab").forEach(x=>x.classList.add("hidden"));const target=$("tab-"+name);if(target)target.classList.remove("hidden");document.querySelectorAll("[data-tab]").forEach(x=>x.classList.toggle("active",x.dataset.tab===name));}
 document.querySelectorAll("[data-tab]").forEach(b=>b.addEventListener("click",()=>setTab(b.dataset.tab)));
 document.querySelectorAll("[data-go]").forEach(b=>b.addEventListener("click",()=>setTab(b.dataset.go)));
@@ -408,7 +420,25 @@ $("verifyQrImage").addEventListener("click",async()=>{const file=$("vssQrImageFi
 
 $("refreshCoreCards").addEventListener("click",refreshCoreCardRequests);
 $("logoutBtn").addEventListener("click",async()=>{await db.auth.signOut();location.reload();});
-async function refreshAll(){ $("globalMsg").textContent="Refreshing department workspace…";try{const canMembers=currentAdminRole==="main"||currentAdminRole==="administration",canAcademic=currentAdminRole==="main"||currentAdminRole==="academic",canGallery=currentAdminRole==="main"||currentAdminRole==="technical";const empty={data:[],error:null};const results=await Promise.all([canMembers?db.from("vss_id_cards").select("*").order("created_at",{ascending:false}):Promise.resolve(empty),canAcademic?db.from("vss_announcements").select("*").order("created_at",{ascending:false}):Promise.resolve(empty),canAcademic?db.from("vss_events").select("*").order("event_date",{ascending:true,nullsFirst:false}):Promise.resolve(empty),canGallery?db.from("vss_gallery_photos").select("*").order("created_at",{ascending:false}):Promise.resolve(empty)]);for(const r of results)if(r.error)throw r.error;members=results[0].data||[];notices=results[1].data||[];events=results[2].data||[];galleryPhotos=results[3].data||[];if(canMembers){try{await loadUserLimit();}catch(limitErr){userLimit=100000;if($("userLimit"))$("userLimit").value=userLimit;if($("limitMsg"))$("limitMsg").textContent="Member limit controls require the Main Admin migration permissions.";}}renderAll();$("globalMsg").textContent="Department workspace updated.";}catch(err){$("globalMsg").textContent=(err.message||"Could not load workspace data.")+" Check that the departmental admin SQL migration has been run.";} }
+async function refreshAll(){
+ $("globalMsg").textContent="Loading all VSS records…";
+ try{
+  const canMembers=currentAdminRole==="main"||currentAdminRole==="administration";
+  const canAcademic=currentAdminRole==="main"||currentAdminRole==="academic";
+  const canGallery=currentAdminRole==="main"||currentAdminRole==="technical";
+  const empty=[];
+  const results=await Promise.all([
+   canMembers?fetchAllRows(()=>db.from("vss_id_cards").select("*").order("created_at",{ascending:false})):Promise.resolve(empty),
+   canAcademic?fetchAllRows(()=>db.from("vss_announcements").select("*").order("created_at",{ascending:false})):Promise.resolve(empty),
+   canAcademic?fetchAllRows(()=>db.from("vss_events").select("*").order("event_date",{ascending:true,nullsFirst:false})):Promise.resolve(empty),
+   canGallery?fetchAllRows(()=>db.from("vss_gallery_photos").select("*").order("created_at",{ascending:false})):Promise.resolve(empty)
+  ]);
+  members=results[0];notices=results[1];events=results[2];galleryPhotos=results[3];
+  if(canMembers){try{await loadUserLimit();}catch(limitErr){userLimit=100000;if($("userLimit"))$("userLimit").value=userLimit;if($("limitMsg"))$("limitMsg").textContent="Member limit controls require the Main Admin migration permissions.";}}
+  renderAll();
+  $("globalMsg").textContent="All accessible VSS records loaded · "+(canMembers?members.length+" members":"member data restricted for this department")+".";
+ }catch(err){$("globalMsg").textContent=(err.message||"Could not load workspace data.")+" Check the Supabase connection and department permissions.";}
+}
 
 async function refreshCoreCardRequests(){
  const box=$('coreCardRequestRows');if(!box)return;
@@ -434,8 +464,23 @@ async function reviewCoreCard(membershipNo,decision){
  }catch(err){$('coreCardAdminMsg').textContent=err.message||'Could not update request.';}
 }
 
-function renderAll(){const today=new Date().toDateString();$("statMembers").textContent=members.length;$("statToday").textContent=members.filter(m=>new Date(m.created_at).toDateString()===today).length;$("statNotices").textContent=notices.filter(n=>n.is_published).length;$("statEvents").textContent=events.filter(e=>e.is_published&&(!e.event_date||new Date(e.event_date)>=new Date())).length;const recent=members.slice(0,6);$("recentRows").innerHTML=recent.length?recent.map(m=>"<tr><td class='id'>"+esc(m.membership_no)+"</td><td>"+esc(m.full_name)+"</td><td>"+esc(m.branch)+"</td><td>"+esc(dateText(m.created_at))+"</td></tr>").join(""):"<tr><td colspan='4' class='empty'>No member records found.</td></tr>";renderMembers();renderNotices();renderEvents();renderUsers();renderGalleryPhotos();}
-function renderMembers(){const q=$("memberSearch").value.toLowerCase();const list=members.filter(m=>[m.membership_no,m.full_name,m.email,m.phone,m.branch,m.semester,m.membership_category].some(v=>String(v||"").toLowerCase().includes(q)));$("memberRows").innerHTML=list.length?list.map(m=>"<tr><td class='id'>"+esc(m.membership_no)+"</td><td>"+esc(m.full_name)+"</td><td>"+esc(m.phone)+"</td><td>"+esc(m.email)+"</td><td>"+esc(m.branch)+"</td><td>"+esc(m.semester)+"</td><td>"+esc(m.membership_category)+"</td><td><button class='light action' data-edit-member='"+esc(m.id)+"'>Edit</button></td></tr>").join(""):"<tr><td colspan='8' class='empty'>No matching members.</td></tr>";document.querySelectorAll("[data-edit-member]").forEach(b=>b.addEventListener("click",()=>openMemberEditor(b.dataset.editMember)));}
+function renderAll(){
+ const today=istDayKey(new Date().toISOString());
+ $("statMembers").textContent=members.length;
+ $("statToday").textContent=members.filter(m=>istDayKey(m.created_at)===today).length;
+ $("statNotices").textContent=notices.filter(n=>n.is_published).length;
+ $("statEvents").textContent=events.filter(e=>e.is_published&&(!e.event_date||new Date(e.event_date)>=new Date())).length;
+ const recent=members.slice(0,6);
+ $("recentRows").innerHTML=recent.length?recent.map(m=>"<tr><td class='id'>"+esc(m.membership_no)+"</td><td>"+esc(m.full_name)+"</td><td>"+esc(m.branch)+"</td><td>"+esc(dateText(m.created_at))+"</td></tr>").join(""):"<tr><td colspan='4' class='empty'>No member records found.</td></tr>";
+ renderMembers();renderNotices();renderEvents();renderUsers();renderGalleryPhotos();
+}
+function renderMembers(){
+ const q=$("memberSearch").value.toLowerCase();
+ const list=members.filter(m=>[m.membership_no,m.full_name,m.email,m.phone,m.branch,m.semester,m.membership_category].some(v=>String(v||"").toLowerCase().includes(q)));
+ if($("memberRecordCount"))$("memberRecordCount").textContent="Showing "+list.length+" of "+members.length+" registered members · all pages loaded";
+ $("memberRows").innerHTML=list.length?list.map(m=>"<tr><td class='id'>"+esc(m.membership_no)+"</td><td>"+esc(m.full_name)+"</td><td>"+esc(m.phone)+"</td><td>"+esc(m.email)+"</td><td>"+esc(m.branch)+"</td><td>"+esc(m.semester)+"</td><td>"+esc(m.membership_category)+"</td><td><button class='light action' data-edit-member='"+esc(m.id)+"'>Edit</button></td></tr>").join(""):"<tr><td colspan='8' class='empty'>No matching members.</td></tr>";
+ document.querySelectorAll("[data-edit-member]").forEach(b=>b.addEventListener("click",()=>openMemberEditor(b.dataset.editMember)));
+}
 function openMemberEditor(id){const m=members.find(x=>x.id===id);if(!m)return;editingMember=m;$("editMemberId").textContent=m.membership_no;$("editName").value=m.full_name||"";$("editPhone").value=m.phone||"";$("editBranch").value=m.branch||"";$("editSemester").value=m.semester||"";$("editCategory").value=m.membership_category||"";$("memberEditMsg").textContent="";$("memberEditor").classList.remove("hidden");$("memberEditor").scrollIntoView({behavior:"smooth",block:"center"});}
 $("cancelMemberEdit").addEventListener("click",()=>{$("memberEditor").classList.add("hidden");editingMember=null;});
 $("memberEditForm").addEventListener("submit",async e=>{e.preventDefault();if(!editingMember)return;$("saveMemberBtn").disabled=true;$("memberEditMsg").textContent="Saving changes…";try{const payload={full_name:$("editName").value.trim(),phone:$("editPhone").value.trim(),branch:$("editBranch").value.trim(),semester:$("editSemester").value.trim(),membership_category:$("editCategory").value.trim()};const {error}=await db.from("vss_id_cards").update(payload).eq("id",editingMember.id);if(error)throw error;Object.assign(editingMember,payload);renderAll();$("memberEditMsg").textContent="Member record updated.";}catch(err){$("memberEditMsg").textContent=err.message||"Could not update member record.";}finally{$("saveMemberBtn").disabled=false;}});
@@ -444,16 +489,16 @@ $("exportCsv").addEventListener("click",()=>{const keys=["membership_no","full_n
 
 async function loadUserLimit(){const {data,error}=await db.rpc("vss_admin_get_member_limit");if(error)throw error;userLimit=Number(data)||100000;$("userLimit").value=userLimit;}
 function renderUsers(){
- const today=new Date().toDateString(),blocked=members.filter(m=>m.is_blocked===true);
+ const today=istDayKey(new Date().toISOString()),blocked=members.filter(m=>m.is_blocked===true);
  $("userTotal").textContent=members.length;$("userBlocked").textContent=blocked.length;$("userActive").textContent=members.length-blocked.length;
- $("userToday").textContent=members.filter(m=>new Date(m.created_at).toDateString()===today).length;
+ $("userToday").textContent=members.filter(m=>istDayKey(m.created_at)===today).length;
  const q=($("userSearch")?.value||"").toLowerCase();
  const list=members.filter(m=>[m.membership_no,m.full_name,m.email,m.phone].some(v=>String(v||"").toLowerCase().includes(q)));
  $("userRows").innerHTML=list.length?list.map(m=>"<tr><td class='id'>"+esc(m.membership_no)+"</td><td>"+esc(m.full_name)+"</td><td>"+esc(m.email)+"</td><td>"+esc(m.phone)+"</td><td><span class='pill "+(m.is_blocked?"":"live")+"'>"+(m.is_blocked?"Blocked":"Active")+"</span></td><td><div class='toolbar'><button class='"+(m.is_blocked?"primary":"light")+" action' data-user-toggle='"+esc(m.id)+"'>"+(m.is_blocked?"Unblock":"Block")+"</button><button class='danger action' data-user-delete='"+esc(m.id)+"'>Remove</button></div></td></tr>").join(""):"<tr><td colspan='6' class='empty'>No users found.</td></tr>";
  document.querySelectorAll("[data-user-toggle]").forEach(b=>b.addEventListener("click",()=>toggleUserBlock(b.dataset.userToggle)));
  document.querySelectorAll("[data-user-delete]").forEach(b=>b.addEventListener("click",()=>removeUser(b.dataset.userDelete)));
 }
-async function refreshUsers(){try{const {data,error}=await db.from("vss_id_cards").select("*").order("created_at",{ascending:false});if(error)throw error;members=data||[];try{await loadUserLimit();}catch(limitErr){$("limitMsg").textContent="Run supabase/user-management-migration.sql to enable user controls.";}renderAll();$("userMsg").textContent="User list refreshed.";}catch(e){$("userMsg").textContent=e.message||"Could not load user management."}}
+async function refreshUsers(){try{members=await fetchAllRows(()=>db.from("vss_id_cards").select("*").order("created_at",{ascending:false}));try{await loadUserLimit();}catch(limitErr){$("limitMsg").textContent="Run supabase/user-management-migration.sql to enable user controls.";}renderAll();$("userMsg").textContent="All "+members.length+" member records refreshed.";}catch(e){$("userMsg").textContent=e.message||"Could not load user management."}}
 async function toggleUserBlock(id){const m=members.find(x=>x.id===id);if(!m)return;const next=!m.is_blocked;if(!confirm((next?"Block":"Unblock")+" "+m.full_name+"?"))return;const {error}=await db.from("vss_id_cards").update({is_blocked:next}).eq("id",id);if(error){$("userMsg").textContent=error.message;return;}m.is_blocked=next;renderAll();$("userMsg").textContent=next?"User blocked from member login.":"User access restored.";}
 async function removeUser(id){const m=members.find(x=>x.id===id);if(!m||!confirm("Permanently remove "+m.full_name+" ("+m.membership_no+") from VSS? This cannot be undone."))return;const {error}=await db.from("vss_id_cards").delete().eq("id",id);if(error){$("userMsg").textContent=error.message;return;}members=members.filter(x=>x.id!==id);renderAll();$("userMsg").textContent="User removed.";}
 $("adminAddUserForm").addEventListener("submit",async e=>{e.preventDefault();const b=$("addUserBtn");b.disabled=true;$("addUserMsg").textContent="Adding user…";try{const {data,error}=await db.rpc("vss_admin_add_member",{p_full_name:$("addFullName").value.trim(),p_branch:$("addBranch").value.trim(),p_semester:$("addSemester").value.trim(),p_phone:$("addPhone").value.trim(),p_email:$("addEmail").value.trim(),p_category:$("addCategory").value});if(error)throw error;$("adminAddUserForm").reset();await refreshUsers();$("addUserMsg").textContent="User added: "+data;}catch(err){$("addUserMsg").textContent=err.message||"Could not add user.";}finally{b.disabled=false;}});
