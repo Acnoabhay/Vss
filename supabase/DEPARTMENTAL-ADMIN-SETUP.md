@@ -56,3 +56,28 @@ Department logins use their assigned email address and password. The Main Admin 
 - Main Admin: all workspaces and departmental account management.
 
 If any migration reports an error, stop and resolve it before creating accounts. Do not rerun a partially applied SQL file blindly.
+
+
+## 4. Enable granular Main Admin permissions
+
+After the three migrations above, run this additional SQL file once:
+
+- `supabase/admin-permission-management-migration.sql`
+- SQL Editor link: https://supabase.com/dashboard/project/aukiryqoqpotjuuqwsec/sql/new
+- Raw SQL: https://raw.githubusercontent.com/Acnoabhay/Vss/main/supabase/admin-permission-management-migration.sql
+
+This creates per-account permission grants. Existing administrators receive their current department's starter permissions. The Main Admin can then open **Manage admins → Permissions** to grant or revoke individual capabilities, including member management, verification, notice creation/editing/publication/deletion, event management, gallery uploads/publication/deletion, user controls and premium-card review.
+
+The new **Organizing Department VSS** account type is also supported. It receives starter event and gallery permissions, which the Main Admin can customize.
+
+## 5. Redeploy the admin-management Edge Function
+
+Pull the latest repository and redeploy the updated function:
+
+```bash
+supabase functions deploy vss-admin-manage
+```
+
+The updated function supports saving custom permission sets. It still authenticates the caller against the Main Admin email and never exposes the service-role key to the browser.
+
+Department assignments are labels and starter templates; the permission table is the actual authority for access. Removing all grants removes access to departmental workspaces. Admin account creation, password resets, activation/deactivation and permission changes remain Main Admin-only.
