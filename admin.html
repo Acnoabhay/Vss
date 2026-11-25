@@ -770,7 +770,7 @@ async function loadDepartmentAdmins(){
    $("adminIdPreviewPanel").classList.remove("hidden");$("adminIdPreviewPanel").scrollIntoView({behavior:"smooth",block:"center"});
   }));
   $("deptAdminListMsg").textContent="";
- }catch(e){rows.innerHTML='<tr><td colspan="6" class="empty">Could not load accounts. Run the departmental admin SQL migration first.</td></tr>';$("deptAdminListMsg").textContent=e.message||"Admin list unavailable.";}
+ }catch(e){const detail=String(e?.message||"Unknown database error");rows.innerHTML='<tr><td colspan="6" class="empty"><strong>Departmental accounts could not be loaded.</strong><br>Check that all four departmental-admin SQL migrations have been run, including the admin profile migration. <small>'+esc(detail)+'</small></td></tr>';$("deptAdminListMsg").textContent=detail;}
 }
 
 $("closeAdminIdPreview")?.addEventListener("click",()=>$("adminIdPreviewPanel").classList.add("hidden"));
