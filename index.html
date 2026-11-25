@@ -897,18 +897,31 @@ document.getElementById('contactForm').addEventListener('submit',e=>{
   items=[];document.getElementById('homeUpdatePrev').addEventListener('click',()=>{show(active-1);restart()});document.getElementById('homeUpdateNext').addEventListener('click',()=>{show(active+1);restart()});
   root.addEventListener('mouseenter',()=>{paused=true;stop()});root.addEventListener('mouseleave',()=>{paused=false;start()});root.addEventListener('focusin',()=>{paused=true;stop()});root.addEventListener('focusout',e=>{if(!root.contains(e.relatedTarget)){paused=false;start()}});
   document.addEventListener('visibilitychange',()=>document.hidden?stop():start());
-  async function load(){try{
-   if(!window.supabase||!window.supabase.createClient)throw new Error('Supabase client is unavailable');
-   const db=window.supabase.createClient('https://aukiryqoqpotjuuqwsec.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhbGciOiJIUzI1NiIsInJlZiI6ImF1a2lyeXFvcXBvdGp1dXF3c2VjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTUzNTk5MTcsImV4cCI6MjExMDkzNTkxN30.fqfDg2bU70gT3RpRp0cOYyZhusUwLuathrFI42p3v_w');
-   const now=new Date().toISOString();const [nr,er]=await Promise.all([
-    db.from('vss_announcements').select('title,category,body,created_at,is_published,is_pinned').eq('is_published',true).order('is_pinned',{ascending:false}).order('created_at',{ascending:false}).limit(20),
-    db.from('vss_events').select('title,description,event_date,venue,is_published').eq('is_published',true).or('event_date.is.null,event_date.gte.'+now).order('event_date',{ascending:true,nullsFirst:false}).limit(20)
-   ]);
-   if(nr.error)throw nr.error;if(er.error)throw er.error;
-   const notices=(nr.data||[]).map(x=>({kind:'notice',title:x.title||'VSS notice',body:x.body||'Please read this VSS announcement.',meta:(x.category||'Announcement')+' · '+fmt(x.created_at)}));
-   const events=(er.data||[]).map(x=>({kind:'event',title:x.title||'Upcoming VSS event',body:x.description||'More details will be announced soon.',meta:fmt(x.event_date)+' · '+(x.venue||'Venue to be announced')}));
-   items=[...notices,...events];dots.innerHTML='';items.forEach((_,i)=>{const b=document.createElement('button');b.type='button';b.setAttribute('aria-label','Show update '+(i+1));b.addEventListener('click',()=>{show(i);restart()});dots.appendChild(b)});active=0;render();start();
-  }catch(err){console.warn('VSS bulletin could not load',err);card.innerHTML='<div class="updates-empty">The latest updates could not be loaded. Please refresh or check the member portal for current notices.</div>';count.textContent='Connection unavailable';}}
+  async function load(){
+   if(!window.supabase||!window.supabase.createClient){
+    card.innerHTML='<div class="updates-empty">The VSS bulletin service could not start. Please refresh the page.</div>';
+    count.textContent='Service unavailable';return;
+   }
+   const db=window.supabase.createClient('https://aukiryqoqpotjuuqwsec.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyZWYiOiJhdWtpcnlxb3FvcG90anV1cXdzZWMiLCJyb2xlIjoiYW5vbiIsImlhdCI6MTc5NTM1OTkxNywiZXhwIjoyMTEwOTM1OTE3fQ.fqfDg2bU70gT3RpRp0cOYyZhusUwLuathrFI42p3v_w');
+   const errors=[];
+   const noticeResult=await db.from('vss_announcements')
+    .select('title,category,body,created_at,is_published,is_pinned')
+    .eq('is_published',true).order('is_pinned',{ascending:false})
+    .order('created_at',{ascending:false}).limit(20);
+   let notices=[];
+   if(noticeResult.error){errors.push('Notices: '+noticeResult.error.message);console.error('VSS homepage notices query failed',noticeResult.error);}
+   else notices=(noticeResult.data||[]).map(x=>({kind:'notice',title:x.title||'VSS notice',body:x.body||'Please read this VSS announcement.',meta:(x.category||'Announcement')+' · '+fmt(x.created_at)}));
+   const eventResult=await db.from('vss_events')
+    .select('title,description,event_date,venue,is_published')
+    .eq('is_published',true).order('event_date',{ascending:true,nullsFirst:false}).limit(30);
+   let events=[];
+   if(eventResult.error){errors.push('Events: '+eventResult.error.message);console.error('VSS homepage events query failed',eventResult.error);}
+   else events=(eventResult.data||[]).filter(x=>!x.event_date||new Date(x.event_date)>=new Date()).map(x=>({kind:'event',title:x.title||'Upcoming VSS event',body:x.description||'More details will be announced soon.',meta:fmt(x.event_date)+' · '+(x.venue||'Venue to be announced')}));
+   items=[...notices,...events];dots.innerHTML='';
+   items.forEach((_,i)=>{const b=document.createElement('button');b.type='button';b.setAttribute('aria-label','Show update '+(i+1));b.addEventListener('click',()=>{show(i);restart()});dots.appendChild(b)});
+   active=0;render();start();
+   if(errors.length){count.textContent='Some updates could not load · '+errors.join(' · ');if(!items.length)card.innerHTML='<div class="updates-empty">The bulletin could not load from the database. '+esc(errors.join(' | '))+'</div>';}
+  }
   load();
   // Keep the public bulletin current after a notice is published in the Admin Panel.
   window.setInterval(()=>{if(!document.hidden)load();},60000);
