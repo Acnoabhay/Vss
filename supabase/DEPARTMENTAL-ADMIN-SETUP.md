@@ -40,7 +40,7 @@ The repository's `supabase/config.toml` configures this function with gateway JW
 
 ## 3. Sign in and create accounts
 
-After the migrations and function are deployed, open:
+**Important:** Complete the granular permission migration in Step 4 and redeploy the updated Edge Function in Step 5 before creating any new admin accounts. Then open:
 
 https://acnoabhay.github.io/Vss/admin.html
 
