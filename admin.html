@@ -520,7 +520,11 @@ function renderAll(){
  $("statEvents").textContent=events.filter(e=>e.is_published&&(!e.event_date||new Date(e.event_date)>=new Date())).length;
  const recent=members.slice(0,6);
  $("recentRows").innerHTML=recent.length?recent.map(m=>"<tr><td class='id'>"+esc(m.membership_no)+"</td><td>"+esc(m.full_name)+"</td><td>"+esc(m.branch)+"</td><td>"+esc(dateText(m.created_at))+"</td></tr>").join(""):"<tr><td colspan='4' class='empty'>No member records found.</td></tr>";
- renderMembers();renderNotices();renderEvents();renderUsers();renderGalleryPhotos();
+ renderMembers();renderNotices();renderEvents();renderUsers();renderGalleryPhotos();applyPermissionUi();
+}
+function applyPermissionUi(){
+ const rules=[["[data-edit-member]", "members.manage"],["[data-edit-notice]","notices.edit"],["[data-delete-notice]","notices.delete"],["[data-edit-event]","events.manage"],["[data-delete-event]","events.manage"],["[data-gallery-toggle]","gallery.publish"],["[data-gallery-delete]","gallery.delete"]];
+ rules.forEach(([selector,key])=>document.querySelectorAll(selector).forEach(button=>{button.hidden=!hasPermission(key)&&!(key==="notices.edit"&&hasPermission("notices.publish"))&&!(key==="events.manage"&&hasPermission("events.publish"));}));
 }
 function memberPhotoMarkup(m){
  const name=String(m.full_name||"VSS").trim();
