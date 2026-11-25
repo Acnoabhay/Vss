@@ -557,7 +557,7 @@ async function loadDepartmentAdmins(){
    const id="VSS-ADM-"+String(a.user_id).replace(/-/g,"").slice(0,8).toUpperCase();
    const issued=a.created_at?new Intl.DateTimeFormat("en-IN",{day:"2-digit",month:"long",year:"numeric"}).format(new Date(a.created_at)):"Date not recorded";
    const status=a.is_active?"ACTIVE":"DISABLED";
-   const initials=esc(String(a.full_name||"VSS").split(/\\s+/).map(x=>x[0]).slice(0,2).join("").toUpperCase());
+   const initials=esc(String(a.full_name||"VSS").split(/\s+/).map(x=>x[0]).slice(0,2).join("").toUpperCase());
    const photo=a.photo_url?'<img src="'+esc(a.photo_url)+'" alt="Administrator photograph">':'<span class="dept-id-initials">'+initials+'</span>';
    $("departmentAdminIdCard").classList.remove("is-flipped");
    $("departmentAdminIdCard").innerHTML=
