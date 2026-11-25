@@ -307,6 +307,7 @@ button,a,input,select,textarea{touch-action:manipulation}
  .two-col{grid-template-columns:minmax(0,1fr) minmax(260px,.8fr);gap:13px}
 }
 
+.registration-sync-bar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:-5px 0 18px;padding:11px 14px;border:1px solid #dce8e1;border-radius:12px;background:#f1f8f4;color:#315b45;font-size:12px;font-weight:650}.sync-indicator{width:9px;height:9px;flex:none;border-radius:50%;background:#26935f;box-shadow:0 0 0 4px #26935f18}.sync-auto-label{margin-left:auto;color:#64766c;font-size:10px;font-weight:800;letter-spacing:.04em}.registration-sync-bar.sync-error{background:#fff4f2;border-color:#f0d1cc;color:#9a3026}.registration-sync-bar.sync-error .sync-indicator{background:#c44b3d;box-shadow:0 0 0 4px #c44b3d18}.member-photo-wrap{width:48px;height:48px;display:grid;place-items:center;overflow:hidden;border-radius:12px;border:1px solid var(--line);background:#f4f6f8}.member-avatar{width:100%;height:100%;object-fit:contain;background:#fff}.member-photo-fallback{width:48px;height:48px;display:grid;place-items:center;border-radius:12px;background:linear-gradient(145deg,#e8edf3,#d7e0ea);color:#26394c;font-size:13px;font-weight:900;letter-spacing:.04em}.registration-stat small{display:block;margin-top:5px;color:var(--muted);font-size:10px;line-height:1.4}@media(max-width:760px){.registration-sync-bar{font-size:11px;padding:10px}.sync-auto-label{margin-left:0;width:100%}.member-photo-wrap,.member-photo-fallback{width:42px;height:42px}}
 </style>
 </head>
 <body>
@@ -317,13 +318,13 @@ button,a,input,select,textarea{touch-action:manipulation}
 <main class="main">
 <section id="tab-overview" class="tab">
 <div class="page-head"><div><span class="eyebrow">Administration</span><h1>Dashboard overview</h1><p>Monitor membership and keep the VSS community informed.</p></div><button class="light" id="refreshAll">Refresh data</button></div>
-<div class="stats"><div class="stat"><span>Total members</span><strong id="statMembers">—</strong></div><div class="stat"><span>New today</span><strong id="statToday">—</strong></div><div class="stat"><span>Published notices</span><strong id="statNotices">—</strong></div><div class="stat"><span>Upcoming events</span><strong id="statEvents">—</strong></div></div>
+<div class="stats"><div class="stat registration-stat"><span>Total registrations</span><strong id="statMembers" aria-live="polite">—</strong><small>All member records in the VSS database</small></div><div class="stat"><span>New registrations today</span><strong id="statToday" aria-live="polite">—</strong><small>Based on India Standard Time</small></div><div class="stat"><span>Published notices</span><strong id="statNotices">—</strong></div><div class="stat"><span>Upcoming events</span><strong id="statEvents">—</strong></div></div><div class="registration-sync-bar" role="status" aria-live="polite"><span class="sync-indicator"></span><span id="registrationSyncText">Registration data will appear after the first successful sync.</span><span class="sync-auto-label">Auto-refresh · 60 sec</span></div>
 <div class="panel"><div class="panel-head"><h2>Quick actions</h2></div><div class="quick"><button data-go="verify" style="border-color:#d9b56f;background:#fffaf0"><b>✓ Verify a member</b><small>Scan an existing VSS ID or enter its membership number</small></button><button data-go="members"><b>Manage members</b><small>Search and update member records</small></button><button data-go="announcements"><b>Publish a notice</b><small>Share important VSS updates</small></button><button data-go="events"><b>Add an event</b><small>Publish upcoming activities</small></button><button data-go="admin-management" id="manageAdminsQuick" class="admin-management-link"><b>Manage admins</b><small>Create and control department admin accounts</small></button></div></div>
 <div class="panel"><div class="panel-head"><h2>College & university information</h2><span class="pill">Official sources</span></div><p class="muted">Reference links for institute and university regulations. Always verify the latest circular before sharing student guidance.</p><div class="quick"><a class="light" href="https://gecraipur.ac.in/rules_regulations.html" target="_blank" rel="noopener"><b>CGIT rules & regulations</b><small>Admission, hostel and academic rules</small></a><a class="light" href="https://gecraipur.ac.in/news_events.html" target="_blank" rel="noopener"><b>CGIT latest notices</b><small>Scholarships, circulars and campus updates</small></a><a class="light" href="https://csvtu.ac.in/ew/the-university/ordinances/" target="_blank" rel="noopener"><b>CSVTU ordinances</b><small>University regulations and amendments</small></a></div><div class="item" style="margin-top:12px"><span class="pill live">College update · 19 Nov 2026</span><h3>Post Matric Scholarship Notice 2026–27</h3><p>Listed on the official CGIT Raipur news page. Direct students to the official notice for details and deadlines.</p><a href="https://gecraipur.ac.in/news_events.html" target="_blank" rel="noopener">Open official college news ↗</a></div><div class="footnote">VSS is an independent student community. These links do not make VSS an official college or university portal.</div></div>\n<div class="panel"><div class="panel-head"><h2>Recently registered members</h2><button class="light action" data-go="members">View all members</button></div><div class="table-wrap"><table><thead><tr><th>VSS ID</th><th>Name</th><th>Branch</th><th>Registered</th></tr></thead><tbody id="recentRows"></tbody></table></div></div>
 </section>
 <section id="tab-members" class="tab hidden">
 <div class="page-head"><div><span class="eyebrow">Member directory</span><h1>Membership management</h1><p>Search, review and correct member records.</p></div><button class="primary" id="exportCsv">Export CSV</button></div>
-<div class="panel"><div class="panel-head"><div><h2>Registered members</h2><small class="muted" id="memberRecordCount">Loading all records…</small></div><div class="toolbar"><input id="memberSearch" class="search" placeholder="Search name, ID, email, phone or branch"></div></div><div class="table-wrap"><table><thead><tr><th>VSS ID</th><th>Name</th><th>Mobile</th><th>Email</th><th>Branch</th><th>Semester</th><th>Category</th><th>Action</th></tr></thead><tbody id="memberRows"></tbody></table></div><div class="msg" id="memberMsg"></div></div>
+<div class="panel"><div class="panel-head"><div><h2>Registered members</h2><small class="muted" id="memberRecordCount">Loading all records…</small></div><div class="toolbar"><input id="memberSearch" class="search" placeholder="Search name, ID, email, phone or branch"></div></div><div class="table-wrap"><table><thead><tr><th>Photo</th><th>VSS ID</th><th>Name</th><th>Mobile</th><th>Email</th><th>Branch</th><th>Semester</th><th>Category</th><th>Action</th></tr></thead><tbody id="memberRows"></tbody></table></div><div class="msg" id="memberMsg"></div></div>
 <div class="panel hidden" id="memberEditor"><div class="panel-head"><h2>Edit member record</h2><span class="pill" id="editMemberId"></span></div><form id="memberEditForm"><div class="two-col"><div class="field"><label>Full name</label><input id="editName" required maxlength="100"></div><div class="field"><label>Mobile number</label><input id="editPhone" required maxlength="15"></div><div class="field"><label>Branch / Department</label><input id="editBranch" required maxlength="80"></div><div class="field"><label>Semester / Year</label><input id="editSemester" required maxlength="40"></div><div class="field"><label>Membership category</label><input id="editCategory" required maxlength="60"></div></div><div class="toolbar"><button class="primary" id="saveMemberBtn">Save member changes</button><button class="light" type="button" id="cancelMemberEdit">Cancel</button></div><div class="msg" id="memberEditMsg"></div></form><p class="footnote">VSS membership number and registered email are protected and cannot be changed here.</p></div>
 </section>
 
@@ -386,7 +387,7 @@ const ADMIN_ID="Acnoabhay17",ADMIN_EMAIL="info.vsscommunity@gmail.com";
 let currentAdminRole="none",currentAdminUser=null,currentAdminRecord=null;
 const db=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
 const $=id=>document.getElementById(id);
-let members=[],notices=[],events=[],galleryPhotos=[],editingMember=null,editingNotice=null,editingEvent=null,userLimit=100000;
+let members=[],notices=[],events=[],galleryPhotos=[],editingMember=null,editingNotice=null,editingEvent=null,userLimit=100000,refreshInProgress=false,lastDashboardSyncAt=null,dashboardRefreshTimer=null;
 const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const dateText=v=>v?new Intl.DateTimeFormat("en-IN",{dateStyle:"medium",timeStyle:"short",timeZone:"Asia/Kolkata"}).format(new Date(v)):"Date to be announced";
 const istDayKey=v=>v?new Intl.DateTimeFormat("en-CA",{timeZone:"Asia/Kolkata",year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date(v)):"";
@@ -405,7 +406,7 @@ function setTab(name){const allowed=currentAdminRole==="main"?["overview","verif
 document.querySelectorAll("[data-tab]").forEach(b=>b.addEventListener("click",()=>setTab(b.dataset.tab)));
 document.querySelectorAll("[data-go]").forEach(b=>b.addEventListener("click",()=>setTab(b.dataset.go)));
 async function authorisedSession(){const {data:{user}}=await db.auth.getUser();if(!user)return false;currentAdminUser=user;if(String(user.email||"").toLowerCase()===ADMIN_EMAIL){currentAdminRole="main";currentAdminRecord={full_name:"Abhay Baghel",department:"main"};return true;}const {data,error}=await db.rpc("vss_admin_department");if(error||!["academic","technical","administration"].includes(data)){currentAdminRole="none";currentAdminRecord=null;return false;}currentAdminRole=data;currentAdminRecord={department:data};return true;}
-async function enterApp(){if(!await authorisedSession()){await db.auth.signOut();$("loginView").classList.remove("hidden");$("appView").classList.add("hidden");return;}setupRoleWorkspace();$("loginView").classList.add("hidden");$("appView").classList.remove("hidden");await refreshAll();if(currentAdminRole==="main"||currentAdminRole==="administration")await refreshCoreCardRequests();if(currentAdminRole==="main")setTab("overview");else if(currentAdminRole==="academic")setTab("announcements");else if(currentAdminRole==="technical")setTab("gallery");else setTab("verify");const pending=new URLSearchParams(location.search).get("verify");if(pending&&["main","administration"].includes(currentAdminRole)){setTab("verify");showVssMember(pending);}}
+async function enterApp(){if(!await authorisedSession()){await db.auth.signOut();$("loginView").classList.remove("hidden");$("appView").classList.add("hidden");return;}setupRoleWorkspace();$("loginView").classList.add("hidden");$("appView").classList.remove("hidden");await refreshAll();startDashboardAutoRefresh();if(currentAdminRole==="main"||currentAdminRole==="administration")await refreshCoreCardRequests();if(currentAdminRole==="main")setTab("overview");else if(currentAdminRole==="academic")setTab("announcements");else if(currentAdminRole==="technical")setTab("gallery");else setTab("verify");const pending=new URLSearchParams(location.search).get("verify");if(pending&&["main","administration"].includes(currentAdminRole)){setTab("verify");showVssMember(pending);}}
 $("loginForm").addEventListener("submit",async e=>{e.preventDefault();$("loginBtn").disabled=true;$("loginMsg").textContent="Signing in…";try{const login=$("adminId").value.trim();const email=login.toLowerCase()===ADMIN_ID.toLowerCase()?ADMIN_EMAIL:login.toLowerCase();if(!email.includes("@"))throw new Error("Use your Main Admin ID or the email assigned to your department account.");const {error}=await db.auth.signInWithPassword({email,password:$("password").value});if(error)throw error;await enterApp();}catch(err){$("loginMsg").textContent=err.message||"Sign in failed. Check your credentials.";}finally{$("loginBtn").disabled=false;}});
 
 let vssHtml5Scanner=null,vssScannerRunning=false;
@@ -451,8 +452,12 @@ $("verifyQrImage").addEventListener("click",async()=>{const file=$("vssQrImageFi
 
 $("refreshCoreCards").addEventListener("click",refreshCoreCardRequests);
 $("logoutBtn").addEventListener("click",async()=>{await db.auth.signOut();location.reload();});
-async function refreshAll(){
- $("globalMsg").textContent="Loading all VSS records…";
+async function refreshAll(options={}){
+ if(refreshInProgress)return;
+ refreshInProgress=true;
+ const silent=options.silent===true;
+ const refreshButton=$("refreshAll");if(refreshButton)refreshButton.disabled=true;
+ if(!silent)$("globalMsg").textContent="Loading all VSS records…";
  try{
   const canMembers=currentAdminRole==="main"||currentAdminRole==="administration";
   const canAcademic=currentAdminRole==="main"||currentAdminRole==="academic";
@@ -467,8 +472,16 @@ async function refreshAll(){
   members=results[0];notices=results[1];events=results[2];galleryPhotos=results[3];
   if(canMembers){try{await loadUserLimit();}catch(limitErr){userLimit=100000;if($("userLimit"))$("userLimit").value=userLimit;if($("limitMsg"))$("limitMsg").textContent="Member limit controls require the Main Admin migration permissions.";}}
   renderAll();
-  $("globalMsg").textContent="All accessible VSS records loaded · "+(canMembers?members.length+" members":"member data restricted for this department")+".";
- }catch(err){$("globalMsg").textContent=(err.message||"Could not load workspace data.")+" Check the Supabase connection and department permissions.";}
+  lastDashboardSyncAt=new Date();
+  const syncText=$("registrationSyncText");
+  if(syncText)syncText.textContent=canMembers?"Live database sync successful · "+members.length.toLocaleString("en-IN")+" total registrations · Last updated "+dateText(lastDashboardSyncAt.toISOString()):"Member data is restricted for this department.";
+  const syncBar=document.querySelector(".registration-sync-bar");if(syncBar)syncBar.classList.remove("sync-error");
+  if(!silent)$("globalMsg").textContent="All accessible VSS records loaded · "+(canMembers?members.length.toLocaleString("en-IN")+" registrations":"member data restricted for this department")+".";
+ }catch(err){
+  const syncText=$("registrationSyncText");if(syncText)syncText.textContent="Could not refresh registration data · "+(err.message||"Database error");
+  const syncBar=document.querySelector(".registration-sync-bar");if(syncBar)syncBar.classList.add("sync-error");
+  if(!silent)$("globalMsg").textContent=(err.message||"Could not load workspace data.")+" Check the Supabase connection and department permissions.";
+ }finally{refreshInProgress=false;if(refreshButton)refreshButton.disabled=false;}
 }
 
 async function refreshCoreCardRequests(){
@@ -505,17 +518,29 @@ function renderAll(){
  $("recentRows").innerHTML=recent.length?recent.map(m=>"<tr><td class='id'>"+esc(m.membership_no)+"</td><td>"+esc(m.full_name)+"</td><td>"+esc(m.branch)+"</td><td>"+esc(dateText(m.created_at))+"</td></tr>").join(""):"<tr><td colspan='4' class='empty'>No member records found.</td></tr>";
  renderMembers();renderNotices();renderEvents();renderUsers();renderGalleryPhotos();
 }
+function memberPhotoMarkup(m){
+ const name=String(m.full_name||"VSS").trim();
+ const initials=name.split(/\s+/).filter(Boolean).slice(0,2).map(part=>part.charAt(0)).join("").toUpperCase()||"V";
+ if(!m.photo_url)return "<div class='member-photo-fallback' aria-label='No profile photo'>"+esc(initials)+"</div>";
+ return "<div class='member-photo-wrap'><img class='member-avatar' src='"+esc(m.photo_url)+"' alt='Profile photo of "+esc(name)+"' loading='lazy' referrerpolicy='no-referrer' onerror='this.style.display=&quot;none&quot;;this.nextElementSibling.style.display=&quot;grid&quot;'><span class='member-photo-fallback' style='display:none'>"+esc(initials)+"</span></div>";
+}
 function renderMembers(){
  const q=$("memberSearch").value.toLowerCase();
  const list=members.filter(m=>[m.membership_no,m.full_name,m.email,m.phone,m.branch,m.semester,m.membership_category].some(v=>String(v||"").toLowerCase().includes(q)));
- if($("memberRecordCount"))$("memberRecordCount").textContent="Showing "+list.length+" of "+members.length+" registered members · all pages loaded";
- $("memberRows").innerHTML=list.length?list.map(m=>"<tr><td class='id'>"+esc(m.membership_no)+"</td><td>"+esc(m.full_name)+"</td><td>"+esc(m.phone)+"</td><td>"+esc(m.email)+"</td><td>"+esc(m.branch)+"</td><td>"+esc(m.semester)+"</td><td>"+esc(m.membership_category)+"</td><td><button class='light action' data-edit-member='"+esc(m.id)+"'>Edit</button></td></tr>").join(""):"<tr><td colspan='8' class='empty'>No matching members.</td></tr>";
+ if($("memberRecordCount"))$("memberRecordCount").textContent="Showing "+list.length.toLocaleString("en-IN")+" of "+members.length.toLocaleString("en-IN")+" registered members · all database pages loaded";
+ $("memberRows").innerHTML=list.length?list.map(m=>"<tr><td>"+memberPhotoMarkup(m)+"</td><td class='id'>"+esc(m.membership_no)+"</td><td>"+esc(m.full_name)+"</td><td>"+esc(m.phone)+"</td><td>"+esc(m.email)+"</td><td>"+esc(m.branch)+"</td><td>"+esc(m.semester)+"</td><td>"+esc(m.membership_category)+"</td><td><button class='light action' data-edit-member='"+esc(m.id)+"'>Edit</button></td></tr>").join(""):"<tr><td colspan='9' class='empty'>No matching members.</td></tr>";
  document.querySelectorAll("[data-edit-member]").forEach(b=>b.addEventListener("click",()=>openMemberEditor(b.dataset.editMember)));
 }
 function openMemberEditor(id){const m=members.find(x=>x.id===id);if(!m)return;editingMember=m;$("editMemberId").textContent=m.membership_no;$("editName").value=m.full_name||"";$("editPhone").value=m.phone||"";$("editBranch").value=m.branch||"";$("editSemester").value=m.semester||"";$("editCategory").value=m.membership_category||"";$("memberEditMsg").textContent="";$("memberEditor").classList.remove("hidden");$("memberEditor").scrollIntoView({behavior:"smooth",block:"center"});}
 $("cancelMemberEdit").addEventListener("click",()=>{$("memberEditor").classList.add("hidden");editingMember=null;});
 $("memberEditForm").addEventListener("submit",async e=>{e.preventDefault();if(!editingMember)return;$("saveMemberBtn").disabled=true;$("memberEditMsg").textContent="Saving changes…";try{const payload={full_name:$("editName").value.trim(),phone:$("editPhone").value.trim(),branch:$("editBranch").value.trim(),semester:$("editSemester").value.trim(),membership_category:$("editCategory").value.trim()};const {error}=await db.from("vss_id_cards").update(payload).eq("id",editingMember.id);if(error)throw error;Object.assign(editingMember,payload);renderAll();$("memberEditMsg").textContent="Member record updated.";}catch(err){$("memberEditMsg").textContent=err.message||"Could not update member record.";}finally{$("saveMemberBtn").disabled=false;}});
 $("memberSearch").addEventListener("input",renderMembers);
+$("refreshAll").addEventListener("click",()=>refreshAll());
+function startDashboardAutoRefresh(){
+ if(dashboardRefreshTimer)clearInterval(dashboardRefreshTimer);
+ dashboardRefreshTimer=setInterval(()=>{if(document.visibilityState==="visible"&&currentAdminRole!=="none")refreshAll({silent:true});},60000);
+}
+document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"&&currentAdminRole!=="none"&&(!lastDashboardSyncAt||Date.now()-lastDashboardSyncAt.getTime()>60000))refreshAll({silent:true});});
 $("exportCsv").addEventListener("click",()=>{const keys=["membership_no","full_name","phone","email","branch","semester","membership_category","created_at"];const quote=v=>'"'+String(v??"").replace(/"/g,'""')+'"';const csv=[keys.join(","),...members.map(m=>keys.map(k=>quote(m[k])).join(","))].join("\r\n");const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([csv],{type:"text/csv;charset=utf-8"}));a.download="VSS-members.csv";a.click();URL.revokeObjectURL(a.href);});
 
 async function loadUserLimit(){const {data,error}=await db.rpc("vss_admin_get_member_limit");if(error)throw error;userLimit=Number(data)||100000;$("userLimit").value=userLimit;}
