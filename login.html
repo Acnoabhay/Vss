@@ -38,6 +38,18 @@ img,video,canvas,svg{max-width:100%}
 button,a,input,select,textarea{touch-action:manipulation}
 :focus-visible{outline:3px solid color-mix(in srgb,var(--red,#a71928) 55%,#fff);outline-offset:3px}
 @media(max-width:480px){.top{gap:10px;flex-wrap:wrap}.wrap,.shell{max-width:100%}.panel,.login{min-width:0}}
+
+/* DESKTOP FIT REPAIR — balanced full-width login chooser */
+@media(min-width:1000px){
+ html,body{width:100%;max-width:100%;min-width:0;overflow-x:clip}
+ .top{width:100%;padding-inline:clamp(24px,4vw,76px);gap:18px}
+ .top>*{min-width:0}
+ .wrap{width:calc(100% - clamp(48px,7vw,132px));max-width:1520px;margin:clamp(56px,7vh,100px) auto}
+ .intro{max-width:1120px;margin-left:0;margin-right:0}
+ .choices{width:100%;max-width:1240px;margin:0;gap:clamp(20px,2vw,32px)}
+ .card{min-width:0}
+}
+
 </style></head><body>
 <header class="top"><div class="brand">VSS COMMUNITY<small>VIDYARTHI SEVA SANGATHAN · CGIT RAIPUR</small></div><button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">☾</button><a href="index.html">← Main website</a></header>
 <main class="wrap"><div class="intro"><span class="eyebrow">WELCOME TO VSS</span><h1>Choose your login</h1><p>Continue to the right portal for your VSS account.</p></div>
