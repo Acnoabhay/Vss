@@ -83,3 +83,14 @@ supabase functions deploy vss-admin-manage
 The updated function supports saving custom permission sets. It still authenticates the caller against the Main Admin email and never exposes the service-role key to the browser.
 
 Department assignments are labels and starter templates; the permission table is the actual authority for access. Removing all grants removes access to departmental workspaces. Admin account creation, password resets, activation/deactivation and permission changes remain Main Admin-only.
+
+
+## 6. Public homepage and member bulletin access
+
+If the homepage or member portal cannot read published notices and events, run this SQL migration once:
+
+- `supabase/public-bulletin-access-migration.sql`
+- SQL Editor: https://supabase.com/dashboard/project/aukiryqoqpotjuuqwsec/sql/new
+- Raw SQL: https://raw.githubusercontent.com/Acnoabhay/Vss/main/supabase/public-bulletin-access-migration.sql
+
+It grants public read access only to published notices and events. Drafts remain hidden from ordinary visitors.
