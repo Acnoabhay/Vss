@@ -902,7 +902,7 @@ document.getElementById('contactForm').addEventListener('submit',e=>{
     card.innerHTML='<div class="updates-empty">The VSS bulletin service could not start. Please refresh the page.</div>';
     count.textContent='Service unavailable';return;
    }
-   const db=window.supabase.createClient('https://aukiryqoqpotjuuqwsec.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyZWYiOiJhdWtpcnlxb3FvcG90anV1cXdzZWMiLCJyb2xlIjoiYW5vbiIsImlhdCI6MTc5NTM1OTkxNywiZXhwIjoyMTEwOTM1OTE3fQ.fqfDg2bU70gT3RpRp0cOYyZhusUwLuathrFI42p3v_w');
+   const db=window.supabase.createClient('https://aukiryqoqpotjuuqwsec.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF1a2lyeXFvcXBvdGp1dXF3c2VjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTUzNTk5MTcsImV4cCI6MjExMDkzNTkxN30.fqfDg2bU70gT3RpRp0cOYyZhusUwLuathrFI42p3v_w');
    const errors=[];
    const noticeResult=await db.from('vss_announcements')
     .select('title,category,body,created_at,is_published,is_pinned')
