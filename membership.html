@@ -334,6 +334,31 @@ button,a,input,select,textarea{touch-action:manipulation}
 .idcard .number{font-weight:900!important;color:#fff!important;letter-spacing:.08em}
 .idcard .cardhead small,.idcard .cardfoot{color:#fff!important;font-weight:750!important}
 .premium-gold-card h3,.premium-gold-card .gold-role,.premium-gold-card .gold-id{font-weight:900!important;opacity:1!important}
+
+/* DESKTOP FIT REPAIR — remove unused side gutters and prevent portal clipping */
+@media(min-width:1000px){
+ html,body{width:100%;max-width:100%;min-width:0;overflow-x:clip}
+ .top{width:100%;padding-inline:clamp(24px,4vw,76px);gap:18px}
+ .top>*{min-width:0}
+ .wrap{
+  width:calc(100% - clamp(48px,7vw,132px));max-width:1680px;
+  margin:42px auto;padding:0 clamp(0px,1vw,16px)
+ }
+ .layout,.portal-grid,.member-info-grid,.portal-feed-grid,.rights-grid,.resource-grid{
+  min-width:0
+ }
+ .layout>* ,.portal-grid>* ,.member-info-grid>* ,.portal-feed-grid>*{min-width:0;max-width:100%}
+ .layout{grid-template-columns:minmax(0,1.05fr) minmax(340px,.8fr);gap:clamp(20px,2vw,32px)}
+ #memberPortalView{min-width:0;width:100%}
+ .member-nav{max-width:100%;flex-wrap:wrap}
+ .portal-head,.member-hero,.panel,.portal-card-panel,.portal-edit-panel{min-width:0;max-width:100%}
+}
+@media(min-width:1000px) and (max-width:1250px){
+ .wrap{width:calc(100% - 48px);padding:0}
+ .layout{grid-template-columns:minmax(0,1fr) minmax(310px,.85fr);gap:18px}
+ .panel{padding:26px}
+}
+
 </style></head><body>
 <header class="top"><div class="brand">VSS COMMUNITY<small>VIDYARTHI SEVA SANGATHAN · CGIT RAIPUR</small></div><button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">☾</button><a href="index.html" style="color:white;text-decoration:none;font-size:13px">← Main website</a></header>
 
