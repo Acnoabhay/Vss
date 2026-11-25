@@ -276,6 +276,37 @@ button,a,input,select,textarea{touch-action:manipulation}
  body.admin-id-printing .dept-pdf-section,body.admin-id-printing .dept-pdf-profile{break-inside:avoid;page-break-inside:avoid}
  body.admin-id-printing .dept-pdf-head,body.admin-id-printing .dept-pdf-badge,body.admin-id-printing .dept-pdf-profile{print-color-adjust:exact;-webkit-print-color-adjust:exact}
 }
+
+/* DESKTOP FIT REPAIR — use the available screen without clipping workspace controls */
+@media(min-width:901px){
+ html,body{width:100%;max-width:100%;min-width:0;overflow-x:clip}
+ .top{width:100%;padding-inline:clamp(24px,4vw,76px);gap:18px}
+ .top>*{min-width:0}
+ .shell{
+  width:calc(100% - clamp(48px,6vw,112px));max-width:1840px;
+  grid-template-columns:minmax(230px,270px) minmax(0,1fr);
+  gap:clamp(18px,2vw,30px);margin:28px auto;padding:0 0 56px
+ }
+ .side,.main{min-width:0;max-width:100%}
+ .nav button{max-width:100%;overflow-wrap:anywhere}
+ .stats,.quick,.two-col{min-width:0}
+ .stats>* ,.quick>* ,.two-col>*{min-width:0}
+ .two-col{grid-template-columns:minmax(0,1.1fr) minmax(300px,.8fr)}
+ .panel,.stat{min-width:0;max-width:100%}
+ .panel-head>* ,.toolbar>*{min-width:0;max-width:100%}
+ .search{width:min(330px,100%)}
+}
+@media(min-width:901px) and (max-width:1199px){
+ .shell{width:calc(100% - 36px);grid-template-columns:220px minmax(0,1fr);gap:16px}
+ .side{padding:16px}
+ .nav button{padding:11px 10px;font-size:12px}
+ .stats{gap:9px}
+ .stat{padding:15px}
+ .stat strong{font-size:27px}
+ .panel{padding:17px}
+ .two-col{grid-template-columns:minmax(0,1fr) minmax(260px,.8fr);gap:13px}
+}
+
 </style>
 </head>
 <body>
