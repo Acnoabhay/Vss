@@ -73,7 +73,7 @@ drop policy if exists "VSS academic insert boundary vss_announcements" on public
 drop policy if exists "VSS academic update boundary vss_announcements" on public.vss_announcements;
 drop policy if exists "VSS academic delete boundary vss_announcements" on public.vss_announcements;
 create policy "VSS permission read announcements" on public.vss_announcements as restrictive for select to authenticated
- using(is_published=true or public.vss_admin_has_permission('notices.view'));
+ using(is_published=true or public.vss_admin_has_permission('notices.view') or public.vss_admin_has_permission('notices.edit') or public.vss_admin_has_permission('notices.publish') or public.vss_admin_has_permission('notices.delete'));
 create policy "VSS permission create announcements" on public.vss_announcements as restrictive for insert to authenticated
  with check(public.vss_admin_has_permission('notices.create'));
 create policy "VSS permission edit announcements" on public.vss_announcements as restrictive for update to authenticated
@@ -87,7 +87,7 @@ drop policy if exists "VSS academic insert boundary vss_events" on public.vss_ev
 drop policy if exists "VSS academic update boundary vss_events" on public.vss_events;
 drop policy if exists "VSS academic delete boundary vss_events" on public.vss_events;
 create policy "VSS permission read events" on public.vss_events as restrictive for select to authenticated
- using(is_published=true or public.vss_admin_has_permission('events.view'));
+ using(is_published=true or public.vss_admin_has_permission('events.view') or public.vss_admin_has_permission('events.manage') or public.vss_admin_has_permission('events.publish'));
 create policy "VSS permission create events" on public.vss_events as restrictive for insert to authenticated
  with check(public.vss_admin_has_permission('events.manage'));
 create policy "VSS permission edit events" on public.vss_events as restrictive for update to authenticated
@@ -115,7 +115,7 @@ drop policy if exists "VSS technical insert boundary vss_gallery_photos" on publ
 drop policy if exists "VSS technical update boundary vss_gallery_photos" on public.vss_gallery_photos;
 drop policy if exists "VSS technical delete boundary vss_gallery_photos" on public.vss_gallery_photos;
 create policy "VSS permission read gallery" on public.vss_gallery_photos as restrictive for select to authenticated
- using(is_published=true or public.vss_admin_has_permission('gallery.view'));
+ using(is_published=true or public.vss_admin_has_permission('gallery.view') or public.vss_admin_has_permission('gallery.upload') or public.vss_admin_has_permission('gallery.publish') or public.vss_admin_has_permission('gallery.delete'));
 create policy "VSS permission upload gallery" on public.vss_gallery_photos as restrictive for insert to authenticated
  with check(public.vss_admin_has_permission('gallery.upload'));
 create policy "VSS permission edit gallery" on public.vss_gallery_photos as restrictive for update to authenticated
