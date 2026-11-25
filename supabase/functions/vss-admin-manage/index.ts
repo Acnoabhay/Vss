@@ -38,8 +38,9 @@ Deno.serve(async (req) => {
     const email = String(body.email || "").trim().toLowerCase();
     const password = String(body.password || "");
     const department = String(body.department || "");
+    const designation = String(body.designation || "").trim() || "Department Administrator";
     if (fullName.length < 2 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) ||
-        password.length < 12 || !["academic", "technical", "administration"].includes(department)) {
+        password.length < 12 || designation.length > 100 || !["academic", "technical", "administration"].includes(department)) {
       return json({ error: "Provide a name, valid email, department and a password of at least 12 characters." }, 400);
     }
     const { data: created, error: createError } = await admin.auth.admin.createUser({
