@@ -47,13 +47,30 @@ Deno.serve(async (req) => {
     });
     if (createError || !created.user) return json({ error: createError?.message || "Could not create account." }, 400);
     const { error: rowError } = await admin.from("vss_admin_accounts").insert({
-      user_id: created.user.id, full_name: fullName, email, department, is_active: true, created_by: actor.id
+      user_id: created.user.id, full_name: fullName, email, department, designation, is_active: true, created_by: actor.id
     });
     if (rowError) {
       await admin.auth.admin.deleteUser(created.user.id);
       return json({ error: rowError.message }, 400);
     }
     return json({ success: true, message: "Departmental admin account created." });
+  }
+
+  if (action === "update_profile") {
+    const userId = String(body.user_id || "");
+    const department = String(body.department || "");
+    const designation = String(body.designation || "").trim();
+    if (!userId || !["academic", "technical", "administration"].includes(department) ||
+        designation.length < 2 || designation.length > 100) {
+      return json({ error: "Choose a valid department and enter a designation between 2 and 100 characters." }, 400);
+    }
+    const { data: target, error: lookupError } = await admin.from("vss_admin_accounts")
+      .select("user_id").eq("user_id", userId).maybeSingle();
+    if (lookupError || !target) return json({ error: lookupError?.message || "Admin account not found." }, 404);
+    const { error } = await admin.from("vss_admin_accounts")
+      .update({ department, designation, updated_at: new Date().toISOString() }).eq("user_id", userId);
+    if (error) return json({ error: error.message }, 400);
+    return json({ success: true, message: "Department and designation updated." });
   }
 
   if (action === "set_active") {
