@@ -910,6 +910,8 @@ document.getElementById('contactForm').addEventListener('submit',e=>{
    items=[...notices,...events];dots.innerHTML='';items.forEach((_,i)=>{const b=document.createElement('button');b.type='button';b.setAttribute('aria-label','Show update '+(i+1));b.addEventListener('click',()=>{show(i);restart()});dots.appendChild(b)});active=0;render();start();
   }catch(err){console.warn('VSS bulletin could not load',err);card.innerHTML='<div class="updates-empty">The latest updates could not be loaded. Please refresh or check the member portal for current notices.</div>';count.textContent='Connection unavailable';}}
   load();
+  // Keep the public bulletin current after a notice is published in the Admin Panel.
+  window.setInterval(()=>{if(!document.hidden)load();},60000);
  }
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>{setupPhotoShow();setupUpdates()},{once:true});else{setupPhotoShow();setupUpdates()}
 })();
