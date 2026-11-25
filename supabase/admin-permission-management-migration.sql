@@ -105,8 +105,8 @@ create policy "VSS permission read members" on public.vss_id_cards as restrictiv
 create policy "VSS permission create members" on public.vss_id_cards as restrictive for insert to authenticated
  with check(public.vss_admin_has_permission('members.manage'));
 create policy "VSS permission update members" on public.vss_id_cards as restrictive for update to authenticated
- using(public.vss_admin_has_permission('members.manage') or public.vss_admin_has_permission('users.manage'))
- with check(public.vss_admin_has_permission('members.manage') or public.vss_admin_has_permission('users.manage'));
+ using(public.vss_admin_has_permission('members.manage'))
+ with check(public.vss_admin_has_permission('members.manage'));
 create policy "VSS permission delete members" on public.vss_id_cards as restrictive for delete to authenticated
  using(public.vss_admin_has_permission('members.manage'));
 
@@ -264,3 +264,18 @@ grant execute on function public.vss_admin_set_member_limit(integer) to authenti
 grant execute on function public.vss_admin_add_member(text,text,text,text,text,text) to authenticated;
 grant execute on function public.vss_admin_core_card_requests() to authenticated;
 grant execute on function public.vss_admin_review_core_card(text,text,text,text) to authenticated;
+
+-- User-management operators can only change the blocked flag, not edit other member data.
+create or replace function public.vss_admin_set_member_blocked(p_membership_no text,p_is_blocked boolean)
+returns boolean language plpgsql security definer set search_path=public as $$
+begin
+ if not public.vss_is_main_admin() and not public.vss_admin_has_permission('users.manage') then
+  raise exception 'User management permission required.';
+ end if;
+ update public.vss_id_cards set is_blocked=coalesce(p_is_blocked,false)
+ where upper(membership_no)=upper(trim(coalesce(p_membership_no,'')));
+ if not found then raise exception 'Member record not found.'; end if;
+ return true;
+end; $$;
+revoke all on function public.vss_admin_set_member_blocked(text,boolean) from public;
+grant execute on function public.vss_admin_set_member_blocked(text,boolean) to authenticated;
