@@ -424,7 +424,7 @@ async function showVssMember(code){
   box.innerHTML='<div class="empty">Checking the live VSS member database…</div>';
   try{
    if(!await authorisedSession())throw new Error("Administrator session expired. Please sign in again.");
-   const {data:m,error}=await db.from("vss_id_cards").select("membership_no,full_name,branch,semester,phone,email,membership_category,created_at,is_blocked,photo_url").ilike("membership_no",id).maybeSingle();
+   const {data,error}=await db.rpc("vss_admin_verify_member",{p_membership_no:id});const m=Array.isArray(data)?data[0]:data;
    if(error)throw error;
    if(!m){box.innerHTML='<div class="empty"><strong>Invalid / unregistered ID</strong><p>No VSS member record was found for '+esc(id)+'.</p></div>';return;}
    const blocked=m.is_blocked===true,status=blocked?"Blocked":"Verified Active";
@@ -463,7 +463,7 @@ async function refreshAll(options={}){
  const refreshButton=$("refreshAll");if(refreshButton)refreshButton.disabled=true;
  if(!silent)$("globalMsg").textContent="Loading all VSS records…";
  try{
-  const canMembers=hasPermission("members.view")||hasPermission("members.manage")||hasPermission("members.verify");
+  const canMembers=hasPermission("members.view")||hasPermission("members.manage")||hasPermission("users.manage");
   const canAcademic=["notices.view","notices.create","notices.edit","notices.publish","notices.delete","events.view","events.manage","events.publish"].some(hasPermission);
   const canGallery=["gallery.view","gallery.upload","gallery.publish","gallery.delete"].some(hasPermission);
   const empty=[];
@@ -630,7 +630,7 @@ function setupRoleWorkspace(){
  $("adminManagementNav").classList.toggle("hidden",currentAdminRole!=="main");const manageQuick=$("manageAdminsQuick");if(manageQuick)manageQuick.classList.toggle("hidden",currentAdminRole!=="main");
  $("galleryNav").classList.toggle("hidden",!allowed.includes("gallery"));
  $("tab-admin-management").classList.toggle("hidden",currentAdminRole!=="main");
- $("side-title");const title=document.querySelector(".side-title");if(title)title.textContent=currentAdminRole==="main"?"MAIN ADMIN WORKSPACE":currentAdminRole==="academic"?"ACADEMIC COMMITTEE":currentAdminRole==="technical"?"TECHNICAL TEAM":"ADMINISTRATION DEPT";
+ $("side-title");const title=document.querySelector(".side-title");if(title)title.textContent=currentAdminRole==="main"?"MAIN ADMIN WORKSPACE":currentAdminRole==="academic"?"ACADEMIC COMMITTEE":currentAdminRole==="technical"?"TECHNICAL TEAM":currentAdminRole==="organizing"?"ORGANIZING DEPARTMENT":"ADMINISTRATION DEPT";
  const head=document.querySelector("#appView .page-head");if(currentAdminRole!=="main"&&head){const p=document.createElement("p");p.className="muted";p.textContent="Signed in with restricted "+currentAdminRole+" department access.";head.appendChild(p);}
  if(currentAdminRole==="main"){loadDepartmentAdmins();}
 }
@@ -661,13 +661,13 @@ async function loadDepartmentAdmins(){
  const rows=$("deptAdminRows");if(!rows)return;rows.innerHTML='<tr><td colspan="6" class="empty">Loading…</td></tr>';
  try{
   const {data,error}=await db.from("vss_admin_accounts").select("user_id,full_name,email,department,designation,is_active,created_at,photo_url").order("created_at",{ascending:false});if(error)throw error;
-  rows.innerHTML=(data||[]).length?(data||[]).map(a=>'<tr><td>'+esc(a.full_name)+'</td><td>'+esc(a.email)+'</td><td>'+esc(({academic:"Academic Committee VSS",technical:"Technical Team VSS",administration:"Administration Dept VSS"})[a.department])+'<br><small>'+esc(a.designation||"Designation not assigned")+'</small></td><td><span class="pill '+(a.is_active?"live":"")+'">'+(a.is_active?"Active":"Disabled")+'</span></td><td><div class="toolbar"><button class="light action" data-dept-photo="'+esc(a.user_id)+'">'+(a.photo_url?"Update photo":"Add photo")+'</button><button class="light action" data-dept-card="'+esc(a.user_id)+'">View both IDs</button></div></td><td><div class="toolbar"><button class="light action" data-dept-permissions="'+esc(a.user_id)+'">Permissions</button><button class="light action" data-dept-edit="'+esc(a.user_id)+'">Edit department / designation</button><button class="'+(a.is_active?"danger":"primary")+' action" data-dept-toggle="'+esc(a.user_id)+'" data-active="'+String(a.is_active)+'">'+(a.is_active?"Disable":"Activate")+'</button><button class="light action" data-dept-reset="'+esc(a.user_id)+'">Reset password</button></div></td></tr>').join(""):'<tr><td colspan="6" class="empty">No departmental accounts yet.</td></tr>';
+  rows.innerHTML=(data||[]).length?(data||[]).map(a=>'<tr><td>'+esc(a.full_name)+'</td><td>'+esc(a.email)+'</td><td>'+esc(({academic:"Academic Committee VSS",technical:"Technical Team VSS",administration:"Administration Dept VSS",organizing:"Organizing Department VSS"})[a.department])+'<br><small>'+esc(a.designation||"Designation not assigned")+'</small></td><td><span class="pill '+(a.is_active?"live":"")+'">'+(a.is_active?"Active":"Disabled")+'</span></td><td><div class="toolbar"><button class="light action" data-dept-photo="'+esc(a.user_id)+'">'+(a.photo_url?"Update photo":"Add photo")+'</button><button class="light action" data-dept-card="'+esc(a.user_id)+'">View both IDs</button></div></td><td><div class="toolbar"><button class="light action" data-dept-permissions="'+esc(a.user_id)+'">Permissions</button><button class="light action" data-dept-edit="'+esc(a.user_id)+'">Edit department / designation</button><button class="'+(a.is_active?"danger":"primary")+' action" data-dept-toggle="'+esc(a.user_id)+'" data-active="'+String(a.is_active)+'">'+(a.is_active?"Disable":"Activate")+'</button><button class="light action" data-dept-reset="'+esc(a.user_id)+'">Reset password</button></div></td></tr>').join(""):'<tr><td colspan="6" class="empty">No departmental accounts yet.</td></tr>';
   rows.querySelectorAll("[data-dept-permissions]").forEach(b=>b.addEventListener("click",()=>openAdminPermissions(b.dataset.deptPermissions,(data||[]).find(x=>x.user_id===b.dataset.deptPermissions))));
   rows.querySelectorAll("[data-dept-toggle]").forEach(b=>b.addEventListener("click",async()=>{try{await callAdminManager({action:"set_active",user_id:b.dataset.deptToggle,is_active:b.dataset.active!=="true"});await loadDepartmentAdmins();}catch(e){$("deptAdminListMsg").textContent=e.message;}}));
   rows.querySelectorAll("[data-dept-reset]").forEach(b=>b.addEventListener("click",async()=>{const p=prompt("Enter a new password (at least 12 characters):");if(p===null)return;try{await callAdminManager({action:"reset_password",user_id:b.dataset.deptReset,password:p});$("deptAdminListMsg").textContent="Password updated. Share it securely with the account holder.";}catch(e){$("deptAdminListMsg").textContent=e.message;}}));
   rows.querySelectorAll("[data-dept-edit]").forEach(b=>b.addEventListener("click",async()=>{
    const a=(data||[]).find(x=>x.user_id===b.dataset.deptEdit);if(!a)return;
-   const departments=[["academic","Academic Committee VSS"],["technical","Technical Team VSS"],["administration","Administration Department VSS"]];
+   const departments=[["academic","Academic Committee VSS"],["technical","Technical Team VSS"],["administration","Administration Department VSS"],["organizing","Organizing Department VSS"]];
    const options=departments.map((d,i)=>(i+1)+". "+d[1]).join("\n");
    const choice=prompt("Choose department by number:\n"+options, String(Math.max(1,departments.findIndex(d=>d[0]===a.department)+1)));
    if(choice===null)return;const selected=departments[Number(choice)-1];if(!selected){$("deptAdminListMsg").textContent="Invalid department choice.";return;}
@@ -680,7 +680,7 @@ async function loadDepartmentAdmins(){
    const a=(data||[]).find(x=>x.user_id===b.dataset.deptCard);if(!a)return;
    const dept=({academic:"Academic Committee VSS",technical:"Technical Team VSS",administration:"Administration Department VSS"})[a.department]||"VSS Department";
    const designation=a.designation||"Designation not assigned";
-   const access=({academic:"Academic notices, academic events and related department content only.",technical:"Website gallery, approved visual content and assigned technical operations only.",administration:"Member verification, membership records and premium-card review tools as authorised."})[a.department]||"Restricted departmental access.";
+   const access=({academic:"Academic notices and events.",technical:"Website gallery and technical operations.",administration:"Member records, verification and user controls.",organizing:"Events, organizing operations and assigned gallery access."})[a.department]||"Restricted departmental access.";
    const id="VSS-ADM-"+String(a.user_id).replace(/-/g,"").slice(0,8).toUpperCase();
    const issued=a.created_at?new Intl.DateTimeFormat("en-IN",{day:"2-digit",month:"long",year:"numeric"}).format(new Date(a.created_at)):"Date not recorded";
    const status=a.is_active?"ACTIVE":"DISABLED";
