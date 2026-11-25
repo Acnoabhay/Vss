@@ -101,12 +101,12 @@ drop policy if exists "VSS administration insert boundary vss_id_cards" on publi
 drop policy if exists "VSS administration update boundary vss_id_cards" on public.vss_id_cards;
 drop policy if exists "VSS administration delete boundary vss_id_cards" on public.vss_id_cards;
 create policy "VSS permission read members" on public.vss_id_cards as restrictive for select to authenticated
- using(public.vss_admin_has_permission('members.view') or public.vss_admin_has_permission('members.manage') or public.vss_admin_has_permission('members.verify'));
+ using(public.vss_admin_has_permission('members.view') or public.vss_admin_has_permission('members.manage') or public.vss_admin_has_permission('users.manage'));
 create policy "VSS permission create members" on public.vss_id_cards as restrictive for insert to authenticated
  with check(public.vss_admin_has_permission('members.manage'));
 create policy "VSS permission update members" on public.vss_id_cards as restrictive for update to authenticated
- using(public.vss_admin_has_permission('members.manage'))
- with check(public.vss_admin_has_permission('members.manage'));
+ using(public.vss_admin_has_permission('members.manage') or public.vss_admin_has_permission('users.manage'))
+ with check(public.vss_admin_has_permission('members.manage') or public.vss_admin_has_permission('users.manage'));
 create policy "VSS permission delete members" on public.vss_id_cards as restrictive for delete to authenticated
  using(public.vss_admin_has_permission('members.manage'));
 
@@ -132,3 +132,45 @@ create policy "VSS permission storage delete" on storage.objects as restrictive 
  using(bucket_id <> 'vss-event-gallery' or public.vss_admin_has_permission('gallery.delete'));
 
 -- Account-management permissions are deliberately not grantable to departmental administrators.
+
+-- These permissive policies let an explicitly granted administrator cross their
+-- original department boundary. The restrictive per-action policies above remain
+-- the final gate for every read/write operation.
+drop policy if exists "VSS permissioned admins announcements access" on public.vss_announcements;
+create policy "VSS permissioned admins announcements access" on public.vss_announcements for all to authenticated
+ using(public.vss_is_main_admin() or public.vss_admin_has_permission('notices.view') or public.vss_admin_has_permission('notices.create') or public.vss_admin_has_permission('notices.edit') or public.vss_admin_has_permission('notices.publish') or public.vss_admin_has_permission('notices.delete'))
+ with check(public.vss_is_main_admin() or public.vss_admin_has_permission('notices.create') or public.vss_admin_has_permission('notices.edit') or public.vss_admin_has_permission('notices.publish'));
+drop policy if exists "VSS permissioned admins events access" on public.vss_events;
+create policy "VSS permissioned admins events access" on public.vss_events for all to authenticated
+ using(public.vss_is_main_admin() or public.vss_admin_has_permission('events.view') or public.vss_admin_has_permission('events.manage') or public.vss_admin_has_permission('events.publish'))
+ with check(public.vss_is_main_admin() or public.vss_admin_has_permission('events.manage') or public.vss_admin_has_permission('events.publish'));
+drop policy if exists "VSS permissioned admins members access" on public.vss_id_cards;
+create policy "VSS permissioned admins members access" on public.vss_id_cards for all to authenticated
+ using(public.vss_is_main_admin() or public.vss_admin_has_permission('members.view') or public.vss_admin_has_permission('members.manage') or public.vss_admin_has_permission('users.manage'))
+ with check(public.vss_is_main_admin() or public.vss_admin_has_permission('members.manage') or public.vss_admin_has_permission('users.manage'));
+drop policy if exists "VSS permissioned admins gallery access" on public.vss_gallery_photos;
+create policy "VSS permissioned admins gallery access" on public.vss_gallery_photos for all to authenticated
+ using(public.vss_is_main_admin() or public.vss_admin_has_permission('gallery.view') or public.vss_admin_has_permission('gallery.upload') or public.vss_admin_has_permission('gallery.publish') or public.vss_admin_has_permission('gallery.delete'))
+ with check(public.vss_is_main_admin() or public.vss_admin_has_permission('gallery.upload') or public.vss_admin_has_permission('gallery.publish'));
+
+-- Member verification returns only the requested matching member record.
+create or replace function public.vss_admin_verify_member(p_membership_no text)
+returns table(membership_no text,full_name text,branch text,semester text,phone text,email text,membership_category text,created_at timestamptz,is_blocked boolean,photo_url text)
+language plpgsql stable security definer set search_path=public as $$
+begin
+ if not public.vss_is_main_admin() and not public.vss_admin_has_permission('members.verify') then
+  raise exception 'Member verification permission required.';
+ end if;
+ return query select m.membership_no,m.full_name,m.branch,m.semester,m.phone,m.email,m.membership_category,m.created_at,m.is_blocked,m.photo_url
+ from public.vss_id_cards m where upper(m.membership_no)=upper(trim(coalesce(p_membership_no,''))) limit 1;
+end; $$;
+revoke all on function public.vss_admin_verify_member(text) from public;
+grant execute on function public.vss_admin_verify_member(text) to authenticated;
+
+-- Storage object policies also need a permissive path for cross-department grants.
+drop policy if exists "VSS permissioned admin storage upload" on storage.objects;
+create policy "VSS permissioned admin storage upload" on storage.objects for insert to authenticated
+ with check(bucket_id='vss-event-gallery' and (public.vss_is_main_admin() or public.vss_admin_has_permission('gallery.upload')));
+drop policy if exists "VSS permissioned admin storage delete" on storage.objects;
+create policy "VSS permissioned admin storage delete" on storage.objects for delete to authenticated
+ using(bucket_id='vss-event-gallery' and (public.vss_is_main_admin() or public.vss_admin_has_permission('gallery.delete')));
