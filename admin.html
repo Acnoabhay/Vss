@@ -169,6 +169,57 @@ button,a,input,select,textarea{touch-action:manipulation}
 .admin-id-number{font-size:11px;font-weight:900;letter-spacing:.08em;margin:17px 0 5px}
 .admin-id-footer{position:absolute;bottom:19px;left:14px;right:14px;border-top:1px solid #8b682b;padding-top:9px;font-size:8px;font-weight:850;letter-spacing:.12em}
 @media print{body.admin-id-printing *{visibility:hidden!important}body.admin-id-printing #adminIdPreviewPanel,body.admin-id-printing #adminIdPreviewPanel *{visibility:visible!important}body.admin-id-printing #adminIdPreviewPanel{display:block!important;position:absolute;inset:0;width:100%;border:0;box-shadow:none}body.admin-id-printing #adminIdPreviewPanel .panel-head,body.admin-id-printing #adminIdPreviewPanel .toolbar,body.admin-id-printing #adminIdPreviewPanel .footnote{display:none!important}body.admin-id-printing .admin-id-stage{background:#fff;padding:0}body.admin-id-printing .department-admin-id-card{margin:0 auto;print-color-adjust:exact;-webkit-print-color-adjust:exact}}
+
+/* VSS Golden Department Administrator ID — complete front/back print document */
+.department-admin-id-document{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;align-items:start;justify-items:center;width:100%}
+.dept-id-sheet{width:min(100%,340px);min-height:520px;position:relative;overflow:hidden;border-radius:22px;border:2px solid #c79c45;padding:20px 19px;color:#332713;background:linear-gradient(155deg,#fffdf4 0%,#f5e6bd 48%,#e4c477 100%);box-shadow:0 16px 36px #50391522;print-color-adjust:exact;-webkit-print-color-adjust:exact}
+.dept-id-sheet:before{content:"";position:absolute;inset:8px;border:1px solid #a98238;border-radius:15px;pointer-events:none}
+.dept-id-topline{display:flex;justify-content:space-between;align-items:center;position:relative;z-index:1}
+.dept-id-mark{font-size:27px;line-height:1;font-weight:1000;letter-spacing:.13em;color:#624719}
+.dept-id-chip{font-size:9px;letter-spacing:.12em;font-weight:950;border:1px solid #9b742e;border-radius:30px;padding:7px 10px;color:#654b1d}
+.dept-id-org{margin-top:13px;text-align:center;font-size:12px;font-weight:950;letter-spacing:.12em}
+.dept-id-motto{text-align:center;font-size:8px;font-weight:800;letter-spacing:.13em;color:#72592b;margin-top:3px}
+.dept-id-photo{width:112px;height:124px;margin:19px auto 12px;border:3px solid #9d772f;border-radius:13px;background:#fff8e6;overflow:hidden;display:grid;place-items:center}
+.dept-id-photo img{width:100%;height:100%;object-fit:contain;background:#fff}
+.dept-id-initials{font-size:34px;font-weight:950;color:#765a27}
+.dept-id-role{text-align:center;font-size:8px;font-weight:950;letter-spacing:.13em;color:#71531f}
+.dept-id-name{text-align:center;font-size:22px;line-height:1.18;margin:8px 0 7px;font-weight:950;overflow-wrap:anywhere}
+.dept-id-dept{margin:0 auto;text-align:center;width:fit-content;max-width:100%;border-radius:30px;padding:8px 12px;background:#5b451f;color:#fff4d7;font-size:10px;font-weight:850}
+.dept-id-number-label{text-align:center;font-size:7px;letter-spacing:.13em;font-weight:900;margin-top:18px;color:#745824}
+.dept-id-number{text-align:center;font-size:14px;font-weight:1000;letter-spacing:.09em;margin-top:4px;color:#3f3018}
+.dept-id-front-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:19px}
+.dept-id-front-grid>div{background:#fff9e8a8;border:1px solid #c7a75f;border-radius:10px;padding:9px;min-width:0}
+.dept-id-front-grid small{display:block;font-size:7px;letter-spacing:.1em;font-weight:900;color:#765c2d}
+.dept-id-front-grid strong{display:block;font-size:10px;margin-top:4px;overflow-wrap:anywhere}
+.dept-id-active{color:#17653c!important}.dept-id-disabled{color:#a3212b!important}
+.dept-id-footer{position:absolute;left:20px;right:20px;bottom:17px;border-top:1px solid #b3914c;padding-top:9px;text-align:center;font-size:8px;font-weight:900;letter-spacing:.11em;color:#61491f}
+.dept-id-back{background:linear-gradient(155deg,#fffdf6,#f0dfb2 100%);padding-top:23px}
+.dept-id-back-head{display:flex;align-items:center;justify-content:space-between;border-bottom:2px solid #b28b3f;padding-bottom:12px;color:#624719}
+.dept-id-back-head span{font-size:24px;font-weight:1000;letter-spacing:.13em}
+.dept-id-back-head strong{font-size:9px;letter-spacing:.1em}
+.dept-id-back h3{font-size:16px;margin:17px 0 10px;color:#463417}
+.dept-id-detail{display:grid;grid-template-columns:40% 60%;gap:6px;padding:7px 0;border-bottom:1px solid #c9ad70;font-size:9px;align-items:start}
+.dept-id-detail span{color:#725b31;font-weight:750}.dept-id-detail strong{text-align:right;overflow-wrap:anywhere;font-size:9px}
+.dept-id-access,.dept-id-authority{margin-top:13px;padding:11px;border:1px solid #c3a15d;border-radius:11px;background:#fff9e9a8}
+.dept-id-access>span,.dept-id-authority>span{display:block;font-size:8px;letter-spacing:.11em;font-weight:950;color:#71531f}
+.dept-id-access p{font-size:9px;line-height:1.45;margin:6px 0 0;color:#47391f}
+.dept-id-authority strong,.dept-id-authority small{display:block;margin-top:5px;font-size:10px;color:#403018}
+.dept-id-authority small{font-size:8px;color:#735b32}
+.dept-id-disclaimer{font-size:8px;line-height:1.45;color:#6a5737;margin:11px 0 30px}
+@media(max-width:760px){.department-admin-id-document{grid-template-columns:minmax(0,1fr)}.dept-id-sheet{width:min(100%,340px)}}
+@page{size:A4 landscape;margin:10mm}
+@media print{
+ body.admin-id-printing *{visibility:hidden!important}
+ body.admin-id-printing #adminIdPreviewPanel,body.admin-id-printing #adminIdPreviewPanel *{visibility:visible!important}
+ body.admin-id-printing #adminIdPreviewPanel{display:block!important;position:absolute!important;left:0!important;top:0!important;width:100%!important;margin:0!important;padding:0!important;border:0!important;box-shadow:none!important;background:#fff!important}
+ body.admin-id-printing #adminIdPreviewPanel .panel-head,body.admin-id-printing #adminIdPreviewPanel .toolbar,body.admin-id-printing #adminIdPreviewPanel .footnote{display:none!important}
+ body.admin-id-printing .admin-id-stage{display:block!important;background:#fff!important;padding:0!important;margin:0!important}
+ body.admin-id-printing .department-admin-id-document{display:grid!important;grid-template-columns:1fr 1fr!important;gap:8mm!important;align-items:start!important;justify-items:center!important;width:100%!important}
+ body.admin-id-printing .dept-id-sheet{width:82mm!important;height:135mm!important;min-height:135mm!important;border-radius:5mm!important;box-shadow:none!important;break-inside:avoid!important;page-break-inside:avoid!important}
+ body.admin-id-printing .dept-id-sheet *{visibility:visible!important}
+ body.admin-id-printing .dept-id-photo img{object-fit:contain!important}
+}
+
 </style>
 </head>
 <body>
@@ -235,7 +286,7 @@ button,a,input,select,textarea{touch-action:manipulation}
 </div>
 </section>
 <section id="tab-gallery" class="tab hidden"><div class="page-head"><div><span class="eyebrow">Technical Team</span><h1>Website gallery</h1><p>Manage homepage photos and VSS visual content.</p></div></div></section>
-<section id="tab-admin-management" class="tab hidden"><div class="page-head"><div><span class="eyebrow">Main Admin only</span><h1>Departmental admin accounts</h1><p>Create and manage restricted VSS department logins.</p></div></div><div class="panel"><div class="panel-head"><h2>Create departmental admin</h2></div><form id="departmentAdminForm"><div class="two-col"><div class="field"><label for="deptAdminName">Full name</label><input id="deptAdminName" required minlength="2" maxlength="100"></div><div class="field"><label for="deptAdminEmail">Login email</label><input id="deptAdminEmail" type="email" required autocomplete="off"></div></div><div class="two-col"><div class="field"><label for="deptAdminDepartment">Department</label><select id="deptAdminDepartment" required><option value="academic">Academic Committee VSS</option><option value="technical">Technical Team VSS</option><option value="administration">Administration Dept VSS</option></select></div><div class="field"><label for="deptAdminPassword">Initial password (minimum 12 characters)</label><input id="deptAdminPassword" type="password" minlength="12" required autocomplete="new-password"></div></div><button class="primary" id="createDeptAdminBtn">Create admin account</button><div class="msg" id="deptAdminCreateMsg" role="status"></div></form></div><div class="panel"><div class="panel-head"><h2>Departmental accounts</h2><button class="light action" id="refreshDeptAdmins">Refresh list</button></div><div class="table-wrap"><table><thead><tr><th>Name</th><th>Email</th><th>Department</th><th>Status</th><th>Profile & ID</th><th>Actions</th></tr></thead><tbody id="deptAdminRows"><tr><td colspan="6" class="empty">Loading accounts…</td></tr></tbody></table></div><div class="msg" id="deptAdminListMsg"></div></div><div class="panel hidden" id="adminIdPreviewPanel"><div class="panel-head"><h2>Departmental Admin ID preview</h2><button class="light action" id="closeAdminIdPreview">Close preview</button></div><div class="admin-id-stage"><div id="departmentAdminIdCard" class="department-admin-id-card"></div></div><div class="toolbar" style="justify-content:center;margin-top:14px"><button class="primary" id="printDepartmentAdminId">Print / Save as PDF</button></div><p class="footnote">This ID card is available only inside the VSS Admin Portal.</p></div></section>
+<section id="tab-admin-management" class="tab hidden"><div class="page-head"><div><span class="eyebrow">Main Admin only</span><h1>Departmental admin accounts</h1><p>Create and manage restricted VSS department logins.</p></div></div><div class="panel"><div class="panel-head"><h2>Create departmental admin</h2></div><form id="departmentAdminForm"><div class="two-col"><div class="field"><label for="deptAdminName">Full name</label><input id="deptAdminName" required minlength="2" maxlength="100"></div><div class="field"><label for="deptAdminEmail">Login email</label><input id="deptAdminEmail" type="email" required autocomplete="off"></div></div><div class="two-col"><div class="field"><label for="deptAdminDepartment">Department</label><select id="deptAdminDepartment" required><option value="academic">Academic Committee VSS</option><option value="technical">Technical Team VSS</option><option value="administration">Administration Dept VSS</option></select></div><div class="field"><label for="deptAdminPassword">Initial password (minimum 12 characters)</label><input id="deptAdminPassword" type="password" minlength="12" required autocomplete="new-password"></div></div><button class="primary" id="createDeptAdminBtn">Create admin account</button><div class="msg" id="deptAdminCreateMsg" role="status"></div></form></div><div class="panel"><div class="panel-head"><h2>Departmental accounts</h2><button class="light action" id="refreshDeptAdmins">Refresh list</button></div><div class="table-wrap"><table><thead><tr><th>Name</th><th>Email</th><th>Department</th><th>Status</th><th>Profile & ID</th><th>Actions</th></tr></thead><tbody id="deptAdminRows"><tr><td colspan="6" class="empty">Loading accounts…</td></tr></tbody></table></div><div class="msg" id="deptAdminListMsg"></div></div><div class="panel hidden" id="adminIdPreviewPanel"><div class="panel-head"><h2>Departmental Admin ID preview</h2><button class="light action" id="closeAdminIdPreview">Close preview</button></div><div class="admin-id-stage"><div id="departmentAdminIdCard" class="department-admin-id-document"></div></div><div class="toolbar" style="justify-content:center;margin-top:14px"><button class="primary" id="printDepartmentAdminId">Print / Save as PDF</button></div><p class="footnote">This ID card is available only inside the VSS Admin Portal.</p></div></section>
 <div class="msg" id="globalMsg"></div>
 <div style="display:flex;justify-content:flex-end"><button class="light" id="logoutBtn">Sign out</button></div>
 </main></div>
@@ -432,12 +483,49 @@ async function loadDepartmentAdmins(){
   rows.querySelectorAll("[data-dept-toggle]").forEach(b=>b.addEventListener("click",async()=>{try{await callAdminManager({action:"set_active",user_id:b.dataset.deptToggle,is_active:b.dataset.active!=="true"});await loadDepartmentAdmins();}catch(e){$("deptAdminListMsg").textContent=e.message;}}));
   rows.querySelectorAll("[data-dept-reset]").forEach(b=>b.addEventListener("click",async()=>{const p=prompt("Enter a new password (at least 12 characters):");if(p===null)return;try{await callAdminManager({action:"reset_password",user_id:b.dataset.deptReset,password:p});$("deptAdminListMsg").textContent="Password updated. Share it securely with the account holder.";}catch(e){$("deptAdminListMsg").textContent=e.message;}}));
   rows.querySelectorAll("[data-dept-photo]").forEach(b=>b.addEventListener("click",()=>{const picker=document.createElement("input");picker.type="file";picker.accept="image/jpeg,image/png,image/webp";picker.onchange=async()=>{const file=picker.files?.[0];if(!file)return;if(file.size>5*1024*1024){$("deptAdminListMsg").textContent="Choose an image smaller than 5 MB.";return;}try{b.disabled=true;$("deptAdminListMsg").textContent="Uploading admin photo…";const ext=file.type==="image/png"?"png":file.type==="image/webp"?"webp":"jpg";const path="admin-profiles/"+b.dataset.deptPhoto+"-"+Date.now()+"."+ext;const {error:upErr}=await db.storage.from("vss-event-gallery").upload(path,file,{upsert:false,contentType:file.type});if(upErr)throw upErr;const url=db.storage.from("vss-event-gallery").getPublicUrl(path).data.publicUrl;const {error:saveErr}=await db.from("vss_admin_accounts").update({photo_url:url,updated_at:new Date().toISOString()}).eq("user_id",b.dataset.deptPhoto);if(saveErr)throw saveErr;$("deptAdminListMsg").textContent="Admin photo saved. It will appear on the public VSS team page.";await loadDepartmentAdmins();}catch(err){$("deptAdminListMsg").textContent=err.message||"Photo upload failed.";}finally{b.disabled=false;}};picker.click();}));
-  rows.querySelectorAll("[data-dept-card]").forEach(b=>b.addEventListener("click",()=>{const a=(data||[]).find(x=>x.user_id===b.dataset.deptCard);if(!a)return;const dept=({academic:"Academic Committee VSS",technical:"Technical Team VSS",administration:"Administration Dept VSS"})[a.department]||"VSS Department";const id="VSS-ADM-"+String(a.user_id).replace(/-/g,"").slice(0,8).toUpperCase();$("departmentAdminIdCard").innerHTML='<div class="admin-id-brand">VSS</div><div class="admin-id-sub">VIDYARTHI SEVA SANGATHAN</div><div class="admin-id-seal">'+(a.photo_url?'<img src="'+esc(a.photo_url)+'" alt="Admin photo">':'<span style="font-size:27px;font-weight:900">'+esc(String(a.full_name||"V").split(/\s+/).map(x=>x[0]).slice(0,2).join("").toUpperCase())+'</span>')+'</div><div style="font-size:9px;font-weight:900;letter-spacing:.2em">AUTHORISED DEPARTMENT ADMIN</div><div class="admin-id-name">'+esc(a.full_name)+'</div><div class="admin-id-dept">'+esc(dept)+'</div><div class="admin-id-number">'+id+'</div><div class="admin-id-footer">BY THE STUDENTS · FOR THE STUDENTS<br>CGIT RAIPUR</div>';$("adminIdPreviewPanel").classList.remove("hidden");$("adminIdPreviewPanel").scrollIntoView({behavior:"smooth",block:"center"});}));
+  rows.querySelectorAll("[data-dept-card]").forEach(b=>b.addEventListener("click",()=>{
+   const a=(data||[]).find(x=>x.user_id===b.dataset.deptCard);if(!a)return;
+   const dept=({academic:"Academic Committee VSS",technical:"Technical Team VSS",administration:"Administration Department VSS"})[a.department]||"VSS Department";
+   const role=({academic:"Academic Administrator",technical:"Technical Administrator",administration:"Department Administrator"})[a.department]||"Department Administrator";
+   const access=({academic:"Academic notices, academic events and related department content only.",technical:"Website gallery, approved visual content and assigned technical operations only.",administration:"Member verification, membership records and premium-card review tools as authorised."})[a.department]||"Restricted departmental access.";
+   const id="VSS-ADM-"+String(a.user_id).replace(/-/g,"").slice(0,8).toUpperCase();
+   const issued=a.created_at?new Intl.DateTimeFormat("en-IN",{day:"2-digit",month:"long",year:"numeric"}).format(new Date(a.created_at)):"Date not recorded";
+   const status=a.is_active?"ACTIVE":"DISABLED";
+   const initials=esc(String(a.full_name||"VSS").split(/\\s+/).map(x=>x[0]).slice(0,2).join("").toUpperCase());
+   const photo=a.photo_url?'<img src="'+esc(a.photo_url)+'" alt="Administrator photograph">':'<span class="dept-id-initials">'+initials+'</span>';
+   $("departmentAdminIdCard").innerHTML=
+    '<article class="dept-id-sheet dept-id-front">'+
+      '<div class="dept-id-topline"><span class="dept-id-mark">VSS</span><span class="dept-id-chip">GOLDEN ADMIN</span></div>'+
+      '<div class="dept-id-org">VIDYARTHI SEVA SANGATHAN</div><div class="dept-id-motto">BY THE STUDENTS · FOR THE STUDENTS</div>'+
+      '<div class="dept-id-photo">'+photo+'</div>'+
+      '<div class="dept-id-role">AUTHORISED DEPARTMENT ADMINISTRATOR</div>'+
+      '<h3 class="dept-id-name">'+esc(a.full_name)+'</h3><div class="dept-id-dept">'+esc(dept)+'</div>'+
+      '<div class="dept-id-number-label">ADMINISTRATOR IDENTIFICATION NUMBER</div><div class="dept-id-number">'+id+'</div>'+
+      '<div class="dept-id-front-grid"><div><small>DESIGNATION</small><strong>'+esc(role)+'</strong></div><div><small>ACCOUNT STATUS</small><strong class="'+(a.is_active?"dept-id-active":"dept-id-disabled")+'">'+status+'</strong></div></div>'+
+      '<footer class="dept-id-footer">CGIT RAIPUR · VSS ADMINISTRATION</footer>'+
+    '</article>'+
+    '<article class="dept-id-sheet dept-id-back">'+
+      '<div class="dept-id-back-head"><span>VSS</span><strong>ADMINISTRATOR PROFILE</strong></div>'+
+      '<h3>Official Department Details</h3>'+
+      '<div class="dept-id-detail"><span>Full name</span><strong>'+esc(a.full_name)+'</strong></div>'+
+      '<div class="dept-id-detail"><span>Administrator ID</span><strong>'+id+'</strong></div>'+
+      '<div class="dept-id-detail"><span>Registered login email</span><strong>'+esc(a.email||"Not recorded")+'</strong></div>'+
+      '<div class="dept-id-detail"><span>Department</span><strong>'+esc(dept)+'</strong></div>'+
+      '<div class="dept-id-detail"><span>Designation</span><strong>'+esc(role)+'</strong></div>'+
+      '<div class="dept-id-detail"><span>Account created / issued</span><strong>'+esc(issued)+'</strong></div>'+
+      '<div class="dept-id-detail"><span>Current account status</span><strong class="'+(a.is_active?"dept-id-active":"dept-id-disabled")+'">'+status+'</strong></div>'+
+      '<section class="dept-id-access"><span>AUTHORISED ACCESS SCOPE</span><p>'+esc(access)+'</p></section>'+
+      '<section class="dept-id-authority"><span>ISSUING AUTHORITY</span><strong>Main Administration · VSS</strong><small>Authorised by the Main Administrator</small></section>'+
+      '<p class="dept-id-disclaimer">This is an internal VSS administrative identity credential. It is not an institute, government or statutory identity card. Access remains subject to the live account status and assigned department permissions.</p>'+
+      '<footer class="dept-id-footer">VIDYARTHI SEVA SANGATHAN · CGIT RAIPUR</footer>'+
+    '</article>';
+   $("adminIdPreviewPanel").classList.remove("hidden");$("adminIdPreviewPanel").scrollIntoView({behavior:"smooth",block:"center"});
+  }));
   $("deptAdminListMsg").textContent="";
  }catch(e){rows.innerHTML='<tr><td colspan="6" class="empty">Could not load accounts. Run the departmental admin SQL migration first.</td></tr>';$("deptAdminListMsg").textContent=e.message||"Admin list unavailable.";}
 }
 $("closeAdminIdPreview")?.addEventListener("click",()=>$("adminIdPreviewPanel").classList.add("hidden"));
-$("printDepartmentAdminId")?.addEventListener("click",()=>{document.body.classList.add("admin-id-printing");window.print();setTimeout(()=>document.body.classList.remove("admin-id-printing"),500);});
+$("printDepartmentAdminId")?.addEventListener("click",()=>{document.body.classList.add("admin-id-printing");const done=()=>document.body.classList.remove("admin-id-printing");window.addEventListener("afterprint",done,{once:true});window.print();setTimeout(done,2000);});
 $("departmentAdminForm")?.addEventListener("submit",async e=>{e.preventDefault();const b=$("createDeptAdminBtn");b.disabled=true;$("deptAdminCreateMsg").textContent="Creating account…";try{await callAdminManager({action:"create",full_name:$("deptAdminName").value.trim(),email:$("deptAdminEmail").value.trim(),department:$("deptAdminDepartment").value,password:$("deptAdminPassword").value});$("departmentAdminForm").reset();$("deptAdminCreateMsg").textContent="Departmental admin created. Share the login email and initial password securely.";await loadDepartmentAdmins();}catch(err){$("deptAdminCreateMsg").textContent=err.message||"Could not create account.";}finally{b.disabled=false;}});
 $("refreshDeptAdmins")?.addEventListener("click",loadDepartmentAdmins);
 
