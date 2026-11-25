@@ -12,13 +12,15 @@ Run these files in this exact order, copying the complete file contents into the
 
 1. `supabase/departmental-admin-migration.sql`
 2. `supabase/departmental-admin-rpc-permissions.sql`
+3. `supabase/departmental-admin-designation-migration.sql`
 
 Raw file links:
 
 - https://raw.githubusercontent.com/Acnoabhay/Vss/main/supabase/departmental-admin-migration.sql
 - https://raw.githubusercontent.com/Acnoabhay/Vss/main/supabase/departmental-admin-rpc-permissions.sql
+- https://raw.githubusercontent.com/Acnoabhay/Vss/main/supabase/departmental-admin-designation-migration.sql
 
-The first migration creates the admin role registry and database access policies. The second enables Administration Dept member-management and premium-card RPCs.
+The first migration creates the admin role registry and database access policies. The second enables Administration Dept member-management and premium-card RPCs. The third adds a separate designation field; “Department Administrator” remains the account identity and is not used as the person’s job designation.
 
 ## 2. Deploy the account-management Edge Function
 
@@ -34,7 +36,7 @@ The function source is:
 
 https://raw.githubusercontent.com/Acnoabhay/Vss/main/supabase/functions/vss-admin-manage/index.ts
 
-The repository's `supabase/config.toml` configures this function with gateway JWT verification disabled because the function validates the bearer token itself. The function uses the server-side `SUPABASE_SERVICE_ROLE_KEY` environment variable. Never paste that key into `admin.html`, GitHub Pages, or any browser code.
+The repository's `supabase/config.toml` configures this function with gateway JWT verification disabled because the function validates the bearer token itself. The function uses the server-side `SUPABASE_SERVICE_ROLE_KEY` environment variable. Never paste that key into `admin.html`, GitHub Pages, or any browser code. Redeploy this function after pulling the latest `main` branch so the Main Admin can edit an administrator’s department and designation.
 
 ## 3. Sign in and create accounts
 
